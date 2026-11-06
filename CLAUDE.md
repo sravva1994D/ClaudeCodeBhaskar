@@ -1,21 +1,46 @@
 # CLAUDE.md — Patient Management System
 
-Operating rules for Claude Code in this repository. These rules override default behaviour.
+Governance and operating rules for Claude Code in this repository. These rules override default behaviour. Where this file and a generic habit disagree, this file wins.
 
 Repository: `ClaudeCodeBhaskar`
 Project: Patient Management System (single-physician clinic, web-based)
 Source of truth for scope: `BRD/Doc_BRD.md`
-Learning/process reference: `Reference/AI Training & Progress Tracking Plan.docx`
+Process reference: `Reference/AI Training & Progress Tracking Plan.docx`
+Release owner and approver: the project owner.
 
 ---
 
-## 1. Roles Claude Plays
+## Contents
 
-Claude acts as Technical Lead, Solution Architect, Business Analyst, Senior Full Stack Developer, DevOps Engineer and Release Manager. When a decision spans roles, Claude records the decision in the relevant document (BRD, ADR, or PR description) rather than leaving it in chat.
+1. Project Goals
+2. Technology Stack and Roles
+3. BRD Governance
+4. Requirement Traceability
+5. Agent Governance
+6. Git Workflow Standards
+7. Change Management Process
+8. Worktree Strategy
+9. Pull Request Workflow
+10. Coding Standards
+11. Documentation Standards
+12. Testing Standards
+13. Release Workflow
+14. Working Agreements
 
 ---
 
-## 2. Technology Stack
+## 1. Project Goals
+
+- Give a general physician one browser-based place to manage appointments, patient records, consultations (vitals, complaints, diagnosis), prescriptions, visit history, and data export.
+- Reduce paper use, cut consultation time to 2–3 minutes (SC-001), and keep search and history retrieval within 2–5 seconds (SC-002).
+- Keep patient data safe: authenticated access, encryption in transit and at rest, no patient data outside the system.
+- Deliver Phase 1 in small, traceable, reviewable increments, each one tied to a BRD requirement.
+
+Governance itself also has goals: every change is traceable to a requirement or a governance decision, every change is approved before it reaches shared branches, and every release can be rolled back.
+
+---
+
+## 2. Technology Stack and Roles
 
 | Layer | Technology |
 |---|---|
@@ -24,24 +49,26 @@ Claude acts as Technical Lead, Solution Architect, Business Analyst, Senior Full
 | Database | SQL Server |
 | Export | CSV and PDF (server-side generation preferred) |
 
-Do not introduce a new framework, database, or hosting dependency without an ADR (see §12) and user approval.
+Do not introduce a new framework, database, or hosting dependency without an ADR (§11) and owner approval.
+
+Claude acts as Technical Lead, Business Analyst, Solution Architect, Senior Full Stack Developer, DevOps Engineer, QA Lead, Release Manager and Git Administrator. When a decision spans roles, Claude records it in the relevant document (BRD, ADR, traceability matrix, or PR description), not only in chat.
 
 ---
 
-## 3. BRD-Driven Development
+## 3. BRD Governance
 
 - `BRD/Doc_BRD.md` is the single source of functional scope. Nothing is built that does not trace to a BRD requirement.
-- If a requested change is not covered by the BRD, Claude stops and proposes a BRD amendment before implementing it.
-- Out-of-scope items in the BRD (receptionist access, billing, insurance, lab/pharmacy integration, AI diagnosis, offline mode, mobile app, advanced analytics, multi-doctor/multi-clinic, follow-up reminders) are not implemented in Phase 1.
-- BRD changes are made in their own feature branch and PR, labelled `docs/brd`.
+- If a requested change is not covered by the BRD, Claude stops, drafts a BRD amendment, and waits for approval before implementing.
+- Out-of-scope items (receptionist access, billing, insurance, lab and pharmacy integration, AI diagnosis, offline mode, mobile app, advanced analytics, multi-doctor or multi-clinic, follow-up reminders) are not implemented in Phase 1.
+- BRD changes go in their own branch (`docs/brd-<topic>`), cut from `development`, with their own PR. The PR is labelled `docs/brd` in its title scope.
+- The BRD does not yet carry requirement IDs. Until it does, the scheme in §4.1 is used, and a `docs/brd` PR adds the IDs to the BRD text. Once assigned, an ID is never reused or renumbered.
+- Requirements that cannot be verified in use (for example SC-003 paper reduction, SC-006 training effort) are marked `Deferred` with a measurement plan, not `Implemented`.
 
 ---
 
 ## 4. Requirement Traceability
 
 ### 4.1 ID scheme
-
-Every BRD requirement is referenced by a stable ID. The BRD itself does not yet carry IDs; until they are added, use this scheme:
 
 | Prefix | BRD section |
 |---|---|
@@ -57,89 +84,108 @@ Every BRD requirement is referenced by a stable ID. The BRD itself does not yet 
 | `FR-EXP` | Data Export |
 | `SC` | Success Criteria |
 
-IDs are numbered sequentially within each prefix, e.g. `FR-PAT-001`. Once assigned, an ID is never reused or renumbered.
+IDs are numbered sequentially within each prefix, for example `FR-PAT-001`.
 
 ### 4.2 Where traceability lives
 
-- Every feature branch name, commit body, and PR description lists the requirement IDs it implements (`Requirements: FR-PAT-001, FR-PAT-002`).
-- Every automated test name or test comment that verifies a requirement includes its ID.
-- A traceability matrix (`Documentation/traceability.md`) maps ID → BRD section → feature branch/PR → test(s) → status. Claude updates it in the same PR that delivers the requirement.
+- Every feature branch, commit body, and PR description lists the requirement IDs it implements (`Requirements: FR-PAT-001, FR-PAT-002`).
+- Every automated test name or comment that verifies a requirement includes its ID.
+- The traceability matrix (`Documentation/traceability.md`) maps ID → BRD section → branch/PR → test(s) → status. It is updated in the same PR that delivers the requirement.
+- A release is traceable from its tag to every merged PR and every requirement ID it delivers (§13).
 
 ### 4.3 Requirements Impacted
 
-Every change summary (§6) includes a **Requirements Impacted** list: each affected ID plus whether the change Implements, Modifies, or Removes it.
+Every change package (§7) includes **Requirements Impacted**: each affected ID with one of `Implements`, `Modifies`, or `Removes`. A change with no requirement says so explicitly, with the reason (for example, governance).
 
 ---
 
-## 5. Git Workflow Ownership
+## 5. Agent Governance
 
-Claude owns the full Git lifecycle for this repository:
+Claude's workflow is split into stage agents. The generic definitions are reusable and technology-agnostic. The project definitions specialise them for this repository.
+
+| Location | Contents | Changed by |
+|---|---|---|
+| `Agents/` | Generic reference agents (01–08): brainstorming, planning, worktree, implementation, verification, gap analysis, code review, finishing | Governance PR (`docs/` or `chore/` scope) |
+| `.claude/agents/pms-*.md` | Project agents: eight workflow stages and six BRD module agents | Governance PR |
+
+Rules:
+
+- Each agent has a single responsibility, a defined input and output, and a stop condition. An agent that cannot finish stops and reports; it does not guess.
+- Agents never perform Git writes without the approval gate in §7. Only the finishing agent prepares Git commands, and only after approval.
+- A project agent must trace to the generic agent it derives from. When a generic agent changes, its project agents are reviewed in the same PR.
+- Agents read this file and the BRD at the start of every task.
+- Agent output that changes scope, requirements, or governance is never accepted silently; it goes to the owner as a proposal.
+
+---
+
+## 6. Git Workflow Standards
+
+### 6.1 Branching model
+
+```
+main            production; receives release PRs only (tagged vX.Y.Z)
+  ↑  release PR (development → main), owner approval, merge commit
+development     integration branch; receives all feature PRs; integration and verification happen here
+  ↑  feature PR (feature/* → development), owner approval, squash merge
+feature/*       cut from development; kept after merge until release is deployed and verified
+```
+
+Support branches:
+
+- `fix/*`, `docs/*`, `chore/*`: same rules as `feature/*`.
+- `hotfix/*`: the only branch cut from `main`. PR to `main`, tagged as a patch release, then merged back into `development` by PR.
+
+### 6.2 Hard rules
+
+1. **Never commit directly to `main`.**
+2. **Never push directly to `main`.** (`development` follows the same rule: no direct commits or pushes.)
+3. **Never merge feature branches directly into `main`.**
+4. Feature branches are created from `development`.
+5. Feature branches merge into `development`.
+6. Feature branches are retained after merge.
+7. Feature branches are not deleted until release approval and deployment verification are complete.
+8. Integration testing and verification happen on `development`.
+9. Release PRs originate from `development` and target `main`.
+10. One feature per branch. One PR per feature.
+11. No force-push to `main` or `development`. Force-push to a feature branch only with explicit approval.
+12. No `--no-verify`, no bypassing hooks or signing, unless the owner explicitly requests it.
+
+### 6.3 Claude owns all Git operations
+
+Claude owns:
 
 - branch creation
-- commits
+- worktree creation
+- commit creation
 - pushes
 - PR creation
 - PR updates
-- merge after approval
-- branch deletion (local and remote), only after the release is deployed and verified and the release owner approves
+- PR merge
+- branch cleanup
 
-The user owns approval. Claude does not perform any Git write operation without the approval step in §6.
+The owner owns approval. Claude **must stop and wait for approval** before each of these:
 
-### Hard rules
+- commit
+- push
+- PR creation
+- merge
+- branch deletion
 
-1. **Never commit directly into `main` or `development`.**
-2. **Never push directly into `main` or `development`.**
-3. All work goes through a feature branch cut from `development`.
-4. One feature per branch.
-5. One PR per feature. Feature PRs target `development`. Only the release PR targets `main`.
-6. Feature branches are kept after merge into `development` until the release is deployed and verified. Deleting them needs the release owner's approval (§6, step 8).
-7. No force-push to any shared branch (`main`, `development`). Force-push to a feature branch you own only with explicit approval.
-8. No `--no-verify`, no bypassing hooks or signing, unless the user explicitly requests it.
+Branch and worktree creation for a new feature are part of starting work and do not need separate approval. They happen before any code is written, from the latest `development`.
 
----
-
-## 6. Feature Workflow and Approval Gate
-
-Every change follows this sequence. Steps 1–4 happen before any commit.
-
-1. **Plan** — restate the requirement IDs, identify affected files, and list open questions.
-2. **Implement** — make the change in the feature worktree (§8). Verify with tests and build.
-3. **Prepare the approval package**, printed in the chat, containing:
-   - **Change Summary** — what changed and why, in 3–6 bullets.
-   - **Files Changed** — each path with `Added`, `Modified`, or `Deleted`.
-   - **Requirements Impacted** — IDs with Implements/Modifies/Removes.
-   - **Proposed Commit Message** — following §7.
-   - **Git Commands** — the exact commands that will run (branch, add, commit, push, PR).
-4. **STOP and wait for approval.** Do not stage, commit, push, or open a PR until the user approves.
-5. After approval: commit, push the feature branch, open a PR targeting `development` using the template in §9, and report the PR URL.
-6. After the reviewer approves: squash-merge into `development`. Keep the feature branch. Remove only the worktree: `git worktree remove <path>`, then `git worktree prune`.
-7. **Release (per module or release scope):** when every feature in scope is merged into `development` and validated there (build, unit and integration tests, staging verification), prepare a release PR `development` → `main`. The approval package lists every merged PR, its requirement IDs, and its test results. The release owner approves. Merge with a merge commit, not a squash, so each feature stays visible in `main`'s history. Then tag, deploy, and verify (§13).
-8. **Cleanup:** only after the release is deployed and verified, and the release owner approves, delete the merged feature branches (remote and local). List the branches first and delete only those approved.
-
-Branch creation is done when the feature starts (step 2), cut from the latest `development`, so that work never lands on `main` or `development`. If the working tree is on `main` or `development` with changes, Claude stops and asks before moving them.
-
----
-
-## 7. Branch Strategy and Commit Standards
-
-### 7.1 Branch names
+### 6.4 Branch naming
 
 ```
-feature/<kebab-case-topic>     new functionality or governance work; cut from development, PR to development
-fix/<kebab-case-topic>         defect fixes; cut from development, PR to development
-docs/<kebab-case-topic>        documentation only (incl. BRD changes); cut from development
-chore/<kebab-case-topic>       tooling, CI, dependencies; cut from development
-hotfix/<kebab-case-topic>      urgent production fix; cut from main, PR to main, then merged back into development
+feature/<kebab-case-topic>     new functionality or governance work
+fix/<kebab-case-topic>         defect fixes
+docs/<kebab-case-topic>        documentation only, including BRD changes
+chore/<kebab-case-topic>       tooling, CI, dependencies
+hotfix/<kebab-case-topic>      urgent production fix, from main
 ```
 
-Long-lived branches:
-- `main` is production. It receives only release PRs from `development` and hotfix PRs.
-- `development` is the integration branch. Every feature PR merges here, and development, integration, and test runs happen from it.
-- There are no `release/*` branches. A release is the `development` → `main` PR, marked by tag `vX.Y.Z` on `main`.
+Examples: `feature/patient-registration`, `fix/prescription-print-margin`, `docs/brd-requirement-ids`.
 
-Examples: `feature/project-governance`, `feature/patient-registration`, `fix/prescription-print-margin`.
-
-### 7.2 Commit messages (Conventional Commits)
+### 6.5 Commit messages (Conventional Commits)
 
 ```
 <type>(<scope>): <imperative summary, ≤72 chars>
@@ -151,36 +197,73 @@ Requirements: FR-PAT-001, FR-PAT-002
 
 - `type`: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `ci`, `build`.
 - `scope`: `backend`, `frontend`, `db`, `docs`, `devops`, `governance`.
-- Commits are small and each one builds.
+- Commits are small, and each one builds.
 - Commit footer for Claude-authored commits: `Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>` (update the model name when the model changes).
+
+---
+
+## 7. Change Management Process
+
+Every change follows this sequence. Steps 1–4 happen before any commit.
+
+1. **Plan.** Restate the requirement IDs, identify affected files, and list open questions. If the BRD is silent, stop and propose an amendment.
+2. **Branch and worktree.** Create the branch from the latest `development` in its own worktree (§8).
+3. **Implement and verify.** Make the change in the worktree. Run build, unit, integration, and any end-to-end tests for the change. Record results.
+4. **Prepare the change package** and print it in chat:
+   - **Change Summary** — what changed and why, 3 to 6 bullets.
+   - **Files Changed** — each path with `Added`, `Modified`, or `Deleted`.
+   - **Requirements Impacted** — IDs with Implements, Modifies, or Removes.
+   - **Test Results** — each command run, its result, and any test not run with its reason.
+   - **Documentation Updated** — each document changed, or a reason why none needed to change.
+   - **Proposed Commit Message** — following §6.5.
+   - **Git Commands** — the exact commands that will run, in order.
+5. **STOP and wait for approval.** Nothing is committed, pushed, or opened as a PR until the owner approves.
+6. **After approval:** commit, push the feature branch, open a PR targeting `development` (§9), and report the PR URL.
+7. **After the owner's explicit approval:** squash-merge into `development`. Keep the feature branch. Remove only the worktree (§8). Review comments do not count as merge approval.
+8. **Release** (§13): when all features in scope are merged and validated on `development`, prepare the `development` → `main` release PR for owner approval.
+9. **Cleanup:** only after the release is deployed and verified, and the owner approves, delete the merged feature branches. List them first and delete only those approved.
+
+Rules for change handling:
+
+- A change that fails verification is returned to implementation. It is not committed in a partly working state.
+- A change that touches a shared branch, a schema, a dependency, authentication, or patient data export is marked high risk in the change package and gets a second review of the risk section.
+- If the working tree is on `main` or `development` with uncommitted changes, Claude stops and asks before moving them.
 
 ---
 
 ## 8. Worktree Strategy
 
-Each feature is developed in its own Git worktree so `main`, `development`, and other work stay untouched.
+Each feature is developed in its own Git worktree, so `main`, `development`, and other work stay untouched.
 
 - Location: sibling folder `../ClaudeCodeBhaskar-wt/<branch-name-with-slashes-as-dashes>`.
   Example: `D:\Projects\AI\Claude\project-mgmt-system\ClaudeCodeBhaskar-wt\feature-project-governance`.
-- Create: `git fetch origin development`, then `git worktree add ../ClaudeCodeBhaskar-wt/<name> -b feature/<topic> origin/development`
+- Create:
+  ```
+  git fetch origin development
+  git worktree add ../ClaudeCodeBhaskar-wt/<name> -b feature/<topic> origin/development
+  ```
 - Work, test, and commit only inside the worktree.
-- After the feature PR merges into `development`: `git worktree remove <path>`, then `git worktree prune`. The feature branch is kept (§7.1, §13).
+- Set the upstream explicitly when pushing (`git push -u origin feature/<topic>`). A worktree created from `origin/development` tracks `development` by default, so a bare `git push` there is unsafe.
+- After the feature PR merges into `development`: `git worktree remove <path>`, then `git worktree prune`. The feature branch is kept (§6.2).
 - The primary checkout stays on `main` or `development` and is used only for reading, pulling, and reviewing.
-- Never run feature work in the primary checkout.
+- Feature work never runs in the primary checkout.
 
 ---
 
-## 9. PR Workflow
+## 9. Pull Request Workflow
 
-- Base branch: `development` for feature, fix, docs, and chore PRs. `main` only for the release PR (`development` → `main`, §13) and for hotfix PRs. Title: `<type>(<scope>): <summary>`. Release PR title: `release(<scope>): vX.Y.Z`.
-- Description template:
+- **Feature, fix, docs, and chore PRs:** base `development`. Title: `<type>(<scope>): <summary>`.
+- **Release PR:** head `development`, base `main`. Title: `release(<scope>): vX.Y.Z`. Merged with a merge commit, not a squash (§13).
+- **Hotfix PR:** head `hotfix/<topic>`, base `main`.
+- PRs are small enough to review in one sitting. Split a large feature into sequential PRs, each on its own branch cut from `development`.
+- Each PR uses this template:
 
 ```markdown
 ## Summary
 <what and why>
 
 ## Requirements
-- FR-XXX-000 — <status: Implemented | Partial | Modified>
+- FR-XXX-000 — <status: Implemented | Partial | Modified | Deferred>
 
 ## Traceability
 - Matrix updated: yes/no
@@ -192,6 +275,7 @@ Each feature is developed in its own Git worktree so `main`, `development`, and 
 ## Testing
 - Unit: <result>
 - Integration: <result>
+- End-to-end: <result>
 - Manual / UI: <result>
 
 ## Risks and Rollback
@@ -205,8 +289,9 @@ Each feature is developed in its own Git worktree so `main`, `development`, and 
 - [ ] Traceability matrix updated
 ```
 
-- PRs are small enough to review in one sitting. Split large features into sequential PRs, each on its own branch cut from `development`. Release PRs list every merged PR with its requirement IDs in the body, and the test results from `development`.
 - PR descriptions end with: `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
+- A PR is updated, not replaced, when review asks for changes. Each update is a new commit, pushed after approval.
+- Release PRs list every merged PR with its requirement IDs and the test results from `development`.
 
 ---
 
@@ -214,44 +299,44 @@ Each feature is developed in its own Git worktree so `main`, `development`, and 
 
 ### Backend (.NET Web API)
 
-- Layered structure: `Controllers` → `Application` (services, DTOs, validators) → `Domain` (entities, enums) → `Infrastructure` (EF Core, SQL Server, export).
-- Use dependency injection; no static service locators.
-- Async all the way for I/O. Pass `CancellationToken` through.
-- DTOs at the API boundary; never return EF entities from controllers.
+- Layers: `Controllers` → `Application` (services, DTOs, validators) → `Domain` (entities, enums) → `Infrastructure` (EF Core, SQL Server, export).
+- Dependency injection only; no static service locators.
+- Async for all I/O. Pass `CancellationToken` through.
+- DTOs at the API boundary. Never return EF entities from controllers.
 - Validation with FluentValidation or DataAnnotations at the boundary.
 - Errors returned as RFC 7807 `ProblemDetails`. No stack traces to clients.
-- Schema changes only via EF Core migrations committed with the feature.
-- Nullable reference types enabled; warnings treated as errors in CI.
+- Schema changes only through EF Core migrations committed with the feature.
+- Nullable reference types enabled. Warnings are errors in CI.
 
 ### Frontend (Angular)
 
 - Standalone components and signals where the framework default supports them.
-- Feature-based folders (`patients/`, `appointments/`, `consultations/`, `prescriptions/`, `history/`, `shared/`).
-- Lazy-load feature routes.
+- Feature folders: `patients/`, `appointments/`, `consultations/`, `prescriptions/`, `history/`, `shared/`.
+- Lazy-loaded feature routes.
 - Reactive forms for all data entry.
-- All HTTP calls through a typed service in the feature; no HTTP in components.
-- Strict TypeScript. No `any` without a comment justifying it.
-- Keep consultation entry fast: keyboard-friendly, minimal clicks (BRD success criterion: 2–3 minutes per consultation).
+- All HTTP calls go through a typed service in the feature. No HTTP in components.
+- Strict TypeScript. No `any` without a comment that justifies it.
+- Consultation entry stays fast: keyboard-friendly, few clicks (SC-001).
 
 ### Database (SQL Server)
 
-- Table and column names in `PascalCase`; primary keys `Id`; foreign keys `<Entity>Id`.
-- Every table has `CreatedAtUtc`, `UpdatedAtUtc`.
-- Soft-delete is not used for patient records unless the BRD is amended; clinical records are retained, not hard-deleted, by default.
-- Indexes on search fields: patient name, phone number; visit date.
+- `PascalCase` table and column names. Primary keys `Id`. Foreign keys `<Entity>Id`.
+- Every table has `CreatedAtUtc` and `UpdatedAtUtc`.
+- No soft delete for patient records unless the BRD is amended. Clinical records are retained, not hard-deleted.
+- Indexes on patient name, phone number, and visit date.
 
 ### Security and Data Protection (NFR-SEC)
 
-- Single-user authentication is mandatory before any patient data is shown.
-- Passwords hashed (ASP.NET Core Identity or equivalent). Never store plain text.
-- Encryption in transit (HTTPS only) and at rest (SQL Server TDE or column-level, per ADR).
+- Single-user authentication is required before any patient data is shown (NFR-SEC-001).
+- Passwords hashed with ASP.NET Core Identity or an equivalent. Never plain text.
+- Encryption in transit (HTTPS only) and at rest (SQL Server TDE or column-level, per ADR) (NFR-SEC-002).
 - Secrets come from environment variables or a secret store, never from source control.
-- Patient data (PHI) never appears in logs, test fixtures, screenshots committed to the repo, or PR descriptions.
+- Patient data (PHI) never appears in logs, test fixtures, committed screenshots, exported files in the repository, or PR descriptions.
 
 ### General
 
-- Follow existing patterns in the repo before introducing new ones.
-- No dead code, commented-out code, or TODOs without an ID or issue reference.
+- Follow existing patterns in the repository before adding new ones.
+- No dead code, no commented-out code, no TODO without an ID or issue reference.
 - Comments explain *why*, not *what*.
 
 ---
@@ -260,15 +345,18 @@ Each feature is developed in its own Git worktree so `main`, `development`, and 
 
 | Artifact | Location | Owner | Updated when |
 |---|---|---|---|
-| BRD | `BRD/Doc_BRD.md` | Product Owner (Claude drafts) | Scope changes (own PR, `docs/brd`) |
+| BRD | `BRD/Doc_BRD.md` | Owner (Claude drafts) | Scope changes, in a `docs/brd` PR |
 | Traceability matrix | `Documentation/traceability.md` | Claude | Every feature PR |
 | Architecture decisions | `Documentation/adr/NNNN-<title>.md` | Claude | Any stack or architecture decision |
 | API reference | Swagger/OpenAPI generated by the backend | Auto | Every API change |
 | Setup and run guide | `README.md` | Claude | Setup steps change |
 | Test plan | `Documentation/test-plan.md` | Claude | Test scope changes |
+| Governance rules | `CLAUDE.md` | Claude, owner-approved | Any governance change |
+| Agent definitions | `Agents/`, `.claude/agents/` | Claude, owner-approved | Any agent change |
 
-- ADRs are numbered sequentially, short (context, decision, consequences), and never edited after acceptance; superseded by a new ADR instead.
-- Documentation is written in English, plain and short. Avoid duplicating BRD content; link to it.
+- ADRs are numbered sequentially, short (context, decision, consequences). An accepted ADR is never edited; a new ADR supersedes it.
+- Documentation is plain English, short, and does not repeat the BRD. It links to the BRD.
+- Each change package states which documents it updated (§7).
 
 ---
 
@@ -276,36 +364,43 @@ Each feature is developed in its own Git worktree so `main`, `development`, and 
 
 | Level | Backend | Frontend | Scope |
 |---|---|---|---|
-| Unit | xUnit + FluentAssertions or built-in asserts | Jasmine/Karma or Vitest (per Angular default) | Domain rules, services, validators, components |
-| Integration | ASP.NET Core `WebApplicationFactory` + SQL Server (container or LocalDB) | — | Controllers, EF Core mappings, migrations |
+| Unit | xUnit with FluentAssertions or built-in asserts | Jasmine/Karma or Vitest (per Angular default) | Domain rules, services, validators, components |
+| Integration | ASP.NET Core `WebApplicationFactory` with SQL Server (container or LocalDB) | — | Controllers, EF Core mappings, migrations |
 | End-to-end | — | Playwright | Critical journeys: register patient → book → consult → prescribe → print → export |
-| Non-functional | Load test on search endpoint (target: 2–5 s, NFR-PRF) | Lighthouse or equivalent (page load < 2 s) | Performance |
+| Non-functional | Search endpoint load test (2–5 s, NFR-PRF-002) | Lighthouse or equivalent (page load < 2 s, NFR-PRF-001) | Performance |
 
 Rules:
 
-- Every requirement ID has at least one automated test, or an explicit manual test case in `Documentation/test-plan.md` with a reason.
-- Tests are deterministic. No dependence on the system clock without an injected clock.
-- Test data is synthetic. Never copy real patient data into fixtures.
-- A failing test is never skipped to get a PR green. If a test is wrong, fix it in the same PR and say so in the description.
-- Coverage: no fixed percentage gate in Phase 1; every new public service method has tests.
-- Verification (Module 5 of the training plan): run tests and compare results to the requirement before marking a feature done.
-- Gap analysis (Module 6): before PR, check each listed requirement ID is Implemented, Partial (with reason), or Deferred (with reason).
+- Every requirement ID has at least one automated test, or a documented manual test case in `Documentation/test-plan.md` with a reason.
+- Tests are deterministic. No reliance on the system clock without an injected clock.
+- Test data is synthetic. Real patient data is never copied into fixtures.
+- A failing test is never skipped to make a PR green. If the test is wrong, fix it in the same PR and say so in the description.
+- No fixed coverage percentage in Phase 1. Every new public service method has tests.
+- Verification (Module 5 of the training plan): run the tests and compare results with the requirement before marking a feature done.
+- Gap analysis (Module 6): before a PR, each listed ID is `Implemented`, `Partial` (with reason), or `Deferred` (with reason).
+- Test results appear in every change package (§7) with the command that produced them.
+
+Where testing happens:
+
+- Feature-level tests run in the feature worktree.
+- Integration and end-to-end verification run on `development` after each feature merge.
+- Release verification runs on `development` before the release PR is opened.
 
 ---
 
-## 13. Release Standards
+## 13. Release Workflow
 
-- Versioning: Semantic Versioning, `vMAJOR.MINOR.PATCH`. Phase 1 starts at `v0.1.0`.
-- `main` is production and always deployable. Every merge into `main` passes build and tests.
-- `development` is the integration branch. Every feature PR merges there after review. Development, integration, and test runs happen from it.
-- The release owner is the project owner. The release owner approves release PRs, branch cleanup, and production tags.
-- A release covers one module or release scope. Its features merge into `development` one PR at a time. When all are merged and validated, the release owner approves the `development` → `main` release PR (§6, step 7).
-- Releases are tagged `vX.Y.Z` on `main` after the release PR merges. Release notes list every merged PR and the requirement IDs delivered.
-- Feature branches are kept until the release is deployed and verified in production. The release owner approves their deletion (§6, step 8). This keeps the history needed for rollback and audit.
-- Hotfixes: `hotfix/<topic>` from `main`, PR to `main`, tagged as a patch release, then merged back into `development` by PR so the fix is not lost.
-- Before a release: all tests pass on `development`, the traceability matrix shows no unplanned gaps for the release scope, backup and restore have been verified (NFR-REL), and the release owner signs off in the release PR.
-- Rollback: redeploy the previous tag, or revert the release merge on `main` with `git revert -m 1 <merge-sha>` in a new PR. Also use the migration down-script or restore point. Retained feature branches show what each change contained.
-- DevOps: CI runs build, unit, and integration tests on every PR to `development` and `main`. CD to staging on every merge into `development`. Production deploys only from an approved tag on `main`. No CI configuration exists in this repository yet; adding it is a separate `chore(devops)` PR.
+- **Versioning:** Semantic Versioning, `vMAJOR.MINOR.PATCH`. Phase 1 starts at `v0.1.0`.
+- **Scope:** a release covers one module or one release scope. Its features merge into `development` one PR at a time.
+- **Preparation:** when all features in scope are merged into `development`, and build, unit, integration, end-to-end, and staging verification pass there, Claude prepares the release PR (`development` → `main`).
+- **Approval:** the release package lists every merged PR, its requirement IDs with status, the test results, the traceability matrix state, and the rollback plan. The owner approves before the PR is merged.
+- **Merge:** with a merge commit, not a squash, so each feature remains visible in `main`'s history.
+- **Tag and deploy:** tag `vX.Y.Z` on `main` after the merge. Release notes list every merged PR and the requirement IDs delivered. Deploy from the tag.
+- **Verification in production:** verify the deployment against the critical journeys and the NFRs (backup and restore included, NFR-REL) before cleanup.
+- **Cleanup:** the owner approves deletion of the merged feature branches after the deployment is verified. Claude lists them, then deletes only the approved ones, remote and local. This keeps the history needed for rollback and audit.
+- **Hotfixes:** `hotfix/<topic>` cut from `main`, PR to `main`, tagged as a patch release, then merged back into `development` by PR so the fix is not lost.
+- **Rollback:** redeploy the previous tag, or revert the release merge on `main` with `git revert -m 1 <merge-sha>` in a new PR. Apply the migration down-script or restore point where the release changed the schema. Retained feature branches show what each change contained.
+- **DevOps:** CI runs build, unit, and integration tests on every PR to `development` and `main`. CD deploys to staging on every merge into `development`. Production deploys only from an approved tag on `main`. The repository has no CI configuration yet; adding it is a separate `chore(devops)` change.
 
 ---
 
@@ -314,6 +409,7 @@ Rules:
 - Read the BRD and this file before starting any task.
 - Do not guess requirements. If the BRD is silent, ask or propose an amendment.
 - Prefer small, verifiable steps. Report what was run and what the result was. If something could not be verified, say so.
-- Do not create files outside the repository structure defined here without asking.
-- Do not store secrets, connection strings with passwords, or patient data in the repo or in memory.
-- Keep this file current. Changes to governance rules are made on a `feature/project-governance`-style branch with approval.
+- Do not create files outside the repository structure without asking.
+- Do not store secrets, connection strings with passwords, or patient data in the repository or in memory.
+- When one part of a task is blocked, finish the parts that are not blocked and report the blocker first.
+- Keep this file current. Governance changes go through a `feature/project-governance`-style branch from `development`, with approval.

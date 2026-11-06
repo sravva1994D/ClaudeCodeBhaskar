@@ -39,12 +39,15 @@ Out of scope for Phase 1 is listed in the BRD (for example: multi-user access, b
 ```
 .
 ├── BRD/                  Business Requirements Document
+├── .claude/agents/       Project-specific Claude Code subagents (PMS stages and modules)
+├── Agents/               Generic, reusable workflow agent definitions (reference)
 ├── Backend/              .NET Web API solution
 ├── Database/             SQL Server scripts and EF Core migrations reference
 ├── Documentation/        Traceability matrix, ADRs, test plan
 ├── Frontend/             Angular application
 ├── Reference/            Training and progress plan
-├── CLAUDE.md             Engineering and Git rules
+├── .gitignore            Build output, secrets, and patient-data exclusions
+├── CLAUDE.md             Governance and engineering rules
 └── README.md
 ```
 
@@ -71,14 +74,26 @@ Out of scope for Phase 1 is listed in the BRD (for example: multi-user access, b
 
 ---
 
+## Branching Model
+
+```
+main            production; release PRs only (tagged vX.Y.Z)
+  ↑
+development     integration branch; all feature PRs; integration and verification happen here
+  ↑
+feature/*       cut from development; kept after merge until the release is verified
+```
+
 ## Contributing
 
-- Never commit or push directly to `main` or `development`. All work is done on a `feature/*`, `fix/*`, `docs/*`, or `chore/*` branch cut from `development`, one feature per branch, one PR per feature into `development`.
-- Feature branches are kept after merge until the release is deployed and verified.
-- `development` reaches `main` through one release PR per module or release, approved by the release owner ([CLAUDE.md §6](CLAUDE.md#6-feature-workflow-and-approval-gate), [§13](CLAUDE.md#13-release-standards)).
-- Each feature is developed in its own Git worktree (see [CLAUDE.md §8](CLAUDE.md#8-worktree-strategy)).
+- Never commit or push directly to `main` or `development`. Never merge a feature branch directly into `main`.
+- Each feature is a `feature/*`, `fix/*`, `docs/*`, or `chore/*` branch cut from `development`, in its own Git worktree. One feature per branch, one PR per feature, targeting `development`.
+- Feature branches are kept after merge. They are deleted only after the release is deployed and verified, with the owner's approval.
+- A release is one `development` → `main` PR per module or release scope, merged with a merge commit and tagged `vX.Y.Z`.
+- Every change is approved before commit, push, PR, merge, or branch deletion. The change package lists the changed files, requirements impacted, test results, documentation updated, and the proposed commit message.
 - PR descriptions list the requirement IDs they implement.
-- Commit messages follow Conventional Commits (see [CLAUDE.md §7.2](CLAUDE.md#72-commit-messages-conventional-commits)).
+- Commit messages follow Conventional Commits.
+- Full rules: [CLAUDE.md §6 Git Workflow](CLAUDE.md#6-git-workflow-standards), [§7 Change Management](CLAUDE.md#7-change-management-process), [§8 Worktrees](CLAUDE.md#8-worktree-strategy), [§9 Pull Requests](CLAUDE.md#9-pull-request-workflow), [§13 Release](CLAUDE.md#13-release-workflow).
 
 ---
 
@@ -87,7 +102,9 @@ Out of scope for Phase 1 is listed in the BRD (for example: multi-user access, b
 | Document | Purpose |
 |---|---|
 | [BRD](BRD/Doc_BRD.md) | Business and functional requirements |
-| [CLAUDE.md](CLAUDE.md) | Governance, Git workflow, coding and testing standards |
+| [CLAUDE.md](CLAUDE.md) | Governance: goals, BRD and traceability, agents, Git, PR, release, coding, testing, documentation |
+| `Agents/` | Generic workflow agent definitions (reference) |
+| `.claude/agents/` | Project agents for the workflow stages and BRD modules |
 | `Documentation/traceability.md` | Requirement-to-code-to-test mapping (planned) |
 | `Documentation/adr/` | Architecture decision records (planned) |
 
