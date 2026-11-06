@@ -72,32 +72,34 @@ The following will NOT be included in the initial release:
 
 ## Success Criteria
 
-- Doctor can complete a consultation record within 2–3 minutes  
-- Patient search and history retrieval within 2–5 seconds  
-- At least 80% reduction in paper usage  
-- Smooth generation and printing of prescriptions  
-- Successful export of data in CSV/PDF format  
-- High usability with minimal training required  
+- **SC-001** Doctor can complete a consultation record within 2–3 minutes  
+- **SC-002** Patient search and history retrieval within 2–5 seconds  
+- **SC-003** At least 80% reduction in paper usage  
+- **SC-004** Smooth generation and printing of prescriptions  
+- **SC-005** Successful export of data in CSV/PDF format  
+- **SC-006** High usability with minimal training required  
 
 ---
 
 ## Functional Requirements
 
 ### Patient Management
-- Add, edit, and view patient details  
-- Capture:
+- **FR-PAT-001** Add patient details  
+- **FR-PAT-002** Edit patient details  
+- **FR-PAT-003** View patient details  
+- **FR-PAT-004** Capture:
   - Name  
   - Age / DOB  
   - Gender  
   - Contact details  
-- Search patients by name or phone number  
+- **FR-PAT-005** Search patients by name or phone number  
 
 ---
 
 ### Appointment Management
-- Schedule appointments  
-- View daily appointment list  
-- Update appointment status:
+- **FR-APT-001** Schedule appointments  
+- **FR-APT-002** View daily appointment list  
+- **FR-APT-003** Update appointment status:
   - Scheduled  
   - Completed  
   - Cancelled  
@@ -108,7 +110,7 @@ The following will NOT be included in the initial release:
 ### Consultation Workflow
 
 #### Vitals Capture (Mandatory)
-- Record for every consultation:
+- **FR-VIT-001** Record for every consultation:
   - Temperature  
   - Blood Pressure  
   - Pulse  
@@ -116,24 +118,24 @@ The following will NOT be included in the initial release:
 ---
 
 #### Complaints
-- Enter patient symptoms (free text)
+- **FR-CMP-001** Enter patient symptoms (free text)
 
 ---
 
 #### Diagnosis
-- Record diagnosis notes  
+- **FR-DIA-001** Record diagnosis notes  
 
 ---
 
 #### Medication / Prescription
-- Add medicines with:
+- **FR-RX-001** Add medicines with:
   - Name  
   - Dosage  
   - Frequency  
   - Duration  
   - Instructions  
 
-- Generate **printable prescription** including:
+- **FR-RX-002** Generate **printable prescription** including:
   - Clinic/doctor header  
   - Patient details  
   - Vitals  
@@ -144,52 +146,51 @@ The following will NOT be included in the initial release:
 ---
 
 ### Patient History
-- View previous visits  
-- Access:
+- **FR-HIS-001** View previous visits  
+- **FR-HIS-002** Access:
   - Vitals  
   - Complaints  
   - Diagnosis  
   - Prescriptions  
-- Filter by date  
+- **FR-HIS-003** Filter by date  
 
 ---
 
 ### Search & Navigation
-- Quick patient search  
-- View recent patients  
-- Easy navigation between patient profile and visits  
+- **FR-SRC-001** Quick patient search  
+- **FR-SRC-002** View recent patients  
+- **FR-SRC-003** Easy navigation between patient profile and visits  
 
 ---
 
 ### Data Export
-- Export patient or visit data as:
-  - CSV  
-  - PDF  
+- **FR-EXP-001** Export patient or visit data as CSV  
+- **FR-EXP-002** Export patient or visit data as PDF  
 
 ---
 
 ## Non-Functional Requirements
 
-- **Usability:**  
-  Simple, minimal UI optimized for fast data entry during consultations  
+- **Usability:**
+  - **NFR-USB-001** Simple, minimal UI optimized for fast data entry during consultations  
 
-- **Performance:**  
-  - Page load time < 2 seconds  
-  - Fast patient search and retrieval  
+- **Performance:**
+  - **NFR-PRF-001** Page load time < 2 seconds  
+  - **NFR-PRF-002** Fast patient search and retrieval  
 
-- **Reliability:**  
-  - No data loss  
-  - Regular automated backups  
+- **Reliability:**
+  - **NFR-REL-001** No data loss  
+  - **NFR-REL-002** Regular automated backups  
 
-- **Security:**  
-  - Secure login (single user authentication)  
-  - Data encryption (at rest and in transit)  
+- **Security:**
+  - **NFR-SEC-001** Secure login (single user authentication)  
+  - **NFR-SEC-002** Data encryption (at rest and in transit)  
 
-- **Scalability:**  
-  - Designed for a single clinic with moderate patient volume  
+- **Scalability:**
+  - **NFR-SCL-001** Designed for a single clinic with moderate patient volume  
 
-- **Compatibility:**  
-  - Works on modern web browsers (Chrome, Edge, Safari)  
+- **Compatibility:**
+  - **NFR-CMP-001** Works on modern web browsers (Chrome, Edge, Safari)  
 
 ---
 
