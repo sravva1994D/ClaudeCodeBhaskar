@@ -22,7 +22,7 @@ An ID is `Implemented` only when every acceptance criterion is validated and a p
 | Implemented | 0 |
 | In progress | 0 |
 | Proposed | 34 |
-| Deferred | 2 (pending owner approval) |
+| Deferred | 2 (SC-003, SC-006; owner-approved 2026-11-06; excluded from Phase 1 implementation scope) |
 
 ## Functional Requirements
 
@@ -72,10 +72,33 @@ Non-functional requirements are validated in the verification and release stages
 |---|---|---|---|---|---|---|---|---|
 | SC-001 | Consultation record completed within 2–3 minutes | Success Criteria | Consultation | SC-001-AC-01, -02 | — | — | Proposed | Timed run and owner confirmation |
 | SC-002 | Patient search and history retrieval within 2–5 seconds | Success Criteria | History and search | SC-002-AC-01 | — | — | Proposed | |
-| SC-003 | At least 80% reduction in paper usage | Success Criteria | Cross-cutting | — | — | — | Deferred | Measured in use after go-live; owner approval pending |
+| SC-003 | At least 80% reduction in paper usage | Success Criteria | Cross-cutting | — | — | — | Deferred | Owner-approved deferral; see [Deferred Requirements](#deferred-requirements) |
 | SC-004 | Smooth generation and printing of prescriptions | Success Criteria | Prescriptions | SC-004-AC-01 | — | — | Proposed | |
 | SC-005 | Successful export of data in CSV/PDF format | Success Criteria | Data export | SC-005-AC-01 | — | — | Proposed | |
-| SC-006 | High usability with minimal training required | Success Criteria | Cross-cutting | — | — | — | Deferred | Measured with the first users after go-live; owner approval pending |
+| SC-006 | High usability with minimal training required | Success Criteria | Cross-cutting | — | — | — | Deferred | Owner-approved deferral; see [Deferred Requirements](#deferred-requirements) |
+
+## Deferred Requirements
+
+These requirements are excluded from the Phase 1 implementation scope. They are not built, tested, or counted in the release gate for the current scope. They stay in this matrix so they can be traced when they are taken up in a future release.
+
+| Field | SC-003 | SC-006 |
+|---|---|---|
+| Requirement | At least 80% reduction in paper usage | High usability with minimal training required |
+| Owner approval | Project owner, 2026-11-06 | Project owner, 2026-11-06 |
+| Reason for deferral | Paper reduction depends on how the clinic uses the system day to day after go-live. It cannot be measured in development or on synthetic data. | Usability and training effort are judged by real users. They cannot be measured before the physician uses the system in the clinic. |
+| Baseline needed | Count of paper documents the clinic produces each week (for example prescriptions, appointment notes, and patient records), recorded for four weeks before go-live | Not applicable |
+| Measurement plan | Repeat the same paper count for four weeks after go-live. Reduction = (baseline − after) ÷ baseline. Target from BRD: at least 80%. The counting method is proposed; the owner confirms it. | With the physician as first user, record (a) time to complete the first consultation without assistance and (b) the number of help requests in the first two weeks. |
+| Threshold | At least 80% (BRD) | Not defined in the BRD. The owner sets the threshold before measurement. |
+| Target release | Next release after Phase 1 go-live. To be set by the owner. | Next release after Phase 1 go-live. To be set by the owner. |
+| Release gate | Excluded from the current scope gate (CLAUDE.md §13) | Excluded from the current scope gate (CLAUDE.md §13) |
+| Re-review | At each release, and when go-live data is available | At each release, and after the first two weeks of use |
+
+Rules for deferred requirements:
+
+- A deferred requirement is not implemented, tested, or reported as a gap for the current scope.
+- It is re-reviewed at every release. The owner decides whether to bring it into scope, keep it deferred, or drop it.
+- Moving it into scope needs a new owner decision, a `docs/brd` change if the wording changes, and new acceptance criteria.
+- Its ID is never reused (CLAUDE.md §4.1).
 
 ## Update Rules
 
@@ -85,3 +108,4 @@ Non-functional requirements are validated in the verification and release stages
 - Status changes to `Implemented` only after verification and gap analysis show evidence for every criterion.
 - Requirement IDs are never reused or renumbered.
 - Changes to the BRD go through a `docs/brd` PR first.
+- Changing a `Deferred` status needs a recorded owner decision in the Deferred Requirements section.
