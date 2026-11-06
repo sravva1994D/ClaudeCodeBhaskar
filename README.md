@@ -73,7 +73,9 @@ Out of scope for Phase 1 is listed in the BRD (for example: multi-user access, b
 
 ## Contributing
 
-- Never commit or push directly to `main`. All work is done on a `feature/*`, `fix/*`, `docs/*`, or `chore/*` branch, one feature per branch, one PR per feature.
+- Never commit or push directly to `main` or `development`. All work is done on a `feature/*`, `fix/*`, `docs/*`, or `chore/*` branch cut from `development`, one feature per branch, one PR per feature into `development`.
+- Feature branches are kept after merge until the release is deployed and verified.
+- `development` reaches `main` through one release PR per module or release, approved by the release owner ([CLAUDE.md §6](CLAUDE.md#6-feature-workflow-and-approval-gate), [§13](CLAUDE.md#13-release-standards)).
 - Each feature is developed in its own Git worktree (see [CLAUDE.md §8](CLAUDE.md#8-worktree-strategy)).
 - PR descriptions list the requirement IDs they implement.
 - Commit messages follow Conventional Commits (see [CLAUDE.md §7.2](CLAUDE.md#72-commit-messages-conventional-commits)).

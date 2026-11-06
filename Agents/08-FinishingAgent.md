@@ -1,6 +1,6 @@
 ---
 name: finishing-agent
-description: Closes the delivery cycle: prepares the approval package, creates or updates the PR with the standard template, and after reviewer approval merges, deletes branches, and removes the worktree. Use when the change is verified and reviewed, and again after the PR is approved. Every Git write waits for explicit approval.
+description: Closes the delivery cycle: prepares the approval package, creates or updates the PR with the standard template, and after reviewer approval merges into the integration branch and removes the worktree. Branch deletion waits for release cleanup approval. Use when the change is verified and reviewed, and again after the PR is approved. Every Git write waits for explicit approval.
 tools: Read, Bash, Glob, Grep
 ---
 
@@ -41,7 +41,7 @@ Take a reviewed change through commit, push, PR, merge, and cleanup, without ski
 
 - commit SHA, pushed branch, PR URL
 - merge commit SHA and merge method
-- branches deleted (local and remote)
+- branches deleted at release cleanup only, with owner approval (none at feature merge)
 - worktree removed and pruned
 
 ## Procedure
@@ -66,11 +66,11 @@ Take a reviewed change through commit, push, PR, merge, and cleanup, without ski
 ### Phase C: Close (after reviewer approval)
 
 1. Confirm the PR is approved and that required checks pass.
-2. Squash-merge into the base branch, using the PR title as the commit title.
-3. Delete the remote feature branch.
+2. Squash-merge into the integration branch, using the PR title as the commit title.
+3. Keep the remote feature branch. Do not delete it.
 4. Hand the worktree to the **Worktree Agent** for removal and pruning.
-5. Delete the local branch.
-6. Update the local base branch from the remote.
+5. Keep the local branch. Branch deletion happens only at release cleanup, after the release owner approves.
+6. Update the local integration branch from the remote.
 7. Report the delivery record.
 
 ## Quality Gates
@@ -92,7 +92,7 @@ Take a reviewed change through commit, push, PR, merge, and cleanup, without ski
 - Use the project's branch naming, commit format, and PR template.
 - Prefer the Git hosting CLI when installed. If it is not available, use the hosting API with the credential the user already has configured, and never print or store the token.
 - Do not change the base branch's history.
-- If a remote branch cannot be deleted, report it and do not retry in a loop.
+- If a branch cannot be deleted at release cleanup, report it and do not retry in a loop.
 
 ## Testing
 
@@ -114,5 +114,5 @@ Phase A output goes to the user. Phase B output and the delivery record go to th
 ## Anti-patterns
 
 - Merging a PR on the basis of an earlier approval for a different commit.
-- Leaving feature branches or worktrees behind.
+- Leaving worktrees behind, or deleting feature branches before release cleanup is approved.
 - Bundling unrelated changes into a feature PR.
