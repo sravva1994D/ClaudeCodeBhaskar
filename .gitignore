@@ -1,0 +1,56 @@
+# .NET build output and tooling
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+*.suo
+*.userprefs
+TestResults/
+*.trx
+*.coverage
+coverage/
+
+# Angular and Node
+node_modules/
+dist/
+.angular/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+
+# Test reports
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# Secrets and local configuration (CLAUDE.md §10 Security)
+.env
+.env.*
+!.env.example
+appsettings.*[Ll]ocal.json
+secrets.json
+*.pfx
+*.p12
+*.key
+*.pem
+.claude/settings.local.json
+
+# Patient data never belongs in git (CLAUDE.md §10, §12)
+exports/
+prints/
+backups/
+*.bak
+*.mdf
+*.ldf
+*.sqlite
+*.db
+*.log
+logs/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+*.swp
