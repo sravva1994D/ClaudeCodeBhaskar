@@ -105,7 +105,7 @@ feature/*       cut from development; kept after merge until the release is veri
 | [CLAUDE.md](CLAUDE.md) | Governance: goals, BRD and traceability, agents, Git, PR, release, coding, testing, documentation |
 | `Agents/` | Generic workflow agent definitions (reference) |
 | `.claude/agents/` | Project agents for the workflow stages and BRD modules |
-| `Documentation/traceability.md` | Requirement-to-code-to-test mapping (planned) |
+| [Traceability matrix](Documentation/traceability.md) | Requirement-to-module-to-test mapping and status |
 | `Documentation/adr/` | Architecture decision records (planned) |
 
 ---
