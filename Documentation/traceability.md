@@ -88,8 +88,8 @@ These requirements are excluded from the Phase 1 implementation scope. They are 
 | Reason for deferral | Paper reduction depends on how the clinic uses the system day to day after go-live. It cannot be measured in development or on synthetic data. | Usability and training effort are judged by real users. They cannot be measured before the physician uses the system in the clinic. |
 | Baseline needed | Count of paper documents the clinic produces each week (for example prescriptions, appointment notes, and patient records), recorded for four weeks before go-live | Not applicable |
 | Measurement plan | Repeat the same paper count for four weeks after go-live. Reduction = (baseline − after) ÷ baseline. Target from BRD: at least 80%. The counting method is proposed; the owner confirms it. | With the physician as first user, record (a) time to complete the first consultation without assistance and (b) the number of help requests in the first two weeks. |
-| Threshold | At least 80% (BRD) | Not defined in the BRD. The owner sets the threshold before measurement. |
-| Target release | Next release after Phase 1 go-live. To be set by the owner. | Next release after Phase 1 go-live. To be set by the owner. |
+| Threshold | At least 80% (BRD) | TBD (proposed; pending business confirmation) |
+| Target release | Next planned release after the current MVP / Phase 1 delivery (see [release roadmap](release-roadmap.md)) | Next planned release after the current MVP / Phase 1 delivery (see [release roadmap](release-roadmap.md)) |
 | Release gate | Excluded from the current scope gate (CLAUDE.md §13) | Excluded from the current scope gate (CLAUDE.md §13) |
 | Re-review | At each release, and when go-live data is available | At each release, and after the first two weeks of use |
 
