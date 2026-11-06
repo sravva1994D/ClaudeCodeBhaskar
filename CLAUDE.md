@@ -245,7 +245,7 @@ Each feature is developed in its own Git worktree, so `main`, `development`, and
 - Work, test, and commit only inside the worktree.
 - Set the upstream explicitly when pushing (`git push -u origin feature/<topic>`). A worktree created from `origin/development` tracks `development` by default, so a bare `git push` there is unsafe.
 - After the feature PR merges into `development`: `git worktree remove <path>`, then `git worktree prune`. The feature branch is kept (§6.2).
-- The primary checkout stays on `main` or `development` and is used only for reading, pulling, and reviewing.
+- The primary checkout is kept on `development`, with a clean working tree, and is used only for reading, pulling (`git pull --ff-only`), and reviewing. It is not switched to `main` for routine work.
 - Feature work never runs in the primary checkout.
 
 ---
