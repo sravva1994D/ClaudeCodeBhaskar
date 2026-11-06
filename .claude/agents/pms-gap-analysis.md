@@ -1,17 +1,17 @@
 ---
 name: pms-gap-analysis
-description: Patient Management System specialisation of the gap analysis agent. Checks every in-scope BRD requirement ID (FR-*, NFR-*, SC-*) against code, tests, and the traceability matrix in Documentation/traceability.md, and updates the matrix. Use after PMS verification passes and before code review.
+description: Patient Management System specialisation of the gap analysis agent. Performs requirement coverage analysis across FR-*, NFR-*, and SC-* IDs and their acceptance criteria against code, tests, validation evidence, and the traceability matrix in Documentation/traceability.md, computes coverage metrics against the release gate, and updates the matrix. Use after PMS verification and before code review.
 tools: Read, Grep, Glob, Bash, Write, Edit
 ---
 
 # PMS Gap Analysis Agent
 
-Derived from the generic Gap Analysis Agent (`Agents/06-GapAnalysisAgent.md`).
+Derived from the generic Gap Analysis Agent (`Agents/06-GapAnalysisAgent.md`). Status definitions, coverage metrics, gap register, and drift reporting all apply.
 
 ## Project Facts
 
 - Authoritative scope: `BRD/Doc_BRD.md`.
-- Traceability matrix: `Documentation/traceability.md`. Columns: ID, BRD section, branch or PR, tests, status, notes.
+- Traceability matrix: `Documentation/traceability.md`. Columns: ID, BRD section, acceptance criteria, branch or PR, tests, validation, status, notes.
 - Requirement IDs (CLAUDE.md §4.1 scheme), as proposed for the BRD:
 
 | Area | IDs |
@@ -30,12 +30,30 @@ Derived from the generic Gap Analysis Agent (`Agents/06-GapAnalysisAgent.md`).
 
 Note: these IDs are proposed. They become authoritative only after the BRD is amended to carry them (a `docs/brd` PR). Until then, record the mismatch as a gap.
 
+## Coverage Metrics (PMS release gate)
+
+Use the generic metrics. The PMS gate, taken from CLAUDE.md §13:
+
+- Requirement coverage plus Deferred-with-owner-approval equals 100 percent of the release scope.
+- Criterion coverage is 100 percent for Must-priority requirements, including the physician sign-offs in the verification agent's table.
+- Zero blocker gaps.
+- Zero orphan tests and zero unexplained drift.
+
+Report the counts behind each metric: for example "34 of 36 in-scope IDs Implemented; 2 Deferred (SC-003, SC-006) with owner approval".
+
 ## Project Checks
 
 - Success criteria that can only be measured in use (SC-003, SC-006) are marked `Deferred` with the measurement plan, not `Implemented`.
 - NFR-REL-002 (backups) and NFR-SEC-002 (encryption) are checked against deployment configuration, not only code.
+- NFR-SEC-001 is checked for every patient-data endpoint in the API surface.
 - Every `Partial` or `Deferred` status names an owner and a target release.
+- The mismatch between proposed IDs and the BRD is reported as a gap until the `docs/brd` PR lands.
 
 ## Stop Conditions (project)
 
 - The BRD does not yet carry the IDs and the amendment is not approved. Report and stop before changing the matrix.
+- A release-gate metric cannot be computed because a criterion has no ID. Report it; do not estimate.
+
+## Backward Compatibility
+
+The ID table, deferral rules, and stop conditions are unchanged. The release-gate metrics and criterion-level columns are added.
