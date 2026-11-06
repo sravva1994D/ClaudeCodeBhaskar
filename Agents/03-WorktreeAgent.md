@@ -1,6 +1,6 @@
 ---
 name: worktree-agent
-description: Creates, verifies, and later removes an isolated Git worktree for a single feature branch, so that the main checkout and main branch stay untouched. Use after a plan is approved and before implementation begins, and again after merge for cleanup.
+description: Creates, verifies, and later removes an isolated Git worktree for a single feature branch, so that the primary checkout and the long-lived branches stay untouched. Use after a plan is approved and before implementation begins, and again after merge for cleanup.
 tools: Read, Bash, Glob
 ---
 
@@ -21,7 +21,7 @@ Give each feature its own isolated working copy, created from the base branch, w
 | Input | Source |
 |---|---|
 | Branch name | Plan (naming rule from the project standard) |
-| Base branch | Project rules (usually `main`) |
+| Base branch | Project rules (the integration branch, usually `development`) |
 | Worktree location pattern | Project rules |
 | Primary checkout path | Repository |
 

@@ -81,19 +81,20 @@ Claude owns the full Git lifecycle for this repository:
 - PR creation
 - PR updates
 - merge after approval
-- branch deletion (local and remote, after merge)
+- branch deletion (local and remote), only after the release is deployed and verified and the release owner approves
 
 The user owns approval. Claude does not perform any Git write operation without the approval step in §6.
 
 ### Hard rules
 
-1. **Never commit directly into `main`.**
-2. **Never push directly into `main`.**
-3. All work goes through a feature branch.
+1. **Never commit directly into `main` or `development`.**
+2. **Never push directly into `main` or `development`.**
+3. All work goes through a feature branch cut from `development`.
 4. One feature per branch.
-5. One PR per feature.
-6. No force-push to any shared branch. Force-push to a feature branch you own only with explicit approval.
-7. No `--no-verify`, no bypassing hooks or signing, unless the user explicitly requests it.
+5. One PR per feature. Feature PRs target `development`. Only the release PR targets `main`.
+6. Feature branches are kept after merge into `development` until the release is deployed and verified. Deleting them needs the release owner's approval (§6, step 8).
+7. No force-push to any shared branch (`main`, `development`). Force-push to a feature branch you own only with explicit approval.
+8. No `--no-verify`, no bypassing hooks or signing, unless the user explicitly requests it.
 
 ---
 
@@ -110,10 +111,12 @@ Every change follows this sequence. Steps 1–4 happen before any commit.
    - **Proposed Commit Message** — following §7.
    - **Git Commands** — the exact commands that will run (branch, add, commit, push, PR).
 4. **STOP and wait for approval.** Do not stage, commit, push, or open a PR until the user approves.
-5. After approval: commit, push the feature branch, open a PR using the template in §9, and report the PR URL.
-6. After the PR is approved by the reviewer: merge (squash), delete the remote and local branch, remove the worktree, and run `git worktree prune`.
+5. After approval: commit, push the feature branch, open a PR targeting `development` using the template in §9, and report the PR URL.
+6. After the reviewer approves: squash-merge into `development`. Keep the feature branch. Remove only the worktree: `git worktree remove <path>`, then `git worktree prune`.
+7. **Release (per module or release scope):** when every feature in scope is merged into `development` and validated there (build, unit and integration tests, staging verification), prepare a release PR `development` → `main`. The approval package lists every merged PR, its requirement IDs, and its test results. The release owner approves. Merge with a merge commit, not a squash, so each feature stays visible in `main`'s history. Then tag, deploy, and verify (§13).
+8. **Cleanup:** only after the release is deployed and verified, and the release owner approves, delete the merged feature branches (remote and local). List the branches first and delete only those approved.
 
-Branch creation is done when the feature starts (step 2) so that work never lands on `main`. If the working tree is on `main` with changes, Claude stops and asks before moving them.
+Branch creation is done when the feature starts (step 2), cut from the latest `development`, so that work never lands on `main` or `development`. If the working tree is on `main` or `development` with changes, Claude stops and asks before moving them.
 
 ---
 
@@ -122,13 +125,17 @@ Branch creation is done when the feature starts (step 2) so that work never land
 ### 7.1 Branch names
 
 ```
-feature/<kebab-case-topic>     new functionality or governance work
-fix/<kebab-case-topic>         defect fixes
-docs/<kebab-case-topic>        documentation only (incl. BRD changes)
-chore/<kebab-case-topic>       tooling, CI, dependencies
-release/vX.Y.Z                 release stabilisation (cut from main)
-hotfix/<kebab-case-topic>      urgent production fix (cut from main)
+feature/<kebab-case-topic>     new functionality or governance work; cut from development, PR to development
+fix/<kebab-case-topic>         defect fixes; cut from development, PR to development
+docs/<kebab-case-topic>        documentation only (incl. BRD changes); cut from development
+chore/<kebab-case-topic>       tooling, CI, dependencies; cut from development
+hotfix/<kebab-case-topic>      urgent production fix; cut from main, PR to main, then merged back into development
 ```
+
+Long-lived branches:
+- `main` is production. It receives only release PRs from `development` and hotfix PRs.
+- `development` is the integration branch. Every feature PR merges here, and development, integration, and test runs happen from it.
+- There are no `release/*` branches. A release is the `development` → `main` PR, marked by tag `vX.Y.Z` on `main`.
 
 Examples: `feature/project-governance`, `feature/patient-registration`, `fix/prescription-print-margin`.
 
@@ -151,21 +158,21 @@ Requirements: FR-PAT-001, FR-PAT-002
 
 ## 8. Worktree Strategy
 
-Each feature is developed in its own Git worktree so `main` and other work stay untouched.
+Each feature is developed in its own Git worktree so `main`, `development`, and other work stay untouched.
 
 - Location: sibling folder `../ClaudeCodeBhaskar-wt/<branch-name-with-slashes-as-dashes>`.
   Example: `D:\Projects\AI\Claude\project-mgmt-system\ClaudeCodeBhaskar-wt\feature-project-governance`.
-- Create: `git worktree add ../ClaudeCodeBhaskar-wt/<name> -b feature/<topic> main`
+- Create: `git fetch origin development`, then `git worktree add ../ClaudeCodeBhaskar-wt/<name> -b feature/<topic> origin/development`
 - Work, test, and commit only inside the worktree.
-- Remove after merge: `git worktree remove <path>` then `git worktree prune`.
-- The primary checkout stays on `main` and is used only for reading, pulling, and reviewing.
-- Never run feature work in the primary checkout while it is on `main`.
+- After the feature PR merges into `development`: `git worktree remove <path>`, then `git worktree prune`. The feature branch is kept (§7.1, §13).
+- The primary checkout stays on `main` or `development` and is used only for reading, pulling, and reviewing.
+- Never run feature work in the primary checkout.
 
 ---
 
 ## 9. PR Workflow
 
-- Base branch: `main`. Title: `<type>(<scope>): <summary>`.
+- Base branch: `development` for feature, fix, docs, and chore PRs. `main` only for the release PR (`development` → `main`, §13) and for hotfix PRs. Title: `<type>(<scope>): <summary>`. Release PR title: `release(<scope>): vX.Y.Z`.
 - Description template:
 
 ```markdown
@@ -198,7 +205,7 @@ Each feature is developed in its own Git worktree so `main` and other work stay 
 - [ ] Traceability matrix updated
 ```
 
-- PRs are small enough to review in one sitting. Split large features into sequential PRs, each on its own branch cut from `main`.
+- PRs are small enough to review in one sitting. Split large features into sequential PRs, each on its own branch cut from `development`. Release PRs list every merged PR with its requirement IDs in the body, and the test results from `development`.
 - PR descriptions end with: `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
 
 ---
@@ -289,13 +296,16 @@ Rules:
 ## 13. Release Standards
 
 - Versioning: Semantic Versioning, `vMAJOR.MINOR.PATCH`. Phase 1 starts at `v0.1.0`.
-- `main` is always deployable. Every merge into `main` passes build and tests.
-- Releases are tagged on `main` after merge. Release notes list the requirement IDs delivered.
-- Release branches (`release/vX.Y.Z`) are cut only for stabilisation; fixes go to `main` first and are cherry-picked back if needed.
-- Hotfixes: `hotfix/<topic>` from `main`, PR to `main`, tagged as a patch release.
-- Before a release: all tests pass, traceability matrix shows no unplanned gaps for the release scope, backup and restore have been verified (NFR-REL), and the release manager (Claude, with user approval) signs off in the release PR.
-- Rollback: each release documents how to revert (previous tag, migration down-script or restore point).
-- DevOps: CI runs build, unit, and integration tests on every PR. CD to a staging environment on merge to `main`; production deploys only on an approved tag.
+- `main` is production and always deployable. Every merge into `main` passes build and tests.
+- `development` is the integration branch. Every feature PR merges there after review. Development, integration, and test runs happen from it.
+- The release owner is the project owner. The release owner approves release PRs, branch cleanup, and production tags.
+- A release covers one module or release scope. Its features merge into `development` one PR at a time. When all are merged and validated, the release owner approves the `development` → `main` release PR (§6, step 7).
+- Releases are tagged `vX.Y.Z` on `main` after the release PR merges. Release notes list every merged PR and the requirement IDs delivered.
+- Feature branches are kept until the release is deployed and verified in production. The release owner approves their deletion (§6, step 8). This keeps the history needed for rollback and audit.
+- Hotfixes: `hotfix/<topic>` from `main`, PR to `main`, tagged as a patch release, then merged back into `development` by PR so the fix is not lost.
+- Before a release: all tests pass on `development`, the traceability matrix shows no unplanned gaps for the release scope, backup and restore have been verified (NFR-REL), and the release owner signs off in the release PR.
+- Rollback: redeploy the previous tag, or revert the release merge on `main` with `git revert -m 1 <merge-sha>` in a new PR. Also use the migration down-script or restore point. Retained feature branches show what each change contained.
+- DevOps: CI runs build, unit, and integration tests on every PR to `development` and `main`. CD to staging on every merge into `development`. Production deploys only from an approved tag on `main`. No CI configuration exists in this repository yet; adding it is a separate `chore(devops)` PR.
 
 ---
 
