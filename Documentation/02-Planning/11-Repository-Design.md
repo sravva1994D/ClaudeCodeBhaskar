@@ -24,7 +24,7 @@
 | GetByEmailAsync(email) | User? | Forgot password |
 
 Sign-in always matches the username. There is no fallback to a single account (DEC-018).
-| UpdateAsync(user) | void | Save new password hash |
+| UpdateAsync(user) | Task | Saves the entity's values, for example a new password hash. The repository saves because Business has no unit of work (Module 1, step 2) |
 
 ### 2.2 IPatientRepository (FR-PAT-001 to FR-PAT-004, FR-SRC-001, FR-SRC-002)
 | Method | Returns | Purpose | Req IDs |

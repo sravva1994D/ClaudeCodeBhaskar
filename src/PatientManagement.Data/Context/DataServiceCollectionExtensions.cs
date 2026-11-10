@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PatientManagement.Data.Abstractions;
+using PatientManagement.Data.Repositories;
 
 namespace PatientManagement.Data.Context;
 
@@ -21,7 +23,8 @@ public static class DataServiceCollectionExtensions
 
         services.AddDbContext<PatientManagementDbContext>(options => options.UseSqlServer(connectionString));
 
-        // Repository registrations are added with the feature work (CLAUDE.md §6).
+        services.AddScoped<IUserRepository, UserRepository>();
+
         return services;
     }
 }
