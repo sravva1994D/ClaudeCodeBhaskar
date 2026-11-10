@@ -29,15 +29,15 @@
 | FR-SRC-003 | Should Have | FR > Search & Navigation | Navigate profile and visits | BO-002 | — | 10 §1 | OQ-006 | Traced |
 | FR-EXP-001 | Must Have | FR > Data Export | Export patient data with visits as CSV | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Traced |
 | FR-EXP-002 | Must Have | FR > Data Export | Export as PDF (printable view; browser Save as PDF) | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Traced |
-| NFR-USB-001 | Must Have | NFR > Usability | Simple, minimal UI for fast entry | BO-002, BO-007 | SC-006 | 10 §2 | OQ-021 | Traced (qualitative) |
+| NFR-USB-001 | Must Have | NFR > Usability | Simple, minimal UI for fast entry | BO-002, BO-007 | — | 10 §2 | OQ-021 | Traced (qualitative) |
 | NFR-PRF-001 | Must Have | NFR > Performance | Page load approximately 2 s (localhost) | BO-003 | SC-002 | 10 §2 | OQ-020 | Traced |
 | NFR-PRF-002 | Must Have | NFR > Performance | Search results within 2–5 s (localhost) | BO-003 | SC-002 | 10 §2 | OQ-020 | Traced |
 | NFR-REL-001 | Won't Have (Phase 1) | NFR > Reliability | No data loss | BO-003 | — | 10 §2 | OQ-019 | Deferred |
 | NFR-REL-002 | Won't Have (Phase 1) | NFR > Reliability | Automated backups | BO-003 | — | 10 §2 | OQ-018 | Deferred |
 | NFR-SEC-001 | Must Have | NFR > Security | Secure login, single user | — | — | 10 §2 | OQ-015 | Traced |
-| NFR-SEC-002 | Must Have | NFR > Security | Encryption at rest and in transit | — | — | 10 §2 | OQ-016, OQ-017 | Traced |
+| NFR-SEC-002 | Must Have | NFR > Security | Data in transit (TLS beyond localhost); password hashing (at-rest encryption out of Phase 1, DEC-017) | — | — | 10 §2 | OQ-016, OQ-017 | Traced |
 | NFR-SCL-001 | Must Have | NFR > Scalability | Single clinic, up to 1,000 records | — | — | 10 §2 | OQ-023 | Traced |
-| NFR-CMP-001 | Must Have | NFR > Compatibility | Latest Chrome, Edge, Safari (desktop) | — | — | 10 §2 | OQ-022 | Traced |
+| NFR-CMP-001 | Must Have | NFR > Compatibility | Latest Chrome and Edge (desktop); Safari not required (DEC-019) | — | — | 10 §2 | OQ-022 | Traced |
 | SC-001 | Must Have (verification of Must Have requirements) | Success Criteria | Consultation record in 2–3 min | BO-002 | SC-001 | 10 §3 | OQ-021 | Traced |
 | SC-002 | Must Have (verification of Must Have requirements) | Success Criteria | Search/history in 2–5 s | BO-003 | SC-002 | 10 §3 | OQ-020 | Traced |
 | SC-003 | Won't Have (Phase 1) | Success Criteria | ≥80% paper reduction | BO-001, BO-004 | SC-003 | 10 §3 | OQ-021 | Deferred |

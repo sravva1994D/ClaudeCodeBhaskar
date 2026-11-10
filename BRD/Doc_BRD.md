@@ -1,6 +1,6 @@
 # Business Requirements Document
 
-**Version:** Phase 1 (amended 2026-11-10; planning decisions PDR-01 to PDR-32)
+**Version:** Phase 1 (amended 2026-11-10; planning decisions PDR-01 to PDR-32; amendments DEC-017 to DEC-022)
 **Scope context:** Single-user, localhost-only learning project. Not deployed to any environment.
 
 ## Product Goal
@@ -116,6 +116,7 @@ The following will NOT be included in Phase 1:
   - Scheduled → Checked-In → In Consultation → Completed
   - Scheduled → Cancelled; Scheduled → No-show; Checked-In → Cancelled
   - No other moves. An appointment cannot be marked Completed from Scheduled or Checked-In; it reaches Completed only after In Consultation. No status is changed back to an earlier status in Phase 1
+  - "Completed" means the business process for the appointment is finished. The consultation's Finish action sets it (DEC-022)
 - Appointments are archived (hidden but kept), not hard-deleted. Archiving is a manual action. Archived appointments are hidden everywhere in the application
 
 ---
@@ -162,7 +163,7 @@ A consultation and a visit are the same record. A consultation can be started di
 - One prescription per consultation. A prescription cannot be edited after it is printed. The Print command marks it as printed; reprinting is allowed.
 
 - Generate **printable prescription** on A4 as a printable HTML view with a Print button. The browser's Print or Save as PDF produces the printed or PDF copy. The system does not generate PDF files itself. Content:
-  - Header: clinic name, address, phone, doctor name, registration number, logo
+  - Header: clinic name, address, phone, doctor name, registration number, logo (Phase 1: a placeholder logo image; final branding not required, DEC-021)
   - Patient details
   - Vitals
   - Diagnosis
@@ -191,7 +192,7 @@ A consultation and a visit are the same record. A consultation can be started di
 
 ### Data Export
 - Export patient data, with its visits, vitals, diagnosis and prescriptions, as:
-  - CSV: one file, one row per visit, patient details repeated on each row
+  - CSV: one file, one row per visit, patient details repeated on each row; dates in ISO format (yyyy-MM-dd); user-relevant columns only (DEC-020)
   - PDF: a printable HTML view with a Print button; the browser's Save as PDF produces the file. No server-side PDF library.
 - Scope: a single patient, optionally limited to a date range
 
@@ -213,15 +214,15 @@ A consultation and a visit are the same record. A consultation can be started di
 - **Security:**
   - Secure login (single user authentication): username and password only; 8 to 16 characters, including upper-case, lower-case, digit and symbol; 24-hour idle timeout that resets on activity (sliding)
   - Forgot password: user enters email, new password and confirm password; if the email matches, the password is updated and the user is logged in. No second verification. Message shown: "If the email matches an account, the password has been reset." Risk accepted by stakeholder.
-  - The single user account is created once by a seed script, not through the application
+  - The single user account is created once by a console seed command, not through the application. The password is typed at a prompt and is not stored in the repository or in configuration (DEC-018)
   - Passwords are stored using secure hashing, never in plain text
-  - Data encryption (at rest and in transit). At rest: SQL Server standard storage encryption (Transparent Data Encryption). In transit: TLS 1.2+ required when deployed beyond localhost; plain HTTP is allowed on localhost.
+  - Data encryption in transit: TLS 1.2+ required when deployed beyond localhost; plain HTTP is allowed on localhost. Passwords are stored hashed (see above). Encryption at rest is out of Phase 1 scope for this localhost-only learning project (DEC-017).
 
 - **Scalability:**
   - Designed for a single clinic; sample volume of up to 1,000 patient records
 
 - **Compatibility:**
-  - Works on the latest versions of Chrome, Edge and Safari (desktop only)
+  - Works on the latest versions of Chrome and Edge (desktop only). Chromium-based browsers are the primary target. No Safari-specific support is required in Phase 1 (DEC-019)
 
 ---
 
@@ -258,9 +259,9 @@ Status: **Approved by the Project Owner, 2026-11-10** (sole approver). Prioritie
 | NFR-REL-001 | No data loss | Won't Have (Phase 1) | Deferred; OOS-011 |
 | NFR-REL-002 | Automated backups | Won't Have (Phase 1) | Deferred; OOS-011 |
 | NFR-SEC-001 | Secure single-user login | Must Have | Stated requirement |
-| NFR-SEC-002 | Encryption at rest and in transit | Must Have | Stated requirement; TLS scope per Security section |
+| NFR-SEC-002 | Data in transit (TLS beyond localhost); password hashing | Must Have | Amended 2026-11-10 (DEC-017): encryption at rest is out of Phase 1 scope |
 | NFR-SCL-001 | Single clinic; sample of up to 1,000 records | Must Have | Defines Phase 1 scale |
-| NFR-CMP-001 | Latest Chrome, Edge, Safari (desktop) | Must Have | Stated requirement |
+| NFR-CMP-001 | Latest Chrome and Edge (desktop) | Must Have | Amended 2026-11-10 (DEC-019): Safari not required in Phase 1 |
 | SC-003 | 80% paper reduction | Won't Have (Phase 1) | Deferred; OOS-014 |
 | SC-006 | High usability | Won't Have (Phase 1) | Deferred; OOS-014 |
 | OOS-001 to OOS-015 | Items listed under Out of Scope | Won't Have (Phase 1) | Excluded from Phase 1 by the Out of Scope section |
@@ -286,9 +287,9 @@ Decisions recorded from stakeholder answers. Full detail: `Documentation/01-Brai
 | Export: single patient, optionally date range | Stakeholder answer |
 | Printable outputs (prescription, patient export) are HTML views with a Print button; PDF via browser Print or Save as PDF; no server-side PDF library; data access uses EF Core only | Project Owner decision 2026-11-10 (PDR-16, PDR-18, PDR-32) |
 | Login: username and password; 8+ characters with complexity; 24-hour idle timeout; email-only password reset accepted as risk | Stakeholder answer; risk accepted |
-| Encryption: SQL Server standard storage encryption at rest; TLS 1.2+ only beyond localhost; hashed passwords | Localhost-only learning project |
+| Encryption: TLS 1.2+ only beyond localhost; hashed passwords. Encryption at rest is out of Phase 1 scope (supersedes the earlier TDE wording) | Localhost-only learning project; DEC-017 (2026-11-10) |
 | Performance: approximately 2 s page load and 2–5 s search, under localhost conditions; guidelines, not SLAs | Localhost-only learning project |
-| Browsers: latest Chrome, Edge, Safari; desktop only | Stakeholder answer |
+| Browsers: latest Chrome and Edge; desktop only; Safari not required (supersedes the earlier three-browser answer) | DEC-019 (2026-11-10) |
 | Archive, not hard delete. Appointment status follows the lifecycle in Appointment Management; no reversal | Project Owner decision 2026-11-10 (PDR-08) |
 | Backups and recovery deferred (OOS-011) | Localhost-only learning project; no deployment |
 | Audit trail out of Phase 1 (OOS-013) | Stakeholder answer; revisit later |
@@ -299,6 +300,12 @@ Decisions recorded from stakeholder answers. Full detail: `Documentation/01-Brai
 | Appointment lifecycle: Scheduled → Checked-In → In Consultation → Completed; Scheduled → Cancelled or No-show; Checked-In → Cancelled. Replaces the earlier reversal rule | Project Owner decision, 2026-11-10 (PDR-08) |
 | MoSCoW priorities approved as the project baseline; Project Owner is the sole approver | Project Owner decision, 2026-11-10 (A-006) |
 | Each appointment leads to at most one consultation | Project Owner decision, 2026-11-10 (PDR-26) |
+| DEC-017: encryption at rest out of Phase 1 scope (localhost-only learning project); TLS beyond localhost and password hashing remain. NFR-SEC-002 amended | Project Owner decision, 2026-11-10 |
+| DEC-018: the single account is created by a console seed command; the password is entered at a prompt and never stored in the repository or configuration (PDR-05 amended) | Project Owner decision, 2026-11-10 |
+| DEC-019: Chromium-based browsers (Chrome, Edge) are the primary target; no Safari-specific support in Phase 1 (NFR-CMP-001 amended) | Project Owner decision, 2026-11-10 |
+| DEC-020: CSV dates in ISO format (yyyy-MM-dd); user-relevant columns only; column set in `Documentation/02-Planning/10-Service-Design.md` §2.7 (PDR-17 resolved) | Project Owner decision, 2026-11-10 |
+| DEC-021: header logo is a placeholder image in Phase 1; no logo upload (PDR-15 amended) | Project Owner decision, 2026-11-10 |
+| DEC-022: the Archive action (hides an appointment, keeps it) and the Finish action (sets Completed after In Consultation) are both in Phase 1 | Project Owner decision, 2026-11-10 |
 
 ## Still Open
 

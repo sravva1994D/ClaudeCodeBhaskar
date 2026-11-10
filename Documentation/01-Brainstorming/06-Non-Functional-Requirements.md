@@ -11,9 +11,9 @@
 | NFR-REL-001 | Reliability | No data loss | NFR > Reliability | Deferred / out of scope for Phase 1 (OOS-011) | OQ-019 |
 | NFR-REL-002 | Reliability | Regular automated backups | NFR > Reliability | Deferred / out of scope for Phase 1 (OOS-011) | OQ-018 |
 | NFR-SEC-001 | Security | Secure login (single user authentication) | NFR > Security | Yes (username and password; 8–16 characters with complexity; 24-hour sliding timeout) | OQ-015 |
-| NFR-SEC-002 | Security | Data encryption at rest and in transit | NFR > Security | Yes (TDE at rest; TLS 1.2+ beyond localhost) | OQ-016, OQ-017 |
+| NFR-SEC-002 | Security | Data in transit; password hashing | NFR > Security | Yes (TLS 1.2+ beyond localhost; hashed passwords). Encryption at rest out of Phase 1 (DEC-017) | OQ-016, OQ-017 |
 | NFR-SCL-001 | Scalability | Designed for a single clinic with moderate patient volume | NFR > Scalability | Yes (up to 1,000 patient records) | OQ-023 |
-| NFR-CMP-001 | Compatibility | Works on modern web browsers (Chrome, Edge, Safari) | NFR > Compatibility | Yes (latest Chrome, Edge and Safari; desktop) | OQ-022 |
+| NFR-CMP-001 | Compatibility | Works on modern web browsers (Chrome, Edge) | NFR > Compatibility | Yes (latest Chrome and Edge; desktop; Safari not required, DEC-019) | OQ-022 |
 
 ## Notes
 

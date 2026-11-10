@@ -171,18 +171,18 @@ Full detail: `Documentation/02-Planning/01-Solution-Architecture.md`.
 | Search | Contains match, case-insensitive, no minimum length | PDR-23 |
 | Appointments | 30-minute slots; 09:00–13:00 and 17:00–20:00 (last slots 12:30 and 19:30); no overlap | PDR-06 |
 | Slot holding | Scheduled, Checked-In, In Consultation and Completed hold the slot; Cancelled and No-show release it | PDR-07 |
-| Status lifecycle | Scheduled → Checked-In → In Consultation → Completed; Scheduled → Cancelled or No-show; Checked-In → Cancelled. No reversal. Completed only after In Consultation | PDR-08, PDR-27; `Documentation/02-Planning/19-` |
-| Archiving | Manual action; archived appointments hidden everywhere | PDR-09 |
+| Status lifecycle | Scheduled → Checked-In → In Consultation → Completed; Scheduled → Cancelled or No-show; Checked-In → Cancelled. No reversal. Completed only after In Consultation, set by the consultation Finish action | PDR-08, PDR-27, DEC-022; `Documentation/02-Planning/19-` |
+| Archiving | Manual Archive action; archived appointments are hidden from active lists but kept for history | PDR-09, DEC-022 |
 | Vitals | Temperature 34.0–42.0 °C; systolic 70–250 mmHg; diastolic 40–150 mmHg; pulse 30–220 bpm. Out of range: warning and confirmation. Missing vitals: notice only, no confirm step | BRD; PDR-19 |
 | Consultation | Same record as a visit. Can exist without an appointment. Each appointment leads to at most one consultation. Visit date set by the system and not editable | BRD; PDR-24, PDR-26 |
 | Complaints and diagnosis | Free text; one block per visit | PDR-12 |
 | Medicines | Only Name required. A prescription needs at least one medicine to print | PDR-13 |
 | Prescription | One per consultation. Print command marks it printed. Reprint allowed. No edits after printing | PDR-14 |
 | Recent patients | Five most recently visited (consultations only), by last visit | PDR-11 |
-| Export | CSV: one file, one row per visit, patient details on each row. PDF: printable view and browser Save as PDF | PDR-17, PDR-18 |
+| Export | CSV: one file, one row per visit, patient details on each row, ISO dates (yyyy-MM-dd), user-relevant columns only. PDF: printable view and browser Save as PDF | PDR-17, PDR-18, DEC-020 |
 | Login | Username and password. 8 to 16 characters with upper case, lower case, digit and symbol. 24-hour sliding idle timeout | PDR-02, PDR-20 |
 | Forgot password | Email, new password, confirm. Message: "If the email matches an account, the password has been reset." No second verification (DEC-009) | PDR-03 |
-| Single account | Created once by a seed script. Password never stored in the repository | PDR-05 |
+| Single account | Created once by a console seed command. The password is typed at the prompt and never stored in the repository or configuration | PDR-05, DEC-018 |
 
 If code and this table disagree, the BRD and the planning decisions win. Fix the code or record an amendment.
 
@@ -207,7 +207,7 @@ If code and this table disagree, the BRD and the planning decisions win. Fix the
 - Anti-forgery tokens on every POST.
 - Cookie: HttpOnly, SameSite Lax, 24-hour sliding expiry.
 - HTTPS required beyond localhost. Plain HTTP is allowed on localhost (PDR-21).
-- Storage encryption at rest is SQL Server Transparent Data Encryption (PDR-21).
+- Encryption at rest is out of Phase 1 scope (DEC-017; localhost-only learning project). Passwords are always hashed.
 - Secrets come from environment variables or a secret store. Never from source control. No connection string with a password in the repository.
 
 ---
@@ -221,7 +221,7 @@ Full detail: `Documentation/02-Planning/14-Testing-Strategy.md`.
 | Unit | xUnit with NSubstitute | Services, validators, mappers, rules |
 | Integration (data) | xUnit against a real SQL Server test database | Repositories, constraints, migrations (no in-memory provider) |
 | Integration (web) | ASP.NET Core `WebApplicationFactory` | Controllers, authentication, anti-forgery |
-| Browser | Manual, following the acceptance script | Latest Chrome, Edge and Safari (desktop). Record browser version per run (PDR-28). No browser automation in Phase 1 (PDR-29) |
+| Browser | Manual, following the acceptance script | Latest Chrome and Edge (desktop); Chromium-based browsers are the primary target; Safari not required (DEC-019). Record browser version per run (PDR-28). No browser automation in Phase 1 (PDR-29) |
 | Performance | Browser timing, median of 5 runs, on 1,000 seeded patients | NFR-PRF-001, NFR-PRF-002 (PDR-30) |
 
 Rules:

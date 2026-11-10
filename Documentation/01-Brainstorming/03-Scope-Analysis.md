@@ -10,7 +10,7 @@
 
 | Scope Item (BRD) | Requirement IDs | Status |
 |---|---|---|
-| Web-based access | NFR-CMP-001 | Defined: latest Chrome, Edge, Safari; desktop only (OQ-022) |
+| Web-based access | NFR-CMP-001 | Defined: latest Chrome and Edge; desktop only; Safari not required (OQ-022, DEC-019) |
 | Patient registration and profile management | FR-PAT-001, FR-PAT-002, FR-PAT-003 | Defined (OQ-001, OQ-002, OQ-024, OQ-026) |
 | Patient search | FR-PAT-004, FR-SRC-001 | Defined: name or phone; contains match (OQ-003) |
 | Appointment scheduling and tracking | FR-APT-001, FR-APT-002, FR-APT-003 | Defined: 30-minute slots, no overlap (OQ-004, OQ-005, OQ-024) |
@@ -23,7 +23,7 @@
 | Basic search (quick search, recent patients, navigation) | FR-SRC-001, FR-SRC-002, FR-SRC-003 | Defined: 5 recent patients by last visit (OQ-013) |
 | Data export CSV and PDF | FR-EXP-001, FR-EXP-002 | Defined: patient, visits, vitals, diagnosis, prescriptions; single patient, optional date range (OQ-014) |
 | Secure login | NFR-SEC-001 | Defined: username and password; 8–16 characters; 24-hour sliding timeout (OQ-015) |
-| Encryption at rest and in transit | NFR-SEC-002 | Defined: TDE at rest; TLS 1.2+ beyond localhost (OQ-016) |
+| Encryption in transit; password hashing | NFR-SEC-002 | Defined: TLS 1.2+ beyond localhost; hashed passwords. Encryption at rest out of Phase 1 (OQ-016, DEC-017) |
 | Backups and no data loss | NFR-REL-001, NFR-REL-002 | Deferred / out of scope for Phase 1 (OOS-011) |
 | Performance targets | NFR-PRF-001, NFR-PRF-002 | Defined: localhost conditions, 1,000-record sample (OQ-020) |
 | Usability | NFR-USB-001 | Qualitative only: no measurable criterion in BRD (SC-006 deferred) |

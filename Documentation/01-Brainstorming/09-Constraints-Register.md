@@ -9,14 +9,14 @@
 | CON-002 | Scope | Single user (one general physician). No receptionist or multi-user access. | BRD: Users; OOS-001 | NFR-SEC-001, all | |
 | CON-003 | Scope | Single clinic, single physician. No multi-clinic or multi-doctor support. | BRD: OOS-009; NFR-SCL-001 | NFR-SCL-001 | |
 | CON-004 | Platform | Browser-based only. No native or mobile app. | BRD: Scope; OOS-007 | NFR-CMP-001 | |
-| CON-005 | Platform | Must work on modern browsers: Chrome, Edge, Safari. | BRD: NFR > Compatibility | NFR-CMP-001 | Versions undefined (OQ-022) |
+| CON-005 | Platform | Must work on modern Chromium-based browsers: Chrome, Edge. | BRD: NFR > Compatibility | NFR-CMP-001 | Latest versions; Safari not required (OQ-022, DEC-019) |
 | CON-006 | Connectivity | No offline functionality. | BRD: OOS-006 | All | Implies continuous connection; no offline behaviour is required |
 | CON-007 | Mandatory data | Vitals (Temperature, BP, Pulse) must be captured for every consultation. | BRD: FR > Vitals Capture (Mandatory) | FR-VIT-001 | Warn and allow; missing vitals a notice only (OQ-007 answered) |
 | CON-008 | Output | Prescriptions must be printable and include header, patient details, vitals, diagnosis, medications, and footer. | BRD: FR > Medication / Prescription | FR-RX-002 | |
 | CON-009 | Output | Data export formats are CSV and PDF (PDF via printable HTML view and browser Save as PDF). | BRD: FR > Data Export; SC-005 | FR-EXP-001, FR-EXP-002 | |
 | CON-010 | Performance | Page load time under 2 seconds. | BRD: NFR > Performance | NFR-PRF-001 | Localhost conditions defined (OQ-020 answered) |
 | CON-011 | Performance | Patient search and history retrieval within 2–5 seconds. | BRD: SC-002 | NFR-PRF-002, FR-PAT-004, FR-HIS-001 | |
-| CON-012 | Security | Encryption at rest and in transit. | BRD: NFR > Security | NFR-SEC-002 | Standard defined: TDE at rest; TLS beyond localhost (OQ-016 answered) |
+| CON-012 | Security | Encryption in transit beyond localhost; passwords hashed. | BRD: NFR > Security | NFR-SEC-002 | Encryption at rest out of Phase 1 (DEC-017); TLS beyond localhost (OQ-016) |
 | CON-013 | Security | Secure login with single-user authentication. | BRD: NFR > Security | NFR-SEC-001 | Username and password; 8–16 characters with complexity; 24-hour sliding timeout (OQ-015 answered) |
 | CON-014 | Reliability | Deferred (OOS-011): not required in Phase 1. | BRD: NFR > Reliability | NFR-REL-001, NFR-REL-002 | |
 | CON-015 | Usability | Minimal UI optimised for fast data entry during consultations. | BRD: NFR > Usability | NFR-USB-001 | |

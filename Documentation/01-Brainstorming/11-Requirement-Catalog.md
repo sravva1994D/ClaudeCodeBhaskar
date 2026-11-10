@@ -40,9 +40,9 @@
 | NFR-REL-001 | No data loss | NFR > Reliability | All data-storing requirements | Deferred (OOS-011) |
 | NFR-REL-002 | Automated backups | NFR > Reliability | NFR-REL-001 | Deferred (OOS-011) |
 | NFR-SEC-001 | Secure single-user login | NFR > Security | All requirements (access gate) | Traced |
-| NFR-SEC-002 | Encryption at rest and in transit | NFR > Security | All data-storing requirements | Traced |
+| NFR-SEC-002 | Data in transit (TLS beyond localhost); password hashing; encryption at rest out of Phase 1 (DEC-017) | NFR > Security | All data-storing requirements | Traced |
 | NFR-SCL-001 | Single clinic, moderate volume | NFR > Scalability | NFR-PRF-001, NFR-PRF-002 | Traced |
-| NFR-CMP-001 | Chrome, Edge, Safari support | NFR > Compatibility | All UI requirements | Traced |
+| NFR-CMP-001 | Chrome and Edge support (Safari not required, DEC-019) | NFR > Compatibility | All UI requirements | Traced |
 
 ## 3. Success Criteria (6)
 
