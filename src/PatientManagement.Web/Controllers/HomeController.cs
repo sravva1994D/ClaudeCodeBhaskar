@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PatientManagement.Web.ViewModels;
 
@@ -12,6 +13,8 @@ public class HomeController : Controller
         return View();
     }
 
+    // The error page must render for signed-out users too (AllowAnonymous overrides the global policy).
+    [AllowAnonymous]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
