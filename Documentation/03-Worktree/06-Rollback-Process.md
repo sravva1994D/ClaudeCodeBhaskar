@@ -89,7 +89,7 @@ This must not happen. If it does:
 1. Stop. Do not push.
 2. If not pushed: undo it locally (§2), then make the change on `development`.
 3. If pushed: raise a release PR from `development` that reverts the commit, and record the incident (§9).
-4. Check that `main` protection is on (decision D-6).
+4. Branch protection is not required (decision D-6). The approval gate is the control.
 
 ## 8. Force-Push
 

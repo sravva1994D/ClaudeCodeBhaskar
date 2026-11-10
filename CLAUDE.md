@@ -80,17 +80,17 @@ When a change affects a requirement, update both matrices in the same change.
 
 ## 5. Git Workflow (user instruction, 2026-11-10)
 
-- **`development` is the only working branch.** All project work is committed directly to it: BRD, requirements, planning, traceability, architecture, CLAUDE.md, analysis, supporting documentation and implementation. Each commit needs the user's approval first (§5.1).
+- **`development` is the only working branch.** All project work is committed directly to it: BRD, requirements, planning, traceability, architecture, CLAUDE.md, analysis, supporting documentation and implementation. Commits are made regularly and pushed to `origin/development` under the workflow in §5.4. Each commit is reported in chat with its files and message.
 - **No other working branches.** No feature, module, milestone, documentation, fix, chore or hotfix branches.
-- **`main` receives releases only**, through a release PR from `development` with the Project Owner's sign-off. Nothing is committed to `main` directly.
+- **`main` receives releases only**: one PR from `development` to `main`, after the final review and the Project Owner's approval. Nothing is committed to `main` directly.
 - Urgent fixes are committed to `development` and released in the next release (no hotfix branch).
 - No force-push to shared branches.
 - No `--no-verify`, no skipped hooks, no bypassed signing, unless the user asks for it.
-- Claude performs no Git write operation (branch, commit, push, PR, merge, delete) without the user's approval.
+- Claude performs no merge, pull request, tag or deletion without the user's approval. Commits and pushes to `development` follow §5.4.
 
 ### 5.1 Approval gate
 
-Before any commit, Claude presents an approval package in chat:
+Before a release PR to `main`, a tag, a merge, a deletion, or any change outside the workflow in §5.4, Claude presents an approval package in chat:
 
 1. **Change summary**: what changed and why, in 3 to 6 bullets.
 2. **Files changed**: each path marked Added, Modified or Deleted.
@@ -98,7 +98,7 @@ Before any commit, Claude presents an approval package in chat:
 4. **Proposed commit message** (§5.2).
 5. **Git commands** that will run.
 
-Claude stops and waits for approval. It does not stage, commit, push or open a PR until approved.
+Claude stops and waits for approval before those steps. Routine commits to `development` follow §5.4.
 
 ### 5.2 Branch and commit format
 
@@ -126,6 +126,21 @@ Used only for releases to `main`. Work on `development` has no pull request.
 - Title: `release: vX.Y.Z`. Base branch: `main`. Head: `development`.
 - Sections: Summary, Requirements (with status), Traceability (matrices updated yes or no; BRD changed yes or no), Changes, Testing (unit, integration, manual), Risks, Checklist.
 - Ends with: `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
+
+---
+
+### 5.4 Development workflow (approved 2026-11-10)
+
+1. Work directly in `development`.
+2. Commit and push changes regularly, using the format in §5.2.
+3. Complete all project features.
+4. Test the entire application.
+5. Fix defects in `development`.
+6. Review the final solution.
+7. Create a single PR from `development` to `main`.
+8. Merge into `main` after final approval.
+
+Each commit builds (implementation commits) and passes its checks before it is pushed. Each commit is listed in chat with its files and message.
 
 ---
 

@@ -11,12 +11,12 @@
 | Stage | Who | Output | Gate |
 |---|---|---|---|
 | 1. Self-check | Claude | Checklist in the approval package | Must pass before stage 2 |
-| 2. Approval package | Claude → user | Chat package (CLAUDE.md §5.1) | Approval before any commit or push |
+| 2. Approval package | Claude → user | Chat package (CLAUDE.md §5.1) for the release PR, merges, tags and changes outside the workflow | Approval before those steps |
 | 3. Post-commit check | Claude | Build, test and diff check after the commit | Failures fixed in a new commit |
 | 4. Code review (Module 7) | Mentor / Lead | Review comments | Comments resolved within the agreed timeline |
 | 5. Release review | Project Owner | Approved release PR to `main` | Required before merge to `main` |
 
-Stage 2 is the main review for every commit. No pull request is raised for work on `development`.
+Routine commits to `development` follow the approved workflow (CLAUDE.md §5.4). The final review (stage 5) and the single PR to `main` are where the solution is reviewed as a whole. No pull request is raised for work on `development`.
 
 ## 2. Self-Check (stage 1)
 

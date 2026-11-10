@@ -6,7 +6,7 @@
 
 ## 1. Principles
 
-- All work is committed directly to `development`, the only working branch (single-branch instruction, 2026-11-10). Each commit needs the Project Owner's approval first (CLAUDE.md §5.1).
+- All work is committed directly to `development`, the only working branch, under the approved workflow (CLAUDE.md §5.4, 2026-11-10). Commits are made regularly and reported in chat.
 - A feature starts only when its PDR items are closed. All were closed on 2026-11-10.
 - Each milestone ends with its requirements tested (`14-Testing-Strategy.md`).
 - Non-functional verification runs on a release candidate, after all features are merged.
@@ -55,18 +55,18 @@ flowchart LR
 
 ## 4. Commit Plan on `development` (per milestone)
 
-| Milestone | Commits on `development` | Approval gate |
+| Milestone | Commits on `development` | Commit approach |
 |---|---|---|
-| M0 | Planning decisions and BRD amendments (docs) | Once per commit |
-| M1 | Foundation work packages (WP-2.x), one commit per step | Once per commit |
-| M2 | Patient management (WP-3.x) | Once per commit |
-| M3 | Appointments (WP-4.x) | Once per commit |
-| M4 | Consultation and history (WP-5.x) | Once per commit |
-| M5 | Medication and prescription (WP-6.x) | Once per commit |
-| M6 | History filter and recent patients (WP-7.x) | Once per commit |
-| M7 | Export (WP-8.x) | Once per commit |
-| M8 | Non-functional verification results (WP-9.x) | Once per commit |
-| M9 | Acceptance record (WP-10.x) | Once per commit |
+| M0 | Planning decisions and BRD amendments (docs) | Regular commits and pushes |
+| M1 | Foundation work packages (WP-2.x), one commit per step | Regular commits and pushes |
+| M2 | Patient management (WP-3.x) | Regular commits and pushes |
+| M3 | Appointments (WP-4.x) | Regular commits and pushes |
+| M4 | Consultation and history (WP-5.x) | Regular commits and pushes |
+| M5 | Medication and prescription (WP-6.x) | Regular commits and pushes |
+| M6 | History filter and recent patients (WP-7.x) | Regular commits and pushes |
+| M7 | Export (WP-8.x) | Regular commits and pushes |
+| M8 | Non-functional verification results (WP-9.x) | Regular commits and pushes |
+| M9 | Acceptance record (WP-10.x) | Regular commits and pushes |
 
 No branch is created for a milestone. Each milestone ends with its checks passing on `development`. A release PR to `main` is raised only when the Project Owner decides a release is due (`Documentation/03-Worktree/05-Release-Process.md`).
 

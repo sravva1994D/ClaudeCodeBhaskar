@@ -82,7 +82,7 @@ Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>
 
 ## 5. Approval Gate
 
-No commit is made until the user approves. The approval package (CLAUDE.md §5.1) contains:
+Commits to `development` are made regularly under the approved workflow (CLAUDE.md §5.4). Each commit is reported in chat. Before a release PR, a merge, a tag, a deletion, or any change outside the workflow, the approval package (CLAUDE.md §5.1) is shown and the user approves it. That package contains:
 
 1. Change summary
 2. Files changed (Added, Modified, Deleted)

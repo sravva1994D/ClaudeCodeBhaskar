@@ -25,6 +25,8 @@
 |---|---|---|
 | Documentation work stays on `development`; implementation uses a feature branch | Original request | Superseded (see below) |
 | D-1: documentation committed directly to `development` | 2026-11-10 | Committed (`a88551d` to `a875aac`) |
+| Approved workflow: work in `development`; commit and push regularly; test and fix in `development`; review; one PR `development` → `main`; merge after final approval | 2026-11-10 | CLAUDE.md §5.4; `01-Git-Strategy.md` §3 |
+| D-6: no branch protection required | 2026-11-10 | `02-` §3 |
 | **Single working branch:** `development` only. No feature, module, milestone or documentation branches. Remove or amend the "one feature per branch" rule | 2026-11-10 | This amendment: CLAUDE.md §5; `01` to `07`; planning roadmap; Module 1 logs |
 
 The single-branch instruction supersedes the earlier branch model (`feature/module-4-implementation`) and the earlier D-2, D-3 and D-5 options.
@@ -38,7 +40,7 @@ The single-branch instruction supersedes the earlier branch model (`feature/modu
 | D-3 | Merge method | **Superseded** | No feature merges. Release PR to `main` is a merge commit (`05-` §3) |
 | D-4 | Track `Reference/` (binary `.docx`) | **Open** | `Reference/` is still untracked |
 | D-5 | Primary checkout on `development` | **Approved 2026-11-10** (as part of the single-branch instruction) | Done |
-| D-6 | Branch protection | **Revised.** Protect `main`: PR required, no force-push, no deletion. Protect `development`: no force-push, no deletion. No PR requirement on `development` | Needs the Project Owner's action as repository admin |
+| D-6 | Branch protection | **Decided 2026-11-10: not required.** Single developer, localhost only. The approval gate is the control | No repository settings change |
 | D-7 | First version number | **Open** | `v0.1.0` proposed |
 | D-8 | Module 7 review turnaround | **Open** | Target for the Project Owner to set |
 | D-9 | Verification with detached worktrees | **Open** | Git does not allow a second worktree on `development`. Detached worktrees give isolated verification; development happens in the primary checkout. Approve, or propose another Module 3 exercise |

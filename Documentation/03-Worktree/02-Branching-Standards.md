@@ -1,7 +1,7 @@
 # 02 — Branching Standards
 
 **Applies to:** all branches in `ClaudeCodeBhaskar`
-**Status:** Amended 2026-11-10: one working branch
+**Status:** Amended 2026-11-10: one working branch. Branch protection not required (D-6)
 
 ---
 
@@ -21,23 +21,18 @@ No other branch is created. Feature, module, milestone, documentation, fix, chor
 - Tags: `vMAJOR.MINOR.PATCH` (SemVer), for example `v0.1.0` (`05-Release-Process.md`).
 - Worktree folders and verification worktrees (`07-Worktree-Standards.md`) are not branches and are not named after branches.
 
-## 3. Protection (recommended, decision D-6)
+## 3. Protection
 
-| Setting | `main` | `development` |
-|---|---|---|
-| Require pull request before merging | Yes | No (commits are approved in chat, §5.1 of CLAUDE.md) |
-| Block force-push | Yes | Yes |
-| Block branch deletion | Yes | Yes |
-| Require status checks | When a pipeline exists | When a pipeline exists |
+No branch protection is required (decision D-6, 2026-11-10). The project is a personal learning project with a single developer and localhost deployment only.
 
-Repository administration is done by the Project Owner.
+Control comes from the approval gate (CLAUDE.md §5.1): no commit or push happens until the user approves it. Force-push and branch deletion are still forbidden by the rules in `01-Git-Strategy.md` §2, but GitHub does not enforce them.
 
 ## 4. Local Hygiene
 
 - The primary checkout is on `development` (approved 2026-11-10).
 - `git fetch --prune` before starting work.
 - Keep `development` up to date with `git pull --ff-only origin development`. Do not create merge commits on `development` by accident.
-- Remove stale verification worktrees after use (`07-Worktree-Standards.md` §6).
+- Remove stale verification worktrees after use (`07-Worktree-Standards.md` §5).
 
 ## 5. Forbidden Patterns
 
