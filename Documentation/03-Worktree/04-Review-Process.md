@@ -13,7 +13,7 @@
 | 1. Self-check | Claude | Checklist in the approval package | Must pass before stage 2 |
 | 2. Approval package | Claude → user | Chat package (CLAUDE.md §5.1) for the release PR, merges, tags and changes outside the workflow | Approval before those steps |
 | 3. Post-commit check | Claude | Build, test and diff check after the commit | Failures fixed in a new commit |
-| 4. Code review (Module 7) | Mentor / Lead | Review comments | Comments resolved within the agreed timeline |
+| 4. Code review (Module 7) | Mentor / Lead | Review comments | Comments resolved as needed (no formal SLA, D-8) |
 | 5. Release review | Project Owner | Approved release PR to `main` | Required before merge to `main` |
 
 Routine commits to `development` follow the approved workflow (CLAUDE.md §5.4). The final review (stage 5) and the single PR to `main` are where the solution is reviewed as a whole. No pull request is raised for work on `development`.
@@ -41,7 +41,7 @@ After an approved commit:
 
 1. `git show --stat HEAD`: confirm only the approved files changed.
 2. For implementation: run the build and tests on `development`.
-3. If a check fails: report it, propose a fix commit, and wait for approval. Do not amend or force-push.
+3. If a check fails: report it and fix it with a new commit in `development`. Do not amend or force-push.
 
 ## 5. Module 7 Code Review (stage 4)
 
@@ -49,7 +49,7 @@ After an approved commit:
 - Commits are reviewed in order with `git log --oneline` and `git show <sha>`.
 - Each finding gets an ID (`RV-001`, `RV-002`, …) in `Documentation/03-Worktree/review-log.md` (created when Module 7 starts).
 - Each finding is marked resolved, or deferred with a reason. Resolution is a new commit.
-- Progress measure (training plan): comments resolved within the agreed timeline. The timeline is decision D-8.
+- Progress measure (training plan): comments resolved. No formal review SLA (D-8, 2026-11-10); reviews are performed as needed by the Project Owner.
 
 ## 6. Review Checklist
 
@@ -71,4 +71,4 @@ After an approved commit:
 
 ## 8. Turnaround
 
-No fixed turnaround is set. The Project Owner is the only approver. Decision D-8 asks whether a target should be set for Module 7.
+No formal review SLA is required (D-8, 2026-11-10). Reviews are performed as needed by the Project Owner, the only approver in this single-developer learning project.

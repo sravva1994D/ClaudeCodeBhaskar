@@ -86,11 +86,11 @@ When a change affects a requirement, update both matrices in the same change.
 - Urgent fixes are committed to `development` and released in the next release (no hotfix branch).
 - No force-push to shared branches.
 - No `--no-verify`, no skipped hooks, no bypassed signing, unless the user asks for it.
-- Claude performs no merge, pull request, tag or deletion without the user's approval. Commits and pushes to `development` follow §5.4.
+- Tags and deletions need the user's approval. The release PR and its merge follow §5.4 (D-11). Commits and pushes to `development` follow §5.4.
 
 ### 5.1 Approval gate
 
-Before a release PR to `main`, a tag, a merge, a deletion, or any change outside the workflow in §5.4, Claude presents an approval package in chat:
+Before a tag, a deletion, or any change outside the workflow in §5.4, Claude presents an approval package in chat. The release PR and its merge follow §5.4 (D-11):
 
 1. **Change summary**: what changed and why, in 3 to 6 bullets.
 2. **Files changed**: each path marked Added, Modified or Deleted.
@@ -129,18 +129,18 @@ Used only for releases to `main`. Work on `development` has no pull request.
 
 ---
 
-### 5.4 Development workflow (approved 2026-11-10)
+### 5.4 Development workflow (approved 2026-11-10; simplified by D-9 to D-11)
 
 1. Work directly in `development`.
-2. Commit and push changes regularly, using the format in §5.2.
+2. Commit and push documentation and code changes regularly, using the format in §5.2.
 3. Complete all project features.
-4. Test the entire application.
-5. Fix defects in `development`.
-6. Review the final solution.
-7. Create a single PR from `development` to `main`.
-8. Merge into `main` after final approval.
+4. Test the full application. Fix defects in `development`.
+5. Create one PR: `development` → `main`, once the whole application is complete and tested.
+6. Merge using a merge commit (no squash, no rebase).
 
 Each commit builds (implementation commits) and passes its checks before it is pushed. Each commit is listed in chat with its files and message.
+
+No feature, hotfix, documentation or milestone branches are used. No detached worktrees or parallel verification environments are used. All development, testing and validation happen in `development`.
 
 ---
 

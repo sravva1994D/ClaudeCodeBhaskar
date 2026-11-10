@@ -13,9 +13,9 @@ Semantic Versioning: `vMAJOR.MINOR.PATCH`.
 |---|---|
 | MAJOR | Incompatible change to stored data or to a released workflow. Not expected in Phase 1 |
 | MINOR | A group of requirements delivered (for example, Module 4 complete) |
-| PATCH | Fix to a released build, usually from a hotfix |
+| PATCH | Fix to a released build, committed directly to `development` (D-10) |
 
-Phase 1 starts at `v0.1.0` (decision D-7). Every tag lists the requirement IDs it delivers.
+Phase 1's first version is `v0.1.0` (approved 2026-11-10, D-7). Each tag's release notes list the requirement IDs it delivers.
 
 ## 2. Release Points
 
@@ -32,10 +32,10 @@ A release is cut only when all of these are true:
 |---|---|---|---|
 | 1 | Confirm `development` is green: build and tests pass | Claude | Test results recorded in the PR |
 | 2 | Update the release notes draft (`Documentation/03-Worktree/releases/vX.Y.Z.md`) with requirement IDs delivered and known gaps | Claude | Draft ready for review |
-| 3 | Raise PR `development` → `main` with the release template (§4) | Claude, after approval | PR open |
+| 3 | Raise one PR `development` → `main` with the release template (§4), once the whole application is complete and tested (D-11) | Claude | PR open |
 | 4 | Review and sign-off | Project Owner | Approved |
-| 5 | Merge with a merge commit (no squash, so `development` history is kept on `main`) | Claude, after approval | `main` updated |
-| 6 | Tag `main`: `vX.Y.Z` with an annotated tag | Claude, after approval | Tag exists locally and on `origin` after approval |
+| 5 | Merge with a merge commit (no squash, no rebase; D-11) | Claude | `main` updated |
+| 6 | Tag `main`: `vX.Y.Z` with an annotated tag (first tag `v0.1.0`, D-7) | Claude | Tag pushed to `origin` |
 | 7 | Confirm `main` and `development` point to the same commit or that `development` only adds documentation | Claude | Recorded in the release note |
 | 8 | Confirm `development` and `main` are as expected; no other branches exist | Claude | Recorded in the release note |
 
@@ -75,7 +75,7 @@ git push origin main
 git push origin vX.Y.Z
 ```
 
-These run only after the release PR is approved and the user has approved the Git commands (CLAUDE.md §5.1). Where possible, the merge happens through the PR on GitHub, not on the command line.
+These run as part of the workflow in CLAUDE.md §5.4, once the whole application is complete and tested (D-11). The merge is made from the PR on GitHub using a merge commit.
 
 ## 6. Release Checklist
 
