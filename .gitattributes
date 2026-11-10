@@ -1,0 +1,18 @@
+# Normalise text files: stored with LF in the repository, checked out with LF.
+# Avoids CRLF warnings on Windows (core.autocrlf=true on the developer machine).
+* text=auto eol=lf
+
+# Binary files are never converted.
+*.docx binary
+*.doc binary
+*.xlsx binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
