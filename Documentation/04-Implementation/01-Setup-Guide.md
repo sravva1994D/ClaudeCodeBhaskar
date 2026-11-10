@@ -75,6 +75,20 @@ Use the same instance name as in your user secret (§4). Output on first run: `D
 
 Schema is created by EF Core migrations, which arrive with the feature work. The script creates the empty database only.
 
+Integration tests use a separate database, `PatientManagement_Test` (plan `03-Module-1-Plan.md` §3A). Create it once per machine:
+
+```
+sqlcmd -S <your-instance> -E -b -i database/Scripts/02-create-test-database.sql
+```
+
+Set the test connection in user secrets for the integration test project. The committed default is the neutral sample in `tests/PatientManagement.IntegrationTests/appsettings.json`:
+
+```
+dotnet user-secrets set "ConnectionStrings:PatientManagementTest" "Server=<your-instance>;Database=PatientManagement_Test;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True" --project tests/PatientManagement.IntegrationTests
+```
+
+The tests refuse to run against any database whose name does not end in `_Test`.
+
 ## 5A. Create the Single Account
 
 Available from Module 1 onward, after the Users migration exists. Run once per machine:

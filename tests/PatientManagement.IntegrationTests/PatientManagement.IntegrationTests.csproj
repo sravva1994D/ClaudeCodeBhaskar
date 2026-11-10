@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <UserSecretsId>18c46900-e354-4fff-ba1e-4fad1bec6b5a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\PatientManagement.Web\PatientManagement.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
