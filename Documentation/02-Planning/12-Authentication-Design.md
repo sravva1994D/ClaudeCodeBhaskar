@@ -23,7 +23,8 @@
 | IAuthService / AuthService (Business) | Credential check, password reset, password policy |
 | IUserRepository (Data) | Find user by username or email; save hash |
 | Cookie authentication middleware (Web) | Issues and validates the sign-in cookie |
-| Password hasher | Salted one-way hash, PBKDF2-based (PDR-04: hasher only, custom Users table) |
+| IPasswordHasher (Business interface) | Hash and verify a password. No ASP.NET types in Business (approved 2026-11-10) |
+| Password hasher adapter (Web) | Implements `IPasswordHasher` over the ASP.NET Core `PasswordHasher`: salted one-way hash, PBKDF2-based (PDR-04: hasher only, custom Users table) |
 
 ## 3. Flows
 

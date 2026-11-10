@@ -22,6 +22,7 @@ No in-memory database provider is used for data tests. SQL-specific behaviour (u
 |---|---|---|
 | Seed-minimal | 1 user, blank clinic profile, 3 patients, 1 appointment per day for 5 days | Functional tests |
 | Seed-performance | Up to 1,000 patients, visits and appointments spread across the year | NFR-PRF-001, NFR-PRF-002, SC-002 |
+| Test database | `PatientManagement_Test` on the local SQL Server. Created by `database/Scripts/02-create-test-database.sql`; schema from EF Core migrations applied by the test fixture. Name guard: the fixture refuses any database whose name does not end in `_Test`. Data tests run each test in a transaction rolled back at the end; web tests clear the test tables before each test (approved 2026-11-10; `04-Implementation/03-Module-1-Plan.md` §3A) | Data and web integration tests |
 | Boundary | Vitals at 33.9, 34.0, 42.0, 42.1 °C; systolic 69, 70, 250, 251; diastolic 39, 40, 150, 151; pulse 29, 30, 220, 221 | FR-VIT-001 warnings |
 
 Test data is generated and marked as test data. It is never clinical data (BRD: no real patient data is held in Phase 1, see OOS-015 note).
@@ -38,7 +39,7 @@ Test data is generated and marked as test data. It is never clinical data (BRD: 
 | SC-005 | Export | Export CSV and PDF for one patient with and without date range; open both | Completes and opens without error | Planned |
 | NFR-CMP-001 | Browser matrix | Latest Chrome and Edge (desktop) on each release candidate; run the acceptance script. Safari not required (DEC-019) | Works in both (browser version recorded per run, PDR-28) | Planned |
 | NFR-SEC-001 | Login and access | Access protected URL unauthenticated; wrong password; 24-hour expiry test by setting clock or cookie expiry; seed command stores no password (TC-NFR-SEC-001-3) | Redirect to login; generic error; expiry honoured; no password in repo or logs | Planned |
-| NFR-SEC-002 | Hashing and transport | Verify hashed password in DB (not plain text); review HTTPS and TLS configuration for use beyond localhost (configuration review, not run on localhost). Encryption at rest is out of scope (DEC-017) | Hash check passes; configuration reviewed | Planned |
+| NFR-SEC-002 | Hashing and transport | TC-NFR-SEC-002-1: stored value is a hash that verifies with the original password and is not the plain value (automated); verify hashed password in DB (not plain text); review HTTPS and TLS configuration for use beyond localhost (configuration review, not run on localhost). Encryption at rest is out of scope (DEC-017) | Hash check passes; configuration reviewed | Planned |
 | NFR-USB-001 | Usability | No measurable criterion is defined in BRD. Qualitative check only: tab order, required markers, one-screen consultation (CON-016) | No pass/fail threshold (see SC-006 deferred) | Qualitative only |
 | NFR-SCL-001 | Volume | Seed-performance data loaded and all list screens used | Works with up to 1,000 patients | Planned |
 
