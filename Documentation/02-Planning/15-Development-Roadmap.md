@@ -17,32 +17,37 @@ Implementation follows this order. Each item maps to the milestone in §2.
 
 | Order | Item | Milestone |
 |---|---|---|
-| 1 | Authentication (login, password rules, idle timeout, forgot password) | M1 (login part) |
+| 1 | Authentication & Authorization (login, password rules, idle timeout, forgot password, console seed command) | M1 (login part) |
 | 2 | Patient Management | M2 |
-| 3 | Appointments | M3 |
-| 4 | Consultations (vitals, complaints, diagnosis, visit history) | M4 |
-| 5 | Prescriptions | M5 |
+| 3 | Appointment Management (schedule, daily list, status lifecycle, Archive, Finish) | M3 |
+| 4 | Consultation Workflow: vitals, complaints, diagnosis, visit history and detail | M4 |
+| 5 | Medication Management | M5 |
+| 6 | Prescription Management (print view, clinic profile) | M5 |
+| 7 | Patient History (single date and range filter) | M6 |
+| 8 | Search Functionality (recent patients; quick search completed) | M6 |
+| 9 | CSV Export | M7 |
+| 10 | PDF Export (printable view, browser Save as PDF) | M7 |
 
-After item 5: M6 (history filter, recent patients), M7 (export), M8 (non-functional verification), M9 (acceptance). A polished home page can be completed later.
+Shared components (Module 12) are the M1 foundation. The home page (SCR-03) is completed as its parts arrive (items 3 and 8). Each item finishes before the next starts. After item 10: M8 (non-functional verification) and M9 (acceptance). Order approved 2026-11-10 (DEC-023).
 
 ## 2. Milestones
 
 | Milestone | Name | Requirements | Depends on | Exit gate |
 |---|---|---|---|---|
 | M0 | Decisions closed | All PDR items in `17-Planning-Decisions-and-Open-Items.md` with Blocking = Yes | — | Done 2026-11-10: decisions recorded and BRD amended |
-| M1 | Foundation | NFR-SEC-001 (shell), NFR-USB-001 (layout), NFR-CMP-001 (browser setup) | M0 | Solution builds; migrations apply; login works with seeded user; layout renders |
+| M1 | Foundation | NFR-SEC-001 (shell), NFR-USB-001 (layout), NFR-CMP-001 (browser setup) | M0 | Solution builds; migrations apply; login works with the account created by the seed command; layout renders |
 | M2 | Patients | FR-PAT-001 to FR-PAT-004, FR-SRC-001 | M1 | Register, edit, view, search pass TC; duplicate warning works |
 | M3 | Appointments | FR-APT-001 to FR-APT-003; Home page daily list (FR-APT-002) | M2 | Schedule, overlap rejected, daily list, status change pass TC |
 | M4 | Consultation and history | FR-VIT-001, FR-CMP-001, FR-DIA-001, FR-HIS-001, FR-HIS-002, FR-SRC-003 | M2, M3 | Consultation saves with warnings; visit history and detail pass TC |
 | M5 | Medication and prescription | FR-RX-001, FR-RX-002, SC-004; clinic header data (PDR-15) | M4 | Medicines saved; print view complete; edit after print blocked |
 | M6 | History filter and recent patients | FR-HIS-003, FR-SRC-002 | M4 | Date filter and recent list pass TC |
 | M7 | Export | FR-EXP-001, FR-EXP-002, SC-005 | M4, M5 (prescription data) | CSV opens; printable export view prints and saves to PDF; content and range correct |
-| M8 | Non-functional verification | NFR-PRF-001, NFR-PRF-002, SC-001, SC-002, NFR-CMP-001, NFR-SEC-002, NFR-SCL-001 | M2 to M7 | Measurements recorded; browser matrix run; encryption checks done |
+| M8 | Non-functional verification | NFR-PRF-001, NFR-PRF-002, SC-001, SC-002, NFR-CMP-001, NFR-SEC-002, NFR-SCL-001 | M2 to M7 | Measurements recorded; Chrome and Edge matrix run; hashing and transport checks done (DEC-017, DEC-019) |
 | M9 | Phase 1 acceptance | All in-scope IDs (31) | M8 | Acceptance script complete; Project Owner acceptance |
 
 Notes:
 - M3 and M4 depend on M2 because appointments and consultations need a patient.
-- M6 is kept separate so it can be built after the core visit flow without blocking M5.
+- M5 (medication, prescriptions) comes before M6 (history filter, search) in the approved order (DEC-023).
 - SC-003, SC-006, NFR-REL-001 and NFR-REL-002 are not on the roadmap (OOS-011, OOS-014).
 
 ## 3. Sequence Diagram
@@ -82,7 +87,7 @@ flowchart LR
 | M8 | Non-functional verification results (WP-9.x) | Regular commits and pushes |
 | M9 | Acceptance record (WP-10.x) | Regular commits and pushes |
 
-No branch is created for a milestone. Each milestone ends with its checks passing on `development`. A release PR to `main` is raised only when the Project Owner decides a release is due (`Documentation/03-Worktree/05-Release-Process.md`).
+No branch is created for a milestone. Each milestone ends with its checks passing on `development`. A release PR to `main` is raised only after all planned features (§1A items 1 to 10) are implemented, tested and validated, and milestones M8 and M9 pass. This roadmap is the release criterion (DEC-023; `Documentation/03-Worktree/05-Release-Process.md`).
 
 ## 5. Risks to the Roadmap
 

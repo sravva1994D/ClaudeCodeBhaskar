@@ -3,7 +3,7 @@
 **Purpose:** The BRD is the single source of truth. Where the planning design needs a detail the BRD does not state, the item is listed here as a decision for review. **No item below has been assumed or decided.** Recommendations are options for the reviewer, not adopted choices.
 **Blocking:** `Yes` = the milestone shown cannot start until the item is decided. `No` = the design works either way and can be closed later.
 **Owner:** Project Owner (STK-003) for BRD behaviour. Mentor / Lead (STK-006) for process. Developer for technology choices, subject to review.
-**Status:** All 32 items **decided 2026-11-10** by the Project Owner (developer items included). The original options and recommendations are kept for the record.
+**Status:** All 32 items **decided 2026-11-10** by the Project Owner (developer items included). The original options and recommendations are kept for the record. Amendments after review are in §6.
 
 ## 1. BRD Behaviour Gaps (Project Owner)
 
@@ -98,3 +98,29 @@ These are inconsistencies with the amended BRD in artifacts from Module 1. They 
 | `01-BRD-Summary.md` §5 | Lists only OOS-001 to OOS-010 |
 | `11-Requirement-Catalog.md` | Priority note updated: approved by the Project Owner 2026-11-10 |
 | PDR-27 (Completed) | Confirmed 2026-11-10: Completed requires In Consultation first (`19-` §4) |
+
+## 6. Amendments and Decisions After Review (2026-11-10)
+
+Each row amends the earlier answer for the item shown. The earlier answers stay in §1 for the record. Decision IDs are in `Documentation/01-Brainstorming/14-Decision-and-Issue-Log.md`.
+
+| Item | Amends | Decision | Where applied |
+|---|---|---|---|
+| B1 | PDR-05 | Single account created by a console seed command. Password typed at the prompt; never stored; no sign-in fallback to a single account (DEC-018) | `12-` §8; `11-` §2.1; BRD |
+| B2 | PDR-21 (at rest); NFR-SEC-002 | Encryption at rest is out of Phase 1 scope. No Developer Edition install for TDE. Passwords hashed. TLS beyond localhost unchanged (DEC-017) | BRD NFR-SEC-002; `07-` §7; CLAUDE.md §9 |
+| Env | PDR-31 (environment) | SQL Server Express is the local edition. Committed configuration holds a neutral connection string; the local instance goes in user secrets (R-6) | `Documentation/04-Implementation/01-Setup-Guide.md` §1, §4 |
+| B3 | PDR-15 | Placeholder application logo in the print view. No logo upload and no logo column (DEC-021) | `06-` §2.8; `07-` §2; `09-` note |
+| B4 | PDR-17 | CSV dates in ISO format (yyyy-MM-dd). User-relevant columns only. Column set in `10-` §2.7 (DEC-020) | `10-` §2.7; BRD |
+| B5 | PDR-28; NFR-CMP-001 | Chromium-based browsers (Chrome, Edge) are the primary target. No Safari-specific support in Phase 1 (DEC-019) | BRD; `14-` §3; CLAUDE.md §10 |
+| B6 | PDR-08, PDR-09, PDR-27 | Archive action and Finish action are both in Phase 1. Completed = business process completed (Finish, after In Consultation). Archived = hidden from active lists, kept for history (DEC-022) | `19-` §4; `09-` rows 30 and 31; `10-` §2.4 |
+| C1 | PDR-26 | One consultation per appointment in all design files (0..1 cardinality; unique filtered index) | `06-` §3; `07-` §4; `08-` |
+| C2 | Implementation order | Approved 10-item order (DEC-023) | `15-` §1A; `04-Implementation/02-` §13 |
+| C3 | Release trigger | Release only after all planned features are implemented, tested and validated; the roadmap is the criterion (DEC-023) | `15-` §4; `03-Worktree/05-` §2 |
+| C7 | RTM | SC-006 reference removed from NFR-USB-001 | `12-RTM` (Module 1) |
+| D1 | Design rule | A printed prescription freezes the consultation fields it shows (vitals, complaints, diagnosis). Derived from FR-RX-002 AC-4 | `10-` §2.4; `13-` §3.4 |
+| D2 | Design rule | Systolic and diastolic are both entered or both empty; otherwise an error | `13-` §3.4 |
+| D3 | Design rule | A from-date after the to-date is an error | `13-` §3.6 |
+| D4 | Design rule | An empty search term is an error; any non-empty term is searched | `13-` §3.2 |
+| D5 | Design rule | Home page (SCR-03) shows today's list, quick search and recent patients | `05-` SCR-03 |
+| D6 | Design rule | Database-level no-overlap guard (filtered unique index on slot start) | `07-` §4 |
+
+Note on approval: the approval reply labelled D1 to D6 as the governance model. The governance model is already in CLAUDE.md §5 and is unchanged. D1 to D6 are recorded above with the recommended defaults under DEC-024. Any of them can be reversed with a new amendment.

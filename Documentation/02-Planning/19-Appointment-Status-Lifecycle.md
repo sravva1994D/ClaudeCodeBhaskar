@@ -35,7 +35,7 @@ Branches: **Scheduled → Cancelled**, **Scheduled → No-show**, **Checked-In �
 | Scheduled | No-show | Yes | Patient does not attend | Releases the slot (PDR-07) |
 | Checked-In | In Consultation | Yes | Consultation started from this appointment | Set by the system when the consultation starts (see §4) |
 | Checked-In | Cancelled | Yes | Appointment cancelled after arrival | Releases the slot (PDR-07) |
-| In Consultation | Completed | Yes | Consultation finished | Holds the slot until completed |
+| In Consultation | Completed | Yes | Finish action on the consultation (route 31) | Holds the slot until completed |
 | Completed | any | No | — | Terminal |
 | Cancelled | any | No | — | Terminal |
 | No-show | any | No | — | Terminal |
@@ -62,7 +62,7 @@ Six statuses: Scheduled, Checked-In, In Consultation, Completed, Cancelled, No-s
 ## 4. Link to the Consultation
 
 - Starting a consultation from an appointment sets the appointment to In Consultation (the appointment must be Checked-In first).
-- Completed follows In Consultation, so an appointment reaches Completed only after its consultation has started.
+- Completed means the business process for the appointment is finished. The consultation's Finish action (route 31) sets In Consultation → Completed. It is not available for other statuses (DEC-022).
 - **PDR-27 (confirmed 2026-11-10):** an appointment can only reach Completed after In Consultation. It cannot be marked Completed directly from Scheduled or Checked-In. This replaces the earlier answer that Completed needs no consultation.
 
 ## 5. Requirement Trace
@@ -80,3 +80,6 @@ Six statuses: Scheduled, Checked-In, In Consultation, Completed, Cancelled, No-s
 - Store status as a string with a check constraint on the six values.
 - Put the transition table in the Business layer (AppointmentService), not in the controller or the database.
 - Reject disallowed moves with a Result error that names the current and requested status.
+- Start from an appointment requires Checked-In. Otherwise it is rejected with the current status named.
+- Archive is a separate action (route 30). It does not change Status (PDR-09, DEC-022).
+- Finish (route 31) is the only action that sets Completed.

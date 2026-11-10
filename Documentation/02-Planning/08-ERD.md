@@ -69,12 +69,11 @@ erDiagram
     nvarchar Phone
     nvarchar DoctorName
     nvarchar RegistrationNumber
-    nvarchar LogoPath
   }
 
   PATIENTS ||--o{ APPOINTMENTS : "books"
   PATIENTS ||--o{ CONSULTATIONS : "has visits"
-  APPOINTMENTS |o--o{ CONSULTATIONS : "may start (PDR-26)"
+  APPOINTMENTS |o--o| CONSULTATIONS : "at most one (PDR-26)"
   CONSULTATIONS ||--o| VITAL_SIGNS : "0..1 vitals"
   CONSULTATIONS ||--o| PRESCRIPTIONS : "0..1 prescription"
   PRESCRIPTIONS ||--o{ PRESCRIPTION_ITEMS : "medicine lines"

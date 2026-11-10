@@ -54,15 +54,15 @@
 | Performance | Indexes on search and date columns (see `07-Database-Design.md`). Paged lists. No caching in Phase 1. Measured on localhost with 1,000 seeded patients. | NFR-PRF-001, NFR-PRF-002, NFR-SCL-001 |
 | Usability | Short forms, keyboard-friendly, one consultation screen for vitals, complaints, diagnosis and medicines. | NFR-USB-001, SC-001 |
 | Security | Global authorisation (all pages except login and forgot password). Anti-forgery tokens on POST. Secure password hashing. | NFR-SEC-001 |
-| Encryption | At rest: SQL Server Transparent Data Encryption (PDR-21). In transit: HTTPS required beyond localhost; plain HTTP on localhost. | NFR-SEC-002 |
-| Compatibility | Standard HTML and CSS. Test on latest Chrome, Edge and Safari (desktop). | NFR-CMP-001 |
+| Encryption | At rest: out of Phase 1 scope (DEC-017; localhost-only learning project). In transit: HTTPS required beyond localhost; plain HTTP on localhost. Passwords hashed. | NFR-SEC-002 |
+| Compatibility | Standard HTML and CSS. Test on latest Chrome and Edge (desktop). Safari not required (DEC-019). | NFR-CMP-001 |
 | Maintainability | Layer rules enforced by project references. Services are unit-testable. | Process (CON-017) |
 
 ## 5. Deployment View (Phase 1)
 
 ```
 Developer machine (localhost)
-├── Browser (Chrome | Edge | Safari, desktop)
+├── Browser (Chrome | Edge, desktop)
 │     └── HTTP  http://localhost:<port>            (HTTPS redirect configurable; see PDR-21)
 ├── PatientManagement.Web (ASP.NET Core MVC host, Kestrel)
 │     └── PatientManagement.Business (services, DTOs, validators)

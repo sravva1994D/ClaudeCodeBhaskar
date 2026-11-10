@@ -53,9 +53,13 @@ Routes use conventional MVC routing (`{controller}/{action}/{id?}`). Explicit ro
 | 27 | GET | `/Export/Patient/{id}/Print?from&to` | Export.PatientPrint | Export.BuildPrintViewAsync(id, from, to) | SCR-13 | FR-EXP-002 |
 | 28 | GET | `/ClinicProfile/Edit` | ClinicProfile.Edit | ClinicProfile.GetAsync() | SCR-14 | FR-RX-002 |
 | 29 | POST | `/ClinicProfile/Edit` | ClinicProfile.Edit | ClinicProfile.UpdateAsync(dto) | SCR-14 | FR-RX-002 |
+| 30 | POST | `/Appointments/Archive/{id}` | Appointments.Archive | Appointment.ArchiveAsync(id) | SCR-10 | FR-APT-003 (DEC-022) |
+| 31 | POST | `/Consultations/Finish/{id}` | Consultations.Finish | Consultation.FinishAsync(id) | SCR-11 | FR-APT-003 (DEC-022) |
 
 Notes on the table:
 - Row 19 is a POST that creates a consultation and redirects to row 20.
+- Rows 18 and 19 do not set Completed or Archived. Completed is set by row 31 (Finish, after In Consultation). Archived is set by row 30 and does not change Status (DEC-022).
+- Rows 28 and 29 hold header text only. There is no logo upload; the print view uses a placeholder logo (DEC-021).
 - Rows 23 and 24: the first POST marks the prescription printed and renders the print view. Later GETs render the same view without changing state. Repeated printing is allowed (PDR-14).
 - Row 26 returns a CSV download. Row 27 returns the printable HTML view (PDR-18); the browser's Save as PDF produces the PDF. Rows 21 to 24 check `IsPrinted` in the service.
 - Route parameters are integers. Patient codes (`PT-000123`) are shown in the UI but not used in routes.

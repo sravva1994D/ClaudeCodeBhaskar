@@ -7,7 +7,7 @@
 
 ```mermaid
 flowchart TB
-  Browser["Browser<br/>Chrome / Edge / Safari (desktop)"]
+  Browser["Browser<br/>Chrome / Edge (desktop)"]
 
   subgraph PRES["Presentation Layer — PatientManagement.Web (ASP.NET Core MVC)"]
     CTRL["Controllers"]

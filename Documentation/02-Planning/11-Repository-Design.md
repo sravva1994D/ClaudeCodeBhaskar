@@ -22,7 +22,8 @@
 |---|---|---|
 | GetByUsernameAsync(username) | User? | Sign-in |
 | GetByEmailAsync(email) | User? | Forgot password |
-| GetSingleUserAsync() | User? | Sign-in fallback when only one account exists (PDR-05) |
+
+Sign-in always matches the username. There is no fallback to a single account (DEC-018).
 | UpdateAsync(user) | void | Save new password hash |
 
 ### 2.2 IPatientRepository (FR-PAT-001 to FR-PAT-004, FR-SRC-001, FR-SRC-002)

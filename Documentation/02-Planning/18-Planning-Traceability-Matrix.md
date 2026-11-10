@@ -17,7 +17,7 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 | FR-PAT-004 | Must | SCR-04 | Patients.Search (7) | PatientService.SearchAsync | IPatientRepository.SearchAsync | Patients | TC-FR-PAT-004-1 to -3 | WP-3.5 | M2 | 23 |
 | FR-APT-001 | Must | SCR-09 | Appointments.Create (15, 16) | AppointmentService.ScheduleAsync, GetSlotsAsync | IAppointmentRepository.HasOverlapAsync, AddAsync | Appointments | TC-FR-APT-001-1 to -3 | WP-4.1, 4.2 | M3 | 06, 07, 26 |
 | FR-APT-002 | Must | SCR-03, SCR-10 | Home.Index (1); Appointments.Daily (17) | AppointmentService.GetDailyAsync | IAppointmentRepository.GetDailyAsync | Appointments | TC-FR-APT-002-1, -2 | WP-4.3, 4.5 | M3 | 09 |
-| FR-APT-003 | Must | SCR-10 | Appointments.UpdateStatus (18); Consultations.Start (19); lifecycle in `19-` | AppointmentService.UpdateStatusAsync, ArchiveAsync | IAppointmentRepository.GetByIdAsync | Appointments | TC-FR-APT-003-1, -2 | WP-4.4, 5.3 | M3 | 07, 08, 09, 27 |
+| FR-APT-003 | Must | SCR-10 | Appointments.UpdateStatus (18); Consultations.Start (19); Consultations.Finish (31); Appointments.Archive (30); lifecycle in `19-` | AppointmentService.UpdateStatusAsync, ArchiveAsync; ConsultationService.FinishAsync | IAppointmentRepository.GetByIdAsync | Appointments | TC-FR-APT-003-1 to -5 | WP-4.4, 5.3 | M3 | 07, 08, 09, 27 |
 | FR-VIT-001 | Must | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync; vitals validator | IVitalSignRepository.UpsertAsync | VitalSigns | TC-FR-VIT-001-1 to -5, boundary set | WP-5.1, 5.2, 5.4 | M4 | 19 |
 | FR-CMP-001 | Must | SCR-11, SCR-08 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | IConsultationRepository.GetByIdAsync | Consultations | TC-FR-CMP-001-1, -2 | WP-5.4 | M4 | 12 |
 | FR-DIA-001 | Must | SCR-11, SCR-08 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | IConsultationRepository.GetByIdAsync | Consultations | TC-FR-DIA-001-1, -2 | WP-5.4 | M4 | — |
@@ -40,9 +40,9 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 | NFR-PRF-001 | Must | All pages | — | — | — | — | Timed page load, 10 pages | WP-9.1 | M8 | 30 |
 | NFR-PRF-002 | Must | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService.SearchAsync; VisitService.ListAsync | Index strategy (07 §4) | Patients, Consultations | Timed search, 10 terms | WP-3.6, 9.1 | M2, M8 | 23, 30 |
 | NFR-SEC-001 | Must | SCR-01, SCR-02 | Account.* (2 to 6); global Authorize | AuthService.SignInAsync, ResetPasswordAsync | IUserRepository | Users | TC-NFR-SEC-001-1, -2 | WP-2.3, 2.4, 9.4 | M1, M8 | 02, 03, 04, 05, 20 |
-| NFR-SEC-002 | Must | All (storage and transport) | — | Password hash; HTTPS config | SQL Server encryption setting | Users (hash); database | Encryption checks | WP-9.4 | M1, M8 | 21 |
+| NFR-SEC-002 | Must | All (transport) | — | Password hash; HTTPS config | None at rest (DEC-017) | Users (hash) | Hash check; transport configuration review | WP-9.4 | M1, M8 | 21, DEC-017 |
 | NFR-SCL-001 | Must | All list screens | — | — | — | Patients (1,000 records) | Volume check | WP-9.5 | M8 | — |
-| NFR-CMP-001 | Must | All screens | — | — | — | — | Browser matrix | WP-2.5, 9.3 | M1, M8 | 28 |
+| NFR-CMP-001 | Must | All screens | — | — | — | — | Browser matrix (Chrome, Edge; DEC-019) | WP-2.5, 9.3 | M1, M8 | 28, DEC-019 |
 
 ## 3. Success Criteria
 
@@ -87,6 +87,8 @@ These are needed to implement a requirement. Each is traced to the requirement i
 | Clinic profile (SCR-14, ClinicProfile) | FR-RX-002 | The BRD requires header fields but not where they are entered (PDR-15) |
 | Users table | NFR-SEC-001 | Stores the single login account |
 | Anti-forgery tokens | NFR-SEC-001 | Protects form submissions on the single account |
+| Seed command (console) | NFR-SEC-001, CON-002 | Creates the single account; password typed at a prompt and never stored (DEC-018) |
+| Placeholder logo | FR-RX-002 | Logo image in the print view; no upload (DEC-021) |
 | Seed data (test set) | NFR-PRF-001, NFR-PRF-002, NFR-SCL-001 | Needed to measure performance at 1,000 records |
 
 ## 7. Changes Compared with Module 1 RTM

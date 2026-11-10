@@ -13,7 +13,7 @@ This guide gets the solution building, testing and running on your machine. It c
 | Item | Version used | How to check | Notes |
 |---|---|---|---|
 | .NET SDK | 10.0.401 (LTS) | `dotnet --version` | Install the .NET 10 SDK. Other SDKs can stay installed |
-| SQL Server | 16.0.1210.3 (SQL Server 2022, Express) on the verification machine | `sqlcmd -S <your-instance> -E -Q "SELECT SERVERPROPERTY('ProductVersion')"` | Your instance name may differ. The project default is `localhost` |
+| SQL Server | 16.0.1210.3 (SQL Server 2022, Express) on the verification machine | `sqlcmd -S <your-instance> -E -Q "SELECT SERVERPROPERTY('ProductVersion')"` | SQL Server Express is the supported local edition (environment decision, 2026-11-10). Express uses a named instance (for example `localhost\SQLEXPRESS`): set yours in user secrets (§4), not in committed files |
 | sqlcmd | Shipped with SQL Server tools | `sqlcmd -?` | Used to run database scripts |
 | Git | Any recent version | `git --version` | Required to get the code |
 | dotnet-ef | 10.0.14 (optional now) | `dotnet ef --version` | Needed only when migrations are added (see Developer Guide) |
@@ -75,6 +75,16 @@ Use the same instance name as in your user secret (§4). Output on first run: `D
 
 Schema is created by EF Core migrations, which arrive with the feature work. The script creates the empty database only.
 
+## 5A. Create the Single Account
+
+Available from Module 1 onward, after the Users migration exists. Run once per machine:
+
+```
+dotnet run --project src/PatientManagement.Web -- seed-user
+```
+
+The command prompts for username, email and password. The password is entered twice and is not shown. Only the hash is saved. Nothing is written to the repository, configuration or logs (DEC-018). If the account already exists, the command stops and changes nothing.
+
 ## 6. Run the Web App
 
 ```
@@ -104,6 +114,8 @@ No patient data or secrets are written to logs (CLAUDE.md §8).
 | Port 5092 in use | Another app uses the port | Change `applicationUrl` in `Properties/launchSettings.json` on your machine only |
 | Build warnings about `System.Security.Cryptography.Pkcs` | Transitive package version | Pinned in `Directory.Build.props`. Do not remove the pin without checking advisories |
 | `dotnet ef` not found | Tool not installed | Install it when migrations are needed (Developer Guide §5) |
+| Express connection fails with a named-instance error | Express uses `localhost\SQLEXPRESS`, not `localhost` | Set your instance in user secrets (§4) |
+| Seed command says an account exists | Only one account is supported | Nothing to do. Sign in with that account (DEC-018) |
 
 ## 9. What Was Verified (2026-11-10)
 

@@ -46,10 +46,11 @@ Duplicate check: same FullName, same DateOfBirth, or same Phone as an existing p
 ### 2.4 IConsultationService (FR-VIT-001, FR-CMP-001, FR-DIA-001, FR-HIS-002)
 | Method | Input | Output | Rules | Req IDs |
 |---|---|---|---|---|
-| StartAsync | patientId, appointmentId? | Result<ConsultationDto> | Patient must exist. Appointment (if given) must belong to the patient. Sets VisitDateTime. If from an appointment, sets it to In Consultation (`19-`) | FR-HIS-001, FR-APT-003 |
+| StartAsync | patientId, appointmentId? | Result<ConsultationDto> | Patient must exist. Appointment (if given) must belong to the patient and must be Checked-In; otherwise an error names the current status. Sets VisitDateTime. From an appointment, sets it to In Consultation (`19-`); an appointment already linked to a consultation is rejected (PDR-26) | FR-HIS-001, FR-APT-003 |
 | GetWorkingViewAsync | consultationId | ConsultationDto | Includes vitals, complaints, diagnosis and medicine lines. Read-only flag when printed | FR-VIT-001, FR-CMP-001, FR-DIA-001 |
 | SaveAsync | ConsultationSaveDto, confirmWarnings | Result<ConsultationDto> | Vitals: range warnings (AD-14). Missing vitals: warning only. Complaints and diagnosis: free text. Blocked when printed | FR-VIT-001, FR-CMP-001, FR-DIA-001 |
 | GetDetailAsync | consultationId | ConsultationDetailDto | Everything for the visit detail view | FR-HIS-002 |
+| FinishAsync | consultationId | Result | If linked to an appointment: In Consultation → Completed. Any other appointment status is rejected, naming the current status. Walk-in consultation: no status change (DEC-022) | FR-APT-003 |
 
 Vitals validator (warnings):
 
@@ -84,7 +85,31 @@ IVisitService and IConsultationService may be one class if the team prefers. The
 | BuildCsvAsync | patientId, from?, to? | ExportFile (bytes, name) | Patient details with visits, vitals, diagnosis, prescriptions. Single patient, optional range | FR-EXP-001 |
 | BuildPrintViewAsync | patientId, from?, to? | PrintViewDto | Same content as CSV, shaped for an A4 HTML print view. Browser Save as PDF produces the PDF (PDR-18) | FR-EXP-002 |
 
-Export content per BRD: patient data, with its visits, vitals, diagnosis and prescriptions. CSV layout per PDR-17: one row per visit.
+Export content per BRD: patient data, with its visits, vitals, diagnosis and prescriptions. CSV layout (DEC-020, resolves PDR-17): one row per visit.
+
+| # | Column | Source | Format |
+|---|---|---|---|
+| 1 | PatientCode | Patient | text |
+| 2 | FullName | Patient | text |
+| 3 | DateOfBirth | Patient | yyyy-MM-dd |
+| 4 | Gender | Patient | Male, Female or Other |
+| 5 | Phone | Patient | text |
+| 6 | Email | Patient | text |
+| 7 | Address | Patient | text |
+| 8 | VisitDate | Consultation | yyyy-MM-dd |
+| 9 | VisitTime | Consultation | HH:mm, clinic local time |
+| 10 | TemperatureC | VitalSign | decimal; blank if not recorded |
+| 11 | SystolicMmHg | VitalSign | integer; blank if not recorded |
+| 12 | DiastolicMmHg | VitalSign | integer; blank if not recorded |
+| 13 | PulseBpm | VitalSign | integer; blank if not recorded |
+| 14 | Complaints | Consultation | free text |
+| 15 | Diagnosis | Consultation | free text |
+| 16 | Medicines | PrescriptionItems | one cell; each medicine as `Name; Dosage; Frequency; Duration; Instructions` with blank parts omitted; medicines separated by ` | ` |
+
+- Excluded: Age (calculated, not stored), prescription print status, and internal IDs.
+- Format: comma-separated, header row, UTF-8 with a byte-order mark so spreadsheet tools show names correctly; values with commas or line breaks are quoted.
+- A patient with no visits gives one row with the patient columns filled and the visit columns blank.
+- The from and to filter applies to VisitDate.
 
 ### 2.8 IClinicProfileService (FR-RX-002)
 | Method | Input | Output | Rules | Req IDs |

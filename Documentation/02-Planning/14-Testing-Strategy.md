@@ -36,9 +36,9 @@ Test data is generated and marked as test data. It is never clinical data (BRD: 
 | SC-001 | Consultation record | Timed rehearsal: open consultation, enter vitals, complaints, diagnosis, 2 medicines, save | 2–3 min, usability goal, localhost, test data | Planned |
 | SC-004 | Prescription print | Print preview and A4 print to PDF; check all header and body elements | Generates and prints without error | Planned |
 | SC-005 | Export | Export CSV and PDF for one patient with and without date range; open both | Completes and opens without error | Planned |
-| NFR-CMP-001 | Browser matrix | Latest Chrome, Edge and Safari (desktop) on each release candidate; run the acceptance script | Works in all three (browser version recorded per run, PDR-28) | Planned |
-| NFR-SEC-001 | Login and access | Access protected URL unauthenticated; wrong password; 24-hour expiry test by setting clock or cookie expiry | Redirect to login; generic error; expiry honoured | Planned |
-| NFR-SEC-002 | Encryption | Verify hashed password in DB (not plain text); verify TLS when run beyond localhost; verify storage encryption setting on DB (PDR-21) | Per PDR-21 decision | Planned |
+| NFR-CMP-001 | Browser matrix | Latest Chrome and Edge (desktop) on each release candidate; run the acceptance script. Safari not required (DEC-019) | Works in both (browser version recorded per run, PDR-28) | Planned |
+| NFR-SEC-001 | Login and access | Access protected URL unauthenticated; wrong password; 24-hour expiry test by setting clock or cookie expiry; seed command stores no password (TC-NFR-SEC-001-3) | Redirect to login; generic error; expiry honoured; no password in repo or logs | Planned |
+| NFR-SEC-002 | Hashing and transport | Verify hashed password in DB (not plain text); review HTTPS and TLS configuration for use beyond localhost (configuration review, not run on localhost). Encryption at rest is out of scope (DEC-017) | Hash check passes; configuration reviewed | Planned |
 | NFR-USB-001 | Usability | No measurable criterion is defined in BRD. Qualitative check only: tab order, required markers, one-screen consultation (CON-016) | No pass/fail threshold (see SC-006 deferred) | Qualitative only |
 | NFR-SCL-001 | Volume | Seed-performance data loaded and all list screens used | Works with up to 1,000 patients | Planned |
 
@@ -56,7 +56,7 @@ Each row is one test scenario. The test ID format is `TC-<Req ID>-<n>`.
 | FR-PAT-004 | AC-1 name search; AC-2 phone search | TC-FR-PAT-004-1: search by name part; TC-FR-PAT-004-2: search by phone part; TC-FR-PAT-004-3: no match message |
 | FR-APT-001 | AC-1 schedule; AC-2 appears in schedule | TC-FR-APT-001-1: schedule for registered patient; TC-FR-APT-001-2: overlap rejected; TC-FR-APT-001-3: unregistered patient rejected |
 | FR-APT-002 | AC-1 daily list for chosen day | TC-FR-APT-002-1: list shows only that day; TC-FR-APT-002-2: archived rows hidden |
-| FR-APT-003 | AC-1 lifecycle statuses; AC-2 shown in list; AC-3 allowed moves only; AC-4 manual archive | TC-FR-APT-003-1: each allowed move; TC-FR-APT-003-2: each disallowed move, including reversal and Scheduled or Checked-In → Completed; TC-FR-APT-003-3: consultation start sets In Consultation; TC-FR-APT-003-4: archive hides appointment |
+| FR-APT-003 | AC-1 lifecycle statuses; AC-2 shown in list; AC-3 allowed moves only; AC-4 manual archive | TC-FR-APT-003-1: each allowed move; TC-FR-APT-003-2: each disallowed move, including reversal and Scheduled or Checked-In → Completed; TC-FR-APT-003-3: consultation start sets In Consultation; TC-FR-APT-003-4: archive hides appointment; TC-FR-APT-003-5: Finish sets Completed from In Consultation only |
 | FR-VIT-001 | AC-1 record vitals; AC-2 missing → warning, saved; AC-3 add later; AC-4 units; AC-5 range warnings with confirm | TC-FR-VIT-001-1 to -5 mapped to each AC; boundary tests in §2 |
 | FR-CMP-001 | AC-1 free text; AC-2 shown on consultation and history | TC-FR-CMP-001-1: save and reload; TC-FR-CMP-001-2: appears in visit detail |
 | FR-DIA-001 | AC-1 save notes; AC-2 shown on consultation and history | TC-FR-DIA-001-1; TC-FR-DIA-001-2 |
@@ -68,9 +68,9 @@ Each row is one test scenario. The test ID format is `TC-<Req ID>-<n>`.
 | FR-SRC-001 | AC-1 quick search returns matches | TC-FR-SRC-001-1 (uses FR-PAT-004 rules) |
 | FR-SRC-002 | AC-1 recently accessed patients shown | TC-FR-SRC-002-1: five patients, latest visit first; TC-FR-SRC-002-2: patients with no visit excluded (PDR-11) |
 | FR-SRC-003 | AC-1 move between profile and visits and back | TC-FR-SRC-003-1 |
-| FR-EXP-001 | AC-1 export CSV; AC-2 opens with expected columns | TC-FR-EXP-001-1: open in spreadsheet tool; TC-FR-EXP-001-2: date range applied |
+| FR-EXP-001 | AC-1 export CSV; AC-2 opens with expected columns | TC-FR-EXP-001-1: open in spreadsheet tool; TC-FR-EXP-001-2: date range applied; TC-FR-EXP-001-3: dates yyyy-MM-dd and one row for a patient with no visits |
 | FR-EXP-002 | AC-1 export PDF; AC-2 contains data | TC-FR-EXP-002-1: open the printable view and Save as PDF; TC-FR-EXP-002-2: date range applied |
-| NFR-SEC-001 | AC-1 no access without login; AC-2 one user | TC-NFR-SEC-001-1; TC-NFR-SEC-001-2 |
+| NFR-SEC-001 | AC-1 no access without login; AC-2 one user | TC-NFR-SEC-001-1; TC-NFR-SEC-001-2; TC-NFR-SEC-001-3 (seed command stores no password) |
 
 Acceptance criteria that are blocked in Module 1 (`10-Acceptance-Criteria.md`) are now unblocked by the answered open questions. All PDR items are decided (2026-11-10), so the test scenarios are final.
 

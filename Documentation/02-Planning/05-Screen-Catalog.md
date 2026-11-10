@@ -39,7 +39,7 @@
 |---|---|---|
 | NFR-USB-001 (fast entry) | All data-entry screens | Keyboard tab order; required fields marked; no nested dialogs |
 | NFR-PRF-001 (page load about 2 s) | All screens | Lean pages; no heavy client libraries |
-| NFR-CMP-001 (Chrome, Edge, Safari) | All screens | Standard controls only |
+| NFR-CMP-001 (Chrome, Edge) | All screens | Standard controls only |
 | Desktop only (BRD: Scope) | All screens | Fixed desktop layout; no mobile breakpoints required |
 | Warnings vs errors (FR-VIT-001, FR-PAT-001) | SCR-05, SCR-09, SCR-11 | Errors block save. Warnings show a message and require confirmation where the BRD says so |
 | Printed prescriptions read-only (FR-RX-002) | SCR-08, SCR-11, SCR-12 | Edit controls hidden or disabled once printed |

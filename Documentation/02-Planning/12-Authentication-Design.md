@@ -1,8 +1,8 @@
 # 12 — Authentication Design
 
 **Source:** BRD: Non-Functional Requirements > Security
-**Req IDs:** NFR-SEC-001 (secure single-user login), NFR-SEC-002 (encryption at rest and in transit)
-**Status:** Proposed for review. Password policy (PDR-02), seeding (PDR-05) and idle timeout (PDR-20) decided 2026-11-10.
+**Req IDs:** NFR-SEC-001 (secure single-user login), NFR-SEC-002 (password hashing; data in transit beyond localhost; encryption at rest out of Phase 1, DEC-017)
+**Status:** Proposed for review. Password policy (PDR-02) and idle timeout (PDR-20) decided 2026-11-10. Seeding amended by DEC-018 (§8).
 
 ## 1. BRD Requirements Being Designed
 
@@ -117,7 +117,7 @@ sequenceDiagram
 | No second verification on password reset | BRD, DEC-009 | Accepted risk (RSK-003) |
 | Forgot-password response reveals whether an email exists | Design consequence | Message per PDR-03 |
 | No change-password screen | BRD silent | Not designed. Use forgot-password flow |
-| Single account only | BRD, CON-002 | Account created by seeding (PDR-05) |
+| Single account only | BRD, CON-002 | Account created by the console seed command (PDR-05, DEC-018) |
 
 ## 7. Requirement Trace
 
@@ -130,3 +130,13 @@ sequenceDiagram
 | Hashed passwords | NFR-SEC-001 |
 | HTTPS beyond localhost | NFR-SEC-002 |
 | Anti-forgery tokens on POST | NFR-SEC-001 (supports login and form integrity) |
+
+## 8. Account Seeding (PDR-05 as amended, DEC-018)
+
+- A console command creates the single account when none exists. It is run once per machine (`dotnet run --project src/PatientManagement.Web -- seed-user`, planned command name).
+- The command prompts for username, email and password. The password is entered twice and is not shown on screen.
+- The password must meet the policy in §5. The command stores only the hash.
+- Nothing is stored in source, configuration, user secrets or the repository. The password is never logged.
+- If an account already exists, the command stops and changes nothing.
+- The command does not run at application start.
+- There is no sign-in fallback to the single account. Sign-in always matches the username.

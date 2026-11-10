@@ -101,7 +101,6 @@ Dosage, Frequency, Duration and Instructions are nullable in the database. Wheth
 | Phone | nvarchar(20) | Yes | |
 | DoctorName | nvarchar(200) | Yes | |
 | RegistrationNumber | nvarchar(100) | Yes | |
-| LogoPath | nvarchar(260) | Yes | |
 
 Nullable here because the BRD does not say when the header must be complete (PDR-15).
 
@@ -125,8 +124,9 @@ Nullable here because the BRD does not say when the header must be complete (PDR
 | IX_Patients_PatientCode (unique) | PatientCode | Lookup by code; uniqueness | FR-PAT-001 |
 | IX_Patients_DOB_Phone (duplicate check) | DateOfBirth, Phone | Duplicate warning | FR-PAT-001 |
 | IX_Appointments_StartTime | StartTime, IsArchived | Daily appointment list | FR-APT-002 |
-| IX_Appointments_Overlap | StartTime (filtered: IsArchived = 0) | Overlap check | FR-APT-001 |
+| IX_Appointments_Slot (unique, filtered) | StartTime where IsArchived = 0 and Status in (Scheduled, Checked-In, In Consultation, Completed) | DB-level no-overlap guard. The service check is the primary rule (D6) | FR-APT-001 |
 | IX_Consultations_Patient_Visit | PatientId, VisitDateTime DESC | Visit history, last visit, recent patients | FR-HIS-001, FR-HIS-003, FR-SRC-002 |
+| IX_Consultations_AppointmentId (unique, filtered) | AppointmentId where not null | One consultation per appointment (PDR-26) | FR-APT-001, FR-HIS-001 |
 | IX_Prescriptions_ConsultationId (unique) | ConsultationId | One prescription per visit | FR-RX-002 |
 
 **Search note:** BRD says "search by name or phone" (FR-PAT-004). A contains-match (`%term%`) cannot use a prefix index. For up to 1,000 rows this is expected to meet NFR-PRF-002 (2–5 s). If measurement fails, add a full-text index (decision recorded in the test report, not assumed now). Matching rule: contains, case-insensitive (PDR-23).
@@ -145,18 +145,19 @@ Nullable here because the BRD does not say when the header must be complete (PDR
 - Strings: `nvarchar` (Unicode for names and addresses).
 - Dates and times: local clinic time (AD-07). `datetime2(0)` (seconds precision).
 - Money: none. Billing is out of scope (OOS-002).
-- Files: logo path only (`LogoPath`). The file itself is stored on disk (PDR-15).
+- Files: none stored. The print view uses a static placeholder logo image in the web project (DEC-021).
 
 ## 7. Storage and Encryption
 
 | Item | Approach | Req IDs | Status |
 |---|---|---|---|
-| Storage encryption | SQL Server Transparent Data Encryption (BRD: standard storage encryption) | NFR-SEC-002 | PDR-21 (decided) |
+| Storage encryption | Out of Phase 1 scope (DEC-017). No TDE. | NFR-SEC-002 | Amended 2026-11-10 |
 | Password storage | Hash only (`PasswordHash`) | NFR-SEC-001 | Decided (BRD) |
 | Connection | Local connection string. Encrypted connection beyond localhost only | NFR-SEC-002 | PDR-21 |
 
 ## 8. Migrations
 
 - Initial migration creates all tables above.
-- Seed data (optional, for local testing only): one User (see PDR-05), a ClinicProfile row (blank values), and a generated sample of up to 1,000 patients for NFR-PRF tests. Sample data is clearly marked as test data and is not clinical data.
+- Account seed (console command, DEC-018; not a migration): one User. The password is typed at the prompt and never stored. A ClinicProfile row (blank values) is created on first use.
+- Test data (local testing only): a generated sample of up to 1,000 patients for NFR-PRF tests. Sample data is clearly marked as test data and is not clinical data.
 - No data migration from paper or other systems is in scope (BRD: Problem Statement mentions paper, but no import requirement exists).

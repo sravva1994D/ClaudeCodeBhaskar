@@ -21,9 +21,9 @@ Phase 1's first version is `v0.1.0` (approved 2026-11-10, D-7). Each tag's relea
 
 A release is cut only when all of these are true:
 
-- Module 4 implementation is merged to `development`.
-- Module 5 (Verification) has run the tests and recorded results.
-- Module 6 (Gap Analysis) shows no unplanned gaps for the release scope (`18-Planning-Traceability-Matrix.md`).
+- All planned features (roadmap `15-Development-Roadmap.md` §1A, items 1 to 10) are implemented and merged to `development`.
+- Milestones M8 (non-functional verification) and M9 (acceptance) have run and recorded results.
+- Traceability shows no unplanned gaps for the release scope (`18-Planning-Traceability-Matrix.md`).
 - The Project Owner has signed off the release PR.
 
 ## 3. Release Steps
@@ -55,7 +55,7 @@ Git commands for steps 5 and 6 are shown in §5. They are not run until approved
 ### Verification
 - Build: <result>
 - Tests: <result, count>
-- Browser matrix (Chrome, Edge, Safari): <versions>
+- Browser matrix (Chrome, Edge): <versions>
 - Performance (median of 5 runs): <results against NFR-PRF targets>
 
 ### Rollback
@@ -83,9 +83,9 @@ These run as part of the workflow in CLAUDE.md §5.4, once the whole application
 |---|---|---|
 | All in-scope requirement tests pass | Yes | `14-Testing-Strategy.md` |
 | Traceability shows no unplanned gaps | Yes | `18-Planning-Traceability-Matrix.md` |
-| Browser matrix run on latest Chrome, Edge and Safari (desktop) | Yes | NFR-CMP-001; PDR-28 |
+| Browser matrix run on latest Chrome and Edge (desktop); Safari not required | Yes | NFR-CMP-001; PDR-28; DEC-019 |
 | Performance measured on 1,000 seeded patients | Yes | NFR-PRF-001, NFR-PRF-002; PDR-30 |
-| Encryption checks (TDE, HTTPS beyond localhost) | Yes | NFR-SEC-002; PDR-21 |
+| Transport checks (HTTPS configuration beyond localhost; password hashing) | Yes | NFR-SEC-002; DEC-017 |
 | Backup and restore verified | **No.** Deferred | NFR-REL-001 and NFR-REL-002 are deferred (OOS-011). Risk accepted: RSK-004 |
 | Release notes list requirement IDs | Yes | CLAUDE.md §4 |
 | No secrets or patient data in the release | Yes | CLAUDE.md §9 |

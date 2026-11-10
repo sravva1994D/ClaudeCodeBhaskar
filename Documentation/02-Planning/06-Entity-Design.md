@@ -27,7 +27,7 @@
 | PasswordHash | string(256) | Required. Never plain text | NFR-SEC-001 |
 | Email | string(256) | Required. Matched by forgot-password | NFR-SEC-001 |
 
-Only one row is expected. No role field (CON-002). Created once by a seed script (PDR-05).
+Only one row is expected. No role field (CON-002). Created once by the console seed command; the password is typed at a prompt and never stored (PDR-05 as amended, DEC-018).
 
 ### 2.2 Patient
 | Attribute | Type | Rules | Req IDs |
@@ -110,7 +110,7 @@ Medicines are free text. There is no medicine catalogue (BRD: free text only; no
 | Phone | string(20) | Required for printing | FR-RX-002 |
 | DoctorName | string(200) | Required for printing | FR-RX-002 |
 | RegistrationNumber | string(100) | Required for printing | FR-RX-002 |
-| LogoPath | string(260) | Optional. Logo file stored on disk (PDR-15) | FR-RX-002 |
+| (no logo field) | — | Phase 1 print view shows a static placeholder logo image; no upload (PDR-15 as amended, DEC-021) | FR-RX-002 |
 
 The BRD requires these header fields but does not say where they are entered (PDR-15). "Required for printing" means the print view shows a notice when a value is missing. It does not add a rule the BRD does not state. Header entry is decided under PDR-15.
 
@@ -120,7 +120,7 @@ The BRD requires these header fields but does not say where they are entered (PD
 |---|---|---|---|
 | Patient | Appointment | 1 : 0..* | An appointment needs a registered patient |
 | Patient | Consultation | 1 : 0..* | Every visit belongs to one patient |
-| Appointment | Consultation | 0..1 : 0..* | Optional link; one appointment may have more than one consultation until PDR-26 is decided |
+| Appointment | Consultation | 0..1 : 0..1 | Optional link; one consultation per appointment (PDR-26) |
 | Consultation | VitalSign | 1 : 0..1 | Vitals optional at save |
 | Consultation | Prescription | 1 : 0..1 | One prescription per consultation (BRD) |
 | Prescription | PrescriptionItem | 1 : 0..* | Multiple medicines (FR-RX-001 AC-2) |

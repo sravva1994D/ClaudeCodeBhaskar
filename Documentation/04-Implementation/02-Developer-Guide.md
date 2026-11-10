@@ -28,6 +28,7 @@ PatientManagement.sln
 │   └── PatientManagement.Data/           Data layer
 │       ├── Context/                      DbContext and data registration
 │       ├── Entities/                     EF Core entities
+│       ├── Abstractions/                 Repository interfaces (implemented in Repositories/)
 │       ├── Repositories/                 Repositories (thin, one per aggregate)
 │       └── Migrations/                   EF Core migrations
 ├── tests/
@@ -107,6 +108,7 @@ Constraints (from the planning documents):
 | Connection string (neutral sample) | `appsettings.json` (`ConnectionStrings:PatientManagement`) | Yes. Server `localhost`, Windows authentication, no password |
 | Connection string (personal) | User secrets (`dotnet user-secrets`) | No |
 | Passwords, keys, certificates | User secrets or environment variables | Never |
+| Single account password | Typed at the seed command prompt; never stored (DEC-018) | Never |
 | Local launch URLs | `Properties/launchSettings.json` | Yes (change locally only if needed) |
 
 Read configuration through `IConfiguration` or the options pattern. Do not hard-code values in code.
@@ -175,6 +177,9 @@ dotnet test tests/PatientManagement.IntegrationTests
 - Do not implement BRD features ahead of their work package (`Documentation/02-Planning/16-`).
 - Do not put connection strings with passwords, or any secret, in source control.
 - Do not commit machine-specific values such as instance names (R-6).
+- Do not hard-code passwords, or password-like values, in source, configuration or tests (DEC-018).
+- Do not add TDE or other at-rest encryption work in Phase 1 (DEC-017).
+- Do not add Safari-specific support or tests in Phase 1 (DEC-019).
 
 ## 13. Implementation Order
 
@@ -182,10 +187,15 @@ Approved 2026-11-10. Work in this order, and finish each item before starting th
 
 | Order | Item | Requirements (main) | Planning milestone |
 |---|---|---|---|
-| 1 | Authentication | NFR-SEC-001, NFR-SEC-002 (hashing, encryption settings) | M1 (login part) |
-| 2 | Patient Management | FR-PAT-001 to FR-PAT-004, FR-SRC-001 | M2 |
-| 3 | Appointments | FR-APT-001 to FR-APT-003, FR-APT-002 on the home page | M3 |
-| 4 | Consultations | FR-VIT-001, FR-CMP-001, FR-DIA-001, FR-HIS-001 to FR-HIS-003, FR-SRC-002, FR-SRC-003 | M4, M6 |
-| 5 | Prescriptions | FR-RX-001, FR-RX-002, SC-004 | M5 |
+| 1 | Authentication & Authorization | NFR-SEC-001; NFR-SEC-002 (hashing, transport) | M1 (login part) |
+| 2 | Patient Management | FR-PAT-001 to FR-PAT-004; FR-SRC-001; FR-SRC-003 (profile link) | M2 |
+| 3 | Appointment Management | FR-APT-001 to FR-APT-003; FR-APT-002 on the home page | M3 |
+| 4 | Consultation Workflow | FR-VIT-001, FR-CMP-001, FR-DIA-001; FR-HIS-001 and FR-HIS-002 (visit list and detail) | M4 |
+| 5 | Medication Management | FR-RX-001 | M5 |
+| 6 | Prescription Management | FR-RX-002, SC-004 | M5 |
+| 7 | Patient History | FR-HIS-003 (single date and range filter) | M6 |
+| 8 | Search Functionality | FR-SRC-002 (recent patients); FR-SRC-001 complete | M6 |
+| 9 | CSV Export | FR-EXP-001, SC-005 (CSV) | M7 |
+| 10 | PDF Export | FR-EXP-002, SC-005 (printable view) | M7 |
 
-Then: export (FR-EXP-001, FR-EXP-002; M7), non-functional verification (M8), and Phase 1 acceptance (M9). Full sequence: `Documentation/02-Planning/15-Development-Roadmap.md`.
+Then: non-functional verification (M8) and Phase 1 acceptance (M9). Each item finishes before the next starts (DEC-023). Full sequence: `Documentation/02-Planning/15-Development-Roadmap.md` §1A.
