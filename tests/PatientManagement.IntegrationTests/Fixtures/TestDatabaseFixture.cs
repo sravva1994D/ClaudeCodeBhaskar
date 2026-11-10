@@ -59,7 +59,7 @@ public sealed partial class TestDatabaseFixture : IAsyncLifetime
     [GeneratedRegex("^[A-Za-z_][A-Za-z0-9_]*$")]
     private static partial Regex IdentifierPattern();
 
-    private static string ReadConnectionString()
+    public static string ReadConnectionString()
     {
         var configuration = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
