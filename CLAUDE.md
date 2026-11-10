@@ -80,10 +80,10 @@ When a change affects a requirement, update both matrices in the same change.
 
 ## 5. Git Workflow (user instruction, 2026-11-10)
 
-- **Documentation is committed directly to `development`**, after the user approves each commit (D-1, approved 2026-11-10). This covers the BRD, requirements, planning, traceability, architecture, CLAUDE.md, analysis and supporting documentation. Documentation and implementation work both reach `development` this way or by pull request.
-- **Implementation** goes on a feature branch (`feature/module-4-implementation`, D-2), merged to `development` by pull request.
-- Never commit to or push to `main` directly. `development` receives documentation commits (above) and merged pull requests.
-- One feature per branch. One PR per feature.
+- **`development` is the only working branch.** All project work is committed directly to it: BRD, requirements, planning, traceability, architecture, CLAUDE.md, analysis, supporting documentation and implementation. Each commit needs the user's approval first (§5.1).
+- **No other working branches.** No feature, module, milestone, documentation, fix, chore or hotfix branches.
+- **`main` receives releases only**, through a release PR from `development` with the Project Owner's sign-off. Nothing is committed to `main` directly.
+- Urgent fixes are committed to `development` and released in the next release (no hotfix branch).
 - No force-push to shared branches.
 - No `--no-verify`, no skipped hooks, no bypassed signing, unless the user asks for it.
 - Claude performs no Git write operation (branch, commit, push, PR, merge, delete) without the user's approval.
@@ -102,7 +102,7 @@ Claude stops and waits for approval. It does not stage, commit, push or open a P
 
 ### 5.2 Branch and commit format
 
-Branch names: `feature/<kebab-case-topic>`, `fix/<kebab-case-topic>`, `chore/<kebab-case-topic>`.
+Branch: `development` only. No other working branches are created.
 
 Commit message (Conventional Commits):
 
@@ -119,9 +119,11 @@ Requirements: FR-PAT-001, FR-PAT-002
 - Each commit builds.
 - Claude-authored commits end with: `Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>`
 
-### 5.3 PR description
+### 5.3 Release PR description
 
-- Title: `<type>(<scope>): <summary>`. Base branch: `development`.
+Used only for releases to `main`. Work on `development` has no pull request.
+
+- Title: `release: vX.Y.Z`. Base branch: `main`. Head: `development`.
 - Sections: Summary, Requirements (with status), Traceability (matrices updated yes or no; BRD changed yes or no), Changes, Testing (unit, integration, manual), Risks, Checklist.
 - Ends with: `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
 

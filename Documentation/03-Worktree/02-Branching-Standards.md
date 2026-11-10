@@ -1,71 +1,50 @@
 # 02 — Branching Standards
 
 **Applies to:** all branches in `ClaudeCodeBhaskar`
-**Status:** Proposed for review
+**Status:** Amended 2026-11-10: one working branch
 
 ---
 
-## 1. Branch Names
+## 1. Branches
 
-| Type | Pattern | Example | Cut from | Merged into | Used in Phase 1 |
-|---|---|---|---|---|---|
-| Protected | `main` | `main` | — | — | Yes |
-| Integration | `development` | `development` | — | — | Yes |
-| Module 4 implementation | `feature/module-4-implementation` | `feature/module-4-implementation` | `development` | `development` (PR) | Yes |
-| Feature (later modules) | `feature/<kebab-topic>` | `feature/module-7-review-fixes` | `development` | `development` (PR) | As needed |
-| Fix | `fix/<kebab-topic>` | `fix/prescription-print-margin` | `development` | `development` (PR) | As needed |
-| Chore | `chore/<kebab-topic>` | `chore/update-gitignore` | `development` | `development` (PR) | As needed |
-| Hotfix | `hotfix/<kebab-topic>` | `hotfix/print-crash` | `main` | `main` (PR), then back-merged to `development` | Only if a released build is broken |
-| Release | `release/vX.Y.Z` | `release/v0.1.0` | `development` | `main` (PR) | Only if stabilisation is needed before release |
+| Branch | Type | Created by | Deleted | Used for |
+|---|---|---|---|---|
+| `development` | Working branch | Exists | Never | All project work: documentation, requirements, planning, governance and implementation |
+| `main` | Release branch | Exists | Never | Released code only, updated by release PR |
+| Tags `vX.Y.Z` | Release markers | Created on `main` after a release PR is merged | Never (tags are not moved or deleted once pushed) | Marking releases |
 
-Documentation has no branch type. It is committed on `development` (see `01-Git-Strategy.md` §3.1). The `docs/` prefix is not used unless decision D-1 changes this.
+No other branch is created. Feature, module, milestone, documentation, fix, chore, hotfix and release branches are not used.
 
-## 2. Naming Rules
+## 2. Naming
 
-- Lower-case ASCII. Words separated by hyphens. No spaces, underscores or capitals.
-- Start with the type, then `/`, then the topic: `<type>/<topic>`.
-- Topic: 3 to 40 characters, describes the work, not the person.
-- Module branches use `module-<n>-<topic>` so the module is visible in the name.
-- No ticket or ID numbers in branch names. Requirement IDs go in commit messages.
-- Do not reuse a branch name after its branch is merged and deleted.
+- Only `development` and `main` are named. No names are invented for work.
+- Tags: `vMAJOR.MINOR.PATCH` (SemVer), for example `v0.1.0` (`05-Release-Process.md`).
+- Worktree folders and verification worktrees (`07-Worktree-Standards.md`) are not branches and are not named after branches.
 
-## 3. Branch Lifetime
-
-| Branch | Lifetime |
-|---|---|
-| `feature/module-4-implementation` | From the start of Module 4 until its PR is merged. Delete remote and local after merge |
-| `fix/*`, `chore/*` | Until merged. Delete after merge |
-| `hotfix/*` | Until merged to `main`. Delete after back-merge |
-| `release/*` | Until merged to `main` and tagged. Delete after tag |
-| `main`, `development` | Permanent. Never deleted |
-
-## 4. Protection
-
-Recommended settings on GitHub (decision D-6):
+## 3. Protection (recommended, decision D-6)
 
 | Setting | `main` | `development` |
 |---|---|---|
-| Require pull request before merging | Yes | Yes (documentation commits excepted if D-1 says so) |
-| Require approval before merging | Yes (1 approval) | Yes (1 approval) |
+| Require pull request before merging | Yes | No (commits are approved in chat, §5.1 of CLAUDE.md) |
 | Block force-push | Yes | Yes |
 | Block branch deletion | Yes | Yes |
-| Require status checks | When CI exists | When CI exists |
+| Require status checks | When a pipeline exists | When a pipeline exists |
 
-Repository administration is done by the Project Owner, not by Claude.
+Repository administration is done by the Project Owner.
 
-## 5. Local Branch Hygiene
+## 4. Local Hygiene
 
-- The primary checkout is on `development` for documentation work (decision D-5).
-- Feature work runs in a worktree (see `07-Worktree-Standards.md`).
-- Local branches are pruned after merge: `git branch -d <name>` (only after confirming it is merged).
+- The primary checkout is on `development` (approved 2026-11-10).
 - `git fetch --prune` before starting work.
+- Keep `development` up to date with `git pull --ff-only origin development`. Do not create merge commits on `development` by accident.
+- Remove stale verification worktrees after use (`07-Worktree-Standards.md` §6).
 
-## 6. Forbidden Patterns
+## 5. Forbidden Patterns
 
 | Pattern | Reason |
 |---|---|
-| Commits directly to `main` | Released code only |
-| Force-push to `main`, `development` or a shared branch | Rewrites history others depend on |
-| Long-lived branches off `feature/module-4-implementation` | Keeps Module 4 one reviewable unit |
-| Branches named after people | Not a topic |
-| Committing secrets, local settings or build output | See `03-Commit-Standards.md` §6 |
+| Creating any other working branch | Single working branch instruction (2026-11-10) |
+| Committing directly to `main` | Released code only |
+| Force-push to `development` or `main` | Rewrites shared history |
+| Moving or deleting a pushed tag | Tags are release markers |
+| Committing secrets, local settings or build output | `03-Commit-Standards.md` §6 |

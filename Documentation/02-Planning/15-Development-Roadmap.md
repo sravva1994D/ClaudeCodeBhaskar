@@ -6,7 +6,7 @@
 
 ## 1. Principles
 
-- Each feature is built on its own branch, reviewed, then merged to `development` through a pull request (project process; DEC-008). No Git operations are performed until the Project Owner approves.
+- All work is committed directly to `development`, the only working branch (single-branch instruction, 2026-11-10). Each commit needs the Project Owner's approval first (CLAUDE.md §5.1).
 - A feature starts only when its PDR items are closed. All were closed on 2026-11-10.
 - Each milestone ends with its requirements tested (`14-Testing-Strategy.md`).
 - Non-functional verification runs on a release candidate, after all features are merged.
@@ -53,22 +53,22 @@ flowchart LR
   M8 --> M9["M9 Phase 1 acceptance"]
 ```
 
-## 4. Feature Branch Plan (per milestone)
+## 4. Commit Plan on `development` (per milestone)
 
-| Milestone | Branch name (proposed) | One PR per | Label |
-|---|---|---|---|
-| M0 | `docs/planning-decisions` | BRD amendments only | `docs/brd` |
-| M1 | `feature/foundation-shell` | Milestone | feature |
-| M2 | `feature/patient-management` | Milestone | feature |
-| M3 | `feature/appointments` | Milestone | feature |
-| M4 | `feature/consultation-history` | Milestone | feature |
-| M5 | `feature/prescription-print` | Milestone | feature |
-| M6 | `feature/history-filter-recent` | Milestone | feature |
-| M7 | `feature/export` | Milestone | feature |
-| M8 | `test/non-functional-verification` | Test artifacts only | test |
-| M9 | — | Acceptance record | docs |
+| Milestone | Commits on `development` | Approval gate |
+|---|---|---|
+| M0 | Planning decisions and BRD amendments (docs) | Once per commit |
+| M1 | Foundation work packages (WP-2.x), one commit per step | Once per commit |
+| M2 | Patient management (WP-3.x) | Once per commit |
+| M3 | Appointments (WP-4.x) | Once per commit |
+| M4 | Consultation and history (WP-5.x) | Once per commit |
+| M5 | Medication and prescription (WP-6.x) | Once per commit |
+| M6 | History filter and recent patients (WP-7.x) | Once per commit |
+| M7 | Export (WP-8.x) | Once per commit |
+| M8 | Non-functional verification results (WP-9.x) | Once per commit |
+| M9 | Acceptance record (WP-10.x) | Once per commit |
 
-Branch names are proposals. No branch has been created.
+No branch is created for a milestone. Each milestone ends with its checks passing on `development`. A release PR to `main` is raised only when the Project Owner decides a release is due (`Documentation/03-Worktree/05-Release-Process.md`).
 
 ## 5. Risks to the Roadmap
 

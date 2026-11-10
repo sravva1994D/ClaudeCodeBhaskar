@@ -2,7 +2,7 @@
 
 **Module:** 3 — Worktree (training plan)
 **Applies to:** Repository `ClaudeCodeBhaskar`, remote `origin` (GitHub)
-**Status:** Proposed for review. No Git operation has been performed for this artifact set.
+**Status:** Amended 2026-11-10: `development` is the only working branch (Project Owner instruction)
 
 ---
 
@@ -10,107 +10,78 @@
 
 ```mermaid
 flowchart BT
-  MAIN["main<br/>released, tagged"]
-  DEV["development<br/>integration; documentation lives here"]
-  FEAT["feature/module-4-implementation<br/>implementation only"]
-  FEAT -->|"PR (squash merge)"| DEV
-  DEV -->|"PR (merge commit)"| MAIN
-  HOT["hotfix/&lt;topic&gt;"] -->|"PR"| MAIN
-  MAIN -.->|"back-merge after hotfix"| DEV
+  DEV["development<br/>the only working branch<br/>all documentation and implementation"]
+  MAIN["main<br/>releases only, tagged"]
+  DEV -->|"release PR (merge commit)"| MAIN
 ```
 
-| Branch | Purpose | Who writes to it | Direct push | Receives from |
+| Branch | Purpose | Who writes to it | Direct commit | Receives from |
 |---|---|---|---|---|
-| `main` | Released code only. Every commit is a release or hotfix | Pull requests only | Not allowed | `development` (release PR), `hotfix/*` |
-| `development` | Integration branch. Holds all approved documentation and merged implementation | Pull requests; approved documentation commits (see §3.1) | Documentation commits only, after approval (see decision D-1) | `feature/module-4-implementation`, `docs/*` if used, back-merges |
-| `feature/module-4-implementation` | Module 4 implementation (the approved plan) | Claude, inside its worktree, after approval | Yes, by the approved commit flow | Cut from `development` |
+| `development` | The only working branch. Holds all documentation, requirements, planning, governance and implementation | Claude, after the user approves each commit | Yes, after approval (approval gate, CLAUDE.md §5.1) | Commits made here |
+| `main` | Released code only. Each release is a tagged merge commit | Release PR only | No | `development` |
+
+No other branches are created. This covers feature, module, milestone, documentation, fix, chore, hotfix and release branches.
 
 ## 2. Rules
 
-1. **Documentation work stays on `development`.** Requirements, planning, workflow and governance files are not put on feature branches.
-2. **Only implementation uses a feature branch.** Application code, tests and migrations go on `feature/module-4-implementation`.
-3. **Pull request from `feature/module-4-implementation` to `development`.** One PR for the Module 4 delivery.
-4. **Pull request from `development` to `main`.** Only at a release point (see `05-Release-Process.md`).
-5. **Nothing is committed to `main` directly.** Hotfixes go through `hotfix/*` and a PR.
-6. **Nothing is pushed or merged without the approval gate** (CLAUDE.md §5.1 and `03-Commit-Standards.md` §5).
-7. **No force-push** to `main`, `development` or any branch that others use.
-8. **Every change is traceable** to requirement IDs in its commit messages and PR description.
+1. **`development` is the only working branch.** All project work is committed directly to it.
+2. **No other working branches.** No feature, module, milestone or documentation branches.
+3. **Commits need approval first.** The approval package in CLAUDE.md §5.1 is shown, and the user approves, before each commit or push.
+4. **`main` changes only through a release PR** from `development`, with the Project Owner's sign-off (`05-Release-Process.md`).
+5. **Nothing is committed to `main` directly.**
+6. **No force-push** to `development` or `main`.
+7. **No history rewrite on pushed commits.** Mistakes are reverted by new commits (`06-Rollback-Process.md`).
+8. **Every change is traceable.** Commit messages list requirement IDs and decision references.
 
 ## 3. Flows
 
-### 3.1 Documentation flow
+### 3.1 Work flow (all project work)
 
 ```
-edit files in the primary checkout (on development)
+primary checkout on development (up to date with origin)
+  → make the change
+  → run checks (build and tests for implementation)
   → approval package in chat (CLAUDE.md §5.1)
   → user approves
-  → commit on development (docs-only commit, Requirements footer when relevant)
+  → commit on development (03-Commit-Standards.md)
   → push development to origin
 ```
 
-No feature branch and no PR for documentation. Decision D-1 asks whether a documentation PR should be used instead.
-
-### 3.2 Implementation flow (Module 4)
+### 3.2 Release flow
 
 ```
-development (up to date)
-  → create worktree and branch feature/module-4-implementation from development
-  → plan confirmed (Module 2 approved) → implement in the worktree
-  → each work package: tests run, commit (approval gate first)
-  → push feature branch
-  → PR feature/module-4-implementation → development (squash merge)
-  → review (see 04-Review-Process.md)
-  → merge; delete remote and local feature branch; remove worktree
-```
-
-### 3.3 Release flow
-
-```
-development (all Module 4 merged, tests pass, matrix checked)
-  → PR development → main (merge commit)
+development (all work for the release committed, checks passed, matrix checked)
+  → release PR development → main (merge commit)
   → review and Project Owner sign-off
   → merge; tag vX.Y.Z on main
-  → back-check that development equals main (no differences)
 ```
 
 See `05-Release-Process.md`.
 
-### 3.4 Hotfix flow
+### 3.3 Urgent fix flow
 
-```
-main
-  → hotfix/<topic> from main
-  → fix, test, PR hotfix/<topic> → main
-  → merge; tag patch version on main
-  → back-merge main into development (PR or approved commit)
-```
-
-See `06-Rollback-Process.md` §4.
+There is no hotfix branch. An urgent fix is committed to `development` through the approval gate, then released through the release flow in §3.2. If a released build must be fixed before the next release, the fix goes to `development` and a patch release follows the same steps (decision D-10).
 
 ## 4. Current State (observed 2026-11-10)
 
 | Item | State |
 |---|---|
-| `main` | `115126c` (Delete README.md). Equal to `origin/main` |
-| `development` | Exists on `origin` at `115126c`. No local branch yet |
-| `feature/module-4-implementation` | Does not exist |
-| Worktrees | One: the primary checkout on `main` |
+| `development` | Local and `origin/development` at the same commit after the documentation push (`a875aac`) |
+| `main` | `115126c`. Not yet updated by a release |
+| Working branches | `development` only |
+| Worktrees | Primary checkout on `development` |
 | Tags | None |
-| Working tree | `BRD/`, `Documentation/`, `Reference/` and `CLAUDE.md` are untracked |
+| Untracked | `Reference/` (binary `.docx`; decision D-4) |
 
-`BRD/` was removed from the repository in commit `0b2e86f`. Committing it restores the directory. `Reference/` contains a binary `.docx`.
-
-## 5. Gaps Between the Approved Model and the Current Repository
+## 5. Gaps and Actions
 
 | Gap | Action | Owner |
 |---|---|---|
-| No local `development` branch | Create it from `origin/development` when the first documentation commit is approved | Claude, after approval |
-| Documentation untracked on `main` | Move to `development` as one approved commit (D-4) | Project Owner approval |
-| Primary checkout on `main` | Switch the primary checkout to `development` for documentation work (D-5) | Claude, after approval |
-| No branch protection rules | Enable on GitHub for `main` and `development` (D-6) | Project Owner (repository admin) |
-| CLAUDE.md §5 says never commit to `development` directly | Amend for documentation-only commits (D-1) | Project Owner approval |
-| CLAUDE.md §5 says one feature per branch | Amend for the single Module 4 branch (D-2) | Project Owner approval |
+| `main` has no release yet | First release when Module 4 is complete (D-7) | Project Owner approval |
+| No branch protection | Protect `main` (PR required, no force-push). Protect `development` (no force-push, no deletion) (D-6) | Project Owner (repository admin) |
+| `Reference/` untracked | Decide whether to track the binary `.docx` (D-4) | Project Owner |
+| Worktree isolation for development | Use detached worktrees for verification (`07-Worktree-Standards.md`) (D-9) | Project Owner approval |
 
-## 6. Decisions Requested
+## 6. Decisions
 
-See `00-Worktree-Review-Package.md` §3 for the full list (D-1 to D-8).
+See `00-Worktree-Review-Package.md` §3.

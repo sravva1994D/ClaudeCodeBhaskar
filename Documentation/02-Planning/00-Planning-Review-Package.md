@@ -144,7 +144,7 @@ Recommendation: refresh these in WP-1.2 before Module 2 is approved. This is qui
 ## 7. Process Notes
 
 - No code, no project files, no branch and no commit have been created. Documentation is local and uncommitted (DEC-008).
-- BRD has not been changed in this step. If any PDR changes BRD wording, the BRD is amended first on a `docs/brd` branch (DEC-011, CON-017).
+- BRD has not been changed in this step. If any PDR changes BRD wording, the BRD is amended first, committed to `development` after approval (DEC-011, CON-017).
 - Priorities (MoSCoW) were approved by the Project Owner on 2026-11-10 (A-006, DEC-006). The roadmap uses them.
 - Assumptions register (`01-Brainstorming/07-Assumptions-Log.md`) is unchanged. No new assumptions were made in planning.
 
@@ -153,7 +153,7 @@ Recommendation: refresh these in WP-1.2 before Module 2 is approved. This is qui
 1. Reviewer checks the items in §5. All PDRs are decided.
 2. Refresh the Module 1 artifacts listed in §6 (WP-1.2).
 3. BRD amended on 2026-11-10 for decided wording, the appointment lifecycle and approved priorities (WP-1.3 done).
-4. Start Module 4 (implementation) only on the feature branch `feature/module-4-implementation` (see `Documentation/03-Worktree/`), after M0 is closed. No Git action until the Project Owner says so.
+4. Start Module 4 (implementation) directly on `development`, after M0 is closed and the approval gate is passed for each commit (see `Documentation/03-Worktree/`). No Git action until the Project Owner says so.
 
 ## 9. Not Done in This Step
 

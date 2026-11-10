@@ -2,7 +2,7 @@
 
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Module:** 3 — Worktree
-**Status:** Awaiting review. No Git operation has been performed. Nothing has been committed, branched, pushed or merged.
+**Status:** Amended 2026-11-10 for one working branch. Awaiting review of the open decisions below. The amendments are not yet committed (see §6).
 
 ---
 
@@ -11,90 +11,81 @@
 | # | Artifact | File |
 |---|---|---|
 | 00 | Review package (this file) | `00-Worktree-Review-Package.md` |
-| 01 | Git Strategy (branch model, flows, current state, gaps) | `01-Git-Strategy.md` |
-| 02 | Branching Standards (names, lifetime, protection) | `02-Branching-Standards.md` |
+| 01 | Git Strategy (one working branch, flows, current state, gaps) | `01-Git-Strategy.md` |
+| 02 | Branching Standards (two branches, tags, protection) | `02-Branching-Standards.md` |
 | 03 | Commit Standards (format, types, scopes, examples, checks) | `03-Commit-Standards.md` |
-| 04 | Review Process (stages, PR template, Module 7 review) | `04-Review-Process.md` |
-| 05 | Release Process (versioning, steps, checklist, notes template) | `05-Release-Process.md` |
-| 06 | Rollback Process (eight cases with commands) | `06-Rollback-Process.md` |
-| 07 | Worktree Standards (layout, create, remove, Module 3 checks) | `07-Worktree-Standards.md` |
+| 04 | Review Process (approval gate, post-commit check, Module 7 review, release review) | `04-Review-Process.md` |
+| 05 | Release Process (versioning, release steps, checklist, notes template) | `05-Release-Process.md` |
+| 06 | Rollback Process (cases A to F, commands) | `06-Rollback-Process.md` |
+| 07 | Worktree Standards (detached verification worktrees, Module 3 checks) | `07-Worktree-Standards.md` |
 
-Added beyond the list: **07 Worktree Standards**, because the folder is named for Module 3 and the training plan expects worktree practice to be documented.
+## 2. Instructions Applied
 
-## 2. Inputs Reviewed
+| Instruction | Date | Applied in |
+|---|---|---|
+| Documentation work stays on `development`; implementation uses a feature branch | Original request | Superseded (see below) |
+| D-1: documentation committed directly to `development` | 2026-11-10 | Committed (`a88551d` to `a875aac`) |
+| **Single working branch:** `development` only. No feature, module, milestone or documentation branches. Remove or amend the "one feature per branch" rule | 2026-11-10 | This amendment: CLAUDE.md §5; `01` to `07`; planning roadmap; Module 1 logs |
 
-| Input | What was used |
-|---|---|
-| Planning artifacts (`Documentation/02-Planning/`) | Milestones M0–M9, WBS (WP-1.1 to WP-10.2), roadmap, testing strategy, traceability, PDR decisions |
-| `CLAUDE.md` (root) | §5 Git workflow and approval gate; §5.2 commit format; §5.3 PR template; §8 worktree rules; §11 documentation standards |
-| Earlier CLAUDE.md (commit `c3bb2ec`, deleted in `8400ffb`) | Hard rules, release standards (§13), worktree location, rollback intent |
-| Training plan (`Reference/AI Training & Progress Tracking Plan.docx`) | Module 3 (Worktree) and Module 4 (Implementation) expected outcomes and progress measures |
-| Repository state | `main`, `origin/main` and `origin/development` all at `115126c`. One worktree. No tags. No local `development` |
+The single-branch instruction supersedes the earlier branch model (`feature/module-4-implementation`) and the earlier D-2, D-3 and D-5 options.
 
-## 3. Decisions for Review
+## 3. Decisions
 
-| # | Decision | Options | Recommendation | Affects |
-|---|---|---|---|---|
-| **D-1** | How documentation reaches `development` | (a) Direct commit on `development` after the approval gate. (b) `docs/*` branch and PR into `development` | **Approved 2026-11-10: (a).** Documentation (BRD, requirements, traceability, architecture, CLAUDE.md, analysis and supporting documents) is committed and pushed to `development`, together with implementation work | 01 §3.1; 02 §1; 03 §5 |
-| **D-2** | Branch scope for Module 4 | (a) One branch `feature/module-4-implementation` for all of Module 4, as requested. (b) One branch per milestone (M1 to M9) | (a), as requested. Each work package is a separate commit with its own requirement IDs. It needs one CLAUDE.md change (§5 rule 4: one feature per branch) | 01 §1; 02 §1 |
-| **D-3** | Merge method | (a) Squash feature into `development`; merge commit from `development` into `main`. (b) Merge commit for both | (a). A squashed Module 4 gives one clear entry on `development`. A merge commit into `main` keeps the release point visible | 01 §3; 05 §3 |
-| **D-4** | Bringing the current untracked files under Git | One approved commit on `development` with `BRD/`, `Documentation/` and `CLAUDE.md`. Decide whether `Reference/` (contains a binary `.docx`) is tracked | Commit the three text folders. For `Reference/`, track the `.docx` so the process reference is versioned. Note the `.docx` is binary and grows the repository | 01 §4, §5; 03 §6 |
-| **D-5** | Branch of the primary checkout | (a) `development`, used for documentation and review. (b) `main`, as the current state is | (a). Keeps `main` untouched between releases (Module 3 measure) | 07 §2 |
-| **D-6** | GitHub branch protection on `main` and `development` | Enable as in `02-` §4. Repository admin action by the Project Owner | Enable. Without it, direct pushes are possible; nothing in Git stops them | 02 §4; 06 §7 |
-| **D-7** | First version number | `v0.1.0` (from the earlier CLAUDE.md) or another starting point | `v0.1.0` | 05 §1 |
-| **D-8** | Module 7 review turnaround | Set a target (for example, comments resolved within 2 working days) or leave open | Set a target. The training plan's progress measure needs one; the value is the Project Owner's choice | 04 §5, §7 |
-
-## 4. Proposed Changes to CLAUDE.md (not applied)
-
-CLAUDE.md is governance. It changes only with approval (CLAUDE.md §12). The following changes follow from D-1, D-2 and D-5. They are not applied yet.
-
-| CLAUDE.md section | Current wording | Proposed wording | Depends on |
+| # | Decision | Status | Note |
 |---|---|---|---|
-| §5 Git rules (never commit or push to `main` or `development` directly) | Never commit to or push to `main` or `development` directly | Keep for `main`. Allow approved documentation commits on `development` | D-1 |
-| §5 Hard rule 4 | One feature per branch | One feature per branch, except the Module 4 branch `feature/module-4-implementation`, which holds the whole of Module 4 | D-2 |
-| §5 Base branch | PR base `development` | Keep. Add: release PRs base `main`, from `development` | Process |
-| §5.2 Scopes | `web`, `business`, `data`, `tests`, `docs` | Add `governance` and `build` (as in `03-` §3) | — |
-| §8 Worktree | Sibling folder `ClaudeCodeBhaskar-wt` | Keep. Add: primary checkout on `development` (D-5) | D-5 |
-| §5 Working rule | "Documentation is not committed" (user instruction, 2026-11-10) | Replace with the approved documentation flow once D-1 and D-4 are decided | D-1, D-4 |
+| D-1 | Documentation committed directly to `development` | **Approved 2026-11-10** | Done |
+| D-2 | Branch scope for Module 4 | **Superseded** | No module branch. All work on `development` |
+| D-3 | Merge method | **Superseded** | No feature merges. Release PR to `main` is a merge commit (`05-` §3) |
+| D-4 | Track `Reference/` (binary `.docx`) | **Open** | `Reference/` is still untracked |
+| D-5 | Primary checkout on `development` | **Approved 2026-11-10** (as part of the single-branch instruction) | Done |
+| D-6 | Branch protection | **Revised.** Protect `main`: PR required, no force-push, no deletion. Protect `development`: no force-push, no deletion. No PR requirement on `development` | Needs the Project Owner's action as repository admin |
+| D-7 | First version number | **Open** | `v0.1.0` proposed |
+| D-8 | Module 7 review turnaround | **Open** | Target for the Project Owner to set |
+| D-9 | Verification with detached worktrees | **Open** | Git does not allow a second worktree on `development`. Detached worktrees give isolated verification; development happens in the primary checkout. Approve, or propose another Module 3 exercise |
+| D-10 | Urgent fixes without a hotfix branch | **Open** | Fix committed to `development`, then released in the next patch release. Approve, or allow a `hotfix/*` branch as an exception |
+| D-11 | Releases to `main` by PR from `development`, merge commit, with Project Owner sign-off | **Open** | Confirms the one remaining use of a pull request |
+
+## 4. Proposed CLAUDE.md Changes (applied in this amendment)
+
+| Section | Before | After |
+|---|---|---|
+| §5 Git rules | Implementation on a feature branch; one feature per branch; one PR per feature | `development` is the only working branch; no other working branches; `main` receives releases only; urgent fixes go to `development` |
+| §5.2 Branch | `feature/`, `fix/`, `chore/` names | `development` only |
+| §5.3 PR description | Base `development` for every PR | Release PR only: `release: vX.Y.Z`, base `main`, head `development` |
 
 ## 5. Corrections Made While Preparing This Package
 
 | Item | Correction |
 |---|---|
-| Module numbering in planning files | Implementation is **Module 4** in the training plan. Two planning references said Module 3. Corrected in `02-Planning/00-` and `02-Planning/19-` |
-| Release checklist | The earlier generic release standard required backup and restore verification. Removed for Phase 1, because backups are deferred (OOS-011; RSK-004). Recorded in `05-` §6 |
-| Rollback without backups | Phase 1 rollback for data is by rebuilding from migrations and the seed generator (`06-` §5) |
+| Module numbering | Implementation is Module 4. Corrected in `02-Planning/00-` and `02-Planning/19-` |
+| Release checklist | Backup and restore verification removed for Phase 1 (OOS-011; RSK-004) |
+| Rollback without backups | Data is rebuilt from migrations and the seed generator (`06-` §5) |
+| Worktree expectation | Module 3 expects a separate environment for development. Under one branch, that is met only for verification (`07-` §7). Stated openly for D-9 |
 
-## 6. Gaps Found in the Current Repository
+## 6. Current State (for review)
 
-| Gap | Effect | Resolution |
-|---|---|---|
-| No local `development` branch | Documentation cannot be committed to `development` yet | Create it after D-1 and D-4 are approved |
-| Untracked documentation on `main` | Work is at risk if the working tree is lost | D-4 |
-| No branch protection | Direct pushes are possible | D-6 |
-| No tags | Release points are not visible | First release after Module 4 (D-7) |
-| Single worktree on `main` | Implementation would start on `main` if not switched | D-5 and `07-` §3 |
+| Item | State |
+|---|---|
+| `development` | `a875aac`, pushed to `origin/development` |
+| `main` | `115126c`, unchanged |
+| Working branches | `development` only |
+| Uncommitted | This amendment (`CLAUDE.md`, `Documentation/02-Planning/` and `03-Worktree/` edits, and Module 1 log edits) |
+| Untracked | `Reference/` |
 
-## 7. Current Git State (read-only check, 2026-11-10)
+## 7. Next Step: Commit of This Amendment
 
-```
-main                     115126c  Delete README.md
-origin/main              115126c
-origin/development       115126c
-worktrees                primary checkout on main
-tags                     none
-untracked                BRD/, CLAUDE.md, Documentation/, Reference/
-```
+The amendment is ready to commit to `development`. The approval package (CLAUDE.md §5.1) is shown in chat before the commit:
+
+- Change summary: single-branch rule; branch-related documents rewritten or updated.
+- Files: as listed in §4 and in the change summary.
+- Requirements impacted: none. Process documentation only.
+- Proposed commit message: `docs(governance): make development the only working branch`.
+- Git commands: `git add`, `git commit`, `git push origin development`.
+
+No commit or push is made until the user approves.
 
 ## 8. Not Done
 
-- No branch, commit, push, pull request, merge, tag or worktree has been created.
-- No CLAUDE.md change has been applied.
+- No branch, commit, push, merge, tag or worktree has been created for this amendment.
 - No branch protection has been set.
-
-## 9. Next Steps After Review
-
-1. Reviewer answers D-1 to D-8.
-2. Claude applies the approved CLAUDE.md changes (§4), on a governance change that the Project Owner approves.
-3. Claude prepares the approval package for D-4 (the first documentation commit). No commit until approved.
-4. Module 4 starts only when M0 is closed and the approved plan is confirmed (Module 2 approval).
+- No release has been made.

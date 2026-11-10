@@ -37,7 +37,7 @@ A release is cut only when all of these are true:
 | 5 | Merge with a merge commit (no squash, so `development` history is kept on `main`) | Claude, after approval | `main` updated |
 | 6 | Tag `main`: `vX.Y.Z` with an annotated tag | Claude, after approval | Tag exists locally and on `origin` after approval |
 | 7 | Confirm `main` and `development` point to the same commit or that `development` only adds documentation | Claude | Recorded in the release note |
-| 8 | Delete `release/*` branch if one was used | Claude, after approval | Branch removed |
+| 8 | Confirm `development` and `main` are as expected; no other branches exist | Claude | Recorded in the release note |
 
 Git commands for steps 5 and 6 are shown in §5. They are not run until approved.
 

@@ -80,7 +80,7 @@ Acceptance criteria that are blocked in Module 1 (`10-Acceptance-Criteria.md`) a
 |---|---|---|
 | Unit | Feature code written | All unit tests pass; business rules covered |
 | Integration | Migration applied to test DB | Repository and constraint tests pass |
-| Feature (per branch) | Acceptance tests for the feature's requirement IDs written | All pass; no open defects of severity high |
+| Work package (on `development`) | Acceptance tests for the work package's requirement IDs written | All pass before its commit is approved; no open defects of severity high |
 | Phase 1 release candidate | All features merged to development | All functional tests pass; NFR tests run and recorded; browser matrix run |
 
 ## 6. Defect Handling (local)

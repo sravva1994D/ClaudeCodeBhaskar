@@ -2,9 +2,9 @@
 
 **Project:** Patient Management System — Phase 1
 **Refreshed:** 2026-11-10
-**Status:** **Documentation is not committed. No branch, commit, push, pull request or merge has been made.**
+**Status:** Historical record. Documentation was committed to `development` on 2026-11-10 after approval (D-1). `development` is the only working branch.
 
-Git is reserved for implementation work on a single feature branch, merged to `development` by pull request later (user instruction, 2026-11-10). No documentation commit plan is proposed.
+Superseded for Git: the single-branch instruction (2026-11-10) applies. The change set is on `development`.
 
 ---
 
@@ -57,7 +57,7 @@ Untracked directories: `BRD/` (removed from the repository in commit `0b2e86f`) 
 
 1. Reviewer reviews Module 2. PDR-08 and A-006 were resolved on 2026-11-10.
 2. Reviewer reviews Module 2 (`Documentation/02-Planning/00-Planning-Review-Package.md`).
-3. Implementation starts only when the user instructs it, on a single feature branch.
+3. Implementation starts when the user instructs it, committed directly to `development` after each approval.
 
 ---
 

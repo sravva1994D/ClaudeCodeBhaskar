@@ -81,9 +81,9 @@ Still open: none. The appointment lifecycle (PDR-08) and MoSCoW approval (A-006)
 
 1. No Project Owner decisions are pending for Module 1 or Module 2. PDR-08 and A-006 were resolved on 2026-11-10.
 2. Reviewer reviews Module 2 (`Documentation/02-Planning/00-Planning-Review-Package.md`).
-3. Implementation starts only when the user instructs it, on a single feature branch.
+3. Implementation starts when the user instructs it, committed directly to `development` after each approval.
 
 ## 7. Not Done
 
-- No Git commit, branch, push, pull request or merge. Documentation stays uncommitted (user instruction).
+- Documentation is committed to `development` (D-1, approved 2026-11-10). `development` is the only working branch. Nothing is pushed to `main` until a release is approved.
 - No implementation.

@@ -1,6 +1,6 @@
 # 03 — Commit Standards
 
-**Applies to:** every commit on `development`, `feature/*`, `fix/*`, `chore/*`, `hotfix/*` and `release/*`
+**Applies to:** every commit on `development` (the only working branch) and every commit on `main` made by a release merge
 **Basis:** Conventional Commits, with requirement traceability (CLAUDE.md §5.2)
 **Status:** Proposed for review
 

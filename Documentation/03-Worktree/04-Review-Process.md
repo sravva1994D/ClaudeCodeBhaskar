@@ -1,8 +1,8 @@
 # 04 — Review Process
 
-**Applies to:** documentation changes, implementation pull requests, and release pull requests
+**Applies to:** all commits on `development`, and the release PR to `main`
 **Reviewers:** Project Owner (sole approver, DEC-010). Mentor / Lead for Module 7 code review (STK-006)
-**Status:** Proposed for review
+**Status:** Amended 2026-11-10: commits are reviewed before they are made. No feature pull requests
 
 ---
 
@@ -11,10 +11,12 @@
 | Stage | Who | Output | Gate |
 |---|---|---|---|
 | 1. Self-check | Claude | Checklist in the approval package | Must pass before stage 2 |
-| 2. Approval package | Claude → Project Owner | Chat package (CLAUDE.md §5.1) | User approval before any Git write |
-| 3. Pull request review | Project Owner | Approve, or request changes | One approval, per branch rules |
+| 2. Approval package | Claude → user | Chat package (CLAUDE.md §5.1) | Approval before any commit or push |
+| 3. Post-commit check | Claude | Build, test and diff check after the commit | Failures fixed in a new commit |
 | 4. Code review (Module 7) | Mentor / Lead | Review comments | Comments resolved within the agreed timeline |
-| 5. Release sign-off | Project Owner | Approved release PR | Required before merge to `main` |
+| 5. Release review | Project Owner | Approved release PR to `main` | Required before merge to `main` |
+
+Stage 2 is the main review for every commit. No pull request is raised for work on `development`.
 
 ## 2. Self-Check (stage 1)
 
@@ -22,94 +24,51 @@
 |---|---|---|
 | Requirement IDs listed and correct | Yes | Yes |
 | Traceability matrices updated (`12-`, `18-`) | If requirement status changed | Yes |
-| BRD unchanged, or amendment proposed first (CON-017) | Yes | Yes |
+| BRD unchanged, or amendment proposed and approved first (CON-017) | Yes | Yes |
 | Decisions referenced (PDR or DEC) | If a decision is applied | If a decision is applied |
 | Build passes | Not applicable | Yes |
 | Tests pass | Not applicable | Yes |
-| No secrets, no patient data, no build output in the diff | Yes | Yes |
-| Commit messages follow `03-Commit-Standards.md` | Yes | Yes |
+| No secrets, patient data or build output in the diff | Yes | Yes |
+| Commit message follows `03-Commit-Standards.md` | Yes | Yes |
 
 ## 3. Approval Package (stage 2)
 
-Contents as CLAUDE.md §5.1: change summary, files changed, requirements impacted, proposed commit message, exact Git commands. The package is shown in chat. Claude waits for approval.
+The package has the five parts in CLAUDE.md §5.1: change summary, files changed, requirements impacted, proposed commit message and the exact Git commands. The user's approval must be explicit. A reply that only comments on the package is not an approval.
 
-Approval words are explicit. "Looks fine" is a request to ask again. "Approved, commit" is an approval.
+## 4. Post-Commit Check (stage 3)
 
-## 4. Pull Request Review (stage 3)
+After an approved commit:
 
-### 4.1 PR template
+1. `git show --stat HEAD`: confirm only the approved files changed.
+2. For implementation: run the build and tests on `development`.
+3. If a check fails: report it, propose a fix commit, and wait for approval. Do not amend or force-push.
 
-Taken from CLAUDE.md §5.3:
+## 5. Module 7 Code Review (stage 4)
 
-```markdown
-## Summary
-<what and why>
+- The Mentor / Lead reviews commits on `development` using the review checklist in §6.
+- Commits are reviewed in order with `git log --oneline` and `git show <sha>`.
+- Each finding gets an ID (`RV-001`, `RV-002`, …) in `Documentation/03-Worktree/review-log.md` (created when Module 7 starts).
+- Each finding is marked resolved, or deferred with a reason. Resolution is a new commit.
+- Progress measure (training plan): comments resolved within the agreed timeline. The timeline is decision D-8.
 
-## Requirements
-- FR-XXX-000 — <Implemented | Partial | Modified | Removed>
-
-## Traceability
-- Matrices updated: yes / no
-- BRD changed: yes / no
-
-## Changes
-- <area>: <change>
-
-## Testing
-- Unit: <result>
-- Integration: <result>
-- Manual / browser: <result and browser version>
-
-## Risks and rollback
-<notes; see 06-Rollback-Process.md>
-
-## Checklist
-- [ ] Builds
-- [ ] Tests pass
-- [ ] No secrets or patient data
-- [ ] Docs updated
-- [ ] Traceability matrices updated
-```
-
-The PR description ends with: `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
-
-### 4.2 What the reviewer checks
+## 6. Review Checklist
 
 | Area | Check |
 |---|---|
 | Scope | Change traces to a requirement. Nothing outside the BRD |
 | Layers | Controllers hold no rules. No EF Core in controllers. Web references Data only for DI |
-| Rules | Matches the business rules table in CLAUDE.md §7 and the planning files |
-| Data | Migration present for every entity change. No check constraint on vital ranges |
+| Rules | Matches CLAUDE.md §7 and the planning files |
+| Data | Migration present for each entity change. No check constraint on vital ranges |
 | Security | Passwords hashed. No secrets. Anti-forgery on POST |
-| Tests | Each requirement ID has a test. Failing tests are fixed, not skipped |
+| Tests | Each requirement ID has a test. Failing tests fixed, not skipped |
 | Traceability | Matrices show the new status |
 
-### 4.3 Review outcomes
+## 7. Release Review (stage 5)
 
-| Outcome | Action |
-|---|---|
-| Approve | Merge using the method in `01-Git-Strategy.md` §3 |
-| Request changes | New commits on the same branch. Do not force-push |
-| Reject | Close the PR. Record the reason in the decision log (DEC) |
+- A release PR from `development` to `main` is raised only for a release (`05-Release-Process.md`).
+- The PR uses the release template in `05-` §4.
+- The Project Owner signs off. Only then is the merge made.
 
-## 5. Module 7 Code Review (stage 4)
+## 8. Turnaround
 
-- Mentor / Lead reviews the Module 4 PR (and any fix PRs) using §4.2.
-- Review comments are logged with an ID (`RV-001`, `RV-002`, …) in the PR or in `Documentation/03-Worktree/` if the PR is not the place.
-- Each comment is marked resolved, or deferred with a reason.
-- Progress measure (training plan): comments resolved within the agreed timeline. The timeline is not yet agreed (decision D-8).
-
-## 6. Documentation Review
-
-Documentation commits on `development` are reviewed in the approval package (stage 2). If decision D-1 chooses a documentation PR, §4 applies to those PRs too.
-
-Review focus for documentation:
-- Requirement IDs and BRD wording are correct.
-- Decisions are recorded with date and owner.
-- No duplicate content; links instead of copies.
-- Superseded items are marked, not deleted.
-
-## 7. Turnaround
-
-No fixed turnaround is set. The Project Owner is the only approver, so the review queue is short. Decision D-8 asks whether a target turnaround should be set for Module 7.
+No fixed turnaround is set. The Project Owner is the only approver. Decision D-8 asks whether a target should be set for Module 7.

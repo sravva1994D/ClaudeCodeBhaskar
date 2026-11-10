@@ -3,90 +3,77 @@
 **Module:** 3 — Worktree (training plan)
 **Expected outcome (training plan):** develop and test changes in a separate, controlled environment, without impact on the main branch
 **Progress measure (training plan):** successful creation and management of worktrees; no changes made directly on `main`
-**Status:** Proposed for review
+**Status:** Amended 2026-11-10 for one working branch. Decision D-9 asks for approval of the approach.
 
 ---
 
-## 1. Principle
+## 1. Constraint
 
-Each implementation branch is checked out in its own worktree. The primary checkout is used for reading, reviewing and documentation. `main` is never edited directly.
+Git does not allow the same branch to be checked out in two worktrees. `development` is the only working branch, so it can be checked out in one place only: the primary checkout. A second worktree on `development` is not possible.
+
+Worktrees are therefore used for **isolated verification of a commit**, not for parallel development. They use a detached HEAD, which creates no branch.
 
 ## 2. Layout
 
-| Folder | Branch | Purpose |
+| Location | Checkout | Used for |
 |---|---|---|
-| `D:\Projects\AI\Claude\project-mgmt-system\ClaudeCodeBhaskar` (primary) | `development` | Documentation and review. Not used for implementation |
-| `D:\Projects\AI\Claude\project-mgmt-system\ClaudeCodeBhaskar-wt\feature-module-4-implementation` | `feature/module-4-implementation` | Module 4 implementation |
+| `D:\Projects\AI\Claude\project-mgmt-system\ClaudeCodeBhaskar` (primary) | `development` | All development, documentation and commits |
+| `D:\Projects\AI\Claude\project-mgmt-system\ClaudeCodeBhaskar-wt\verify-<name>` | Detached at a commit | Isolated build, test or check of a commit or tag |
 
-Sibling folder name: the branch name with `/` replaced by `-`. The `-wt` folder sits beside the primary checkout, so it is never inside the repository.
+The `-wt` folder sits beside the primary checkout, never inside it.
 
-## 3. Create
+## 3. Development Rules
 
-Run from the primary checkout, after confirming `development` is current:
+- Commits are made only in the primary checkout, on `development`.
+- The primary checkout is not switched to `main` for editing.
+- Before work starts: `git fetch origin` and `git pull --ff-only origin development`.
 
-```
-git fetch origin
-git switch development
-git pull --ff-only origin development
-git worktree add ../ClaudeCodeBhaskar-wt/feature-module-4-implementation -b feature/module-4-implementation development
-```
+## 4. Create a Verification Worktree
 
-Rules:
-- `--ff-only`: never create a merge commit on `development` by accident.
-- The branch is cut from `development`, never from `main`.
-- Creation is done after the approval gate (CLAUDE.md §5.1).
-
-## 4. Work
-
-- Open the worktree folder as the working directory for all implementation commands.
-- Run `dotnet build` and `dotnet test` inside the worktree.
-- Commit only in the worktree.
-- Push from the worktree: `git push -u origin feature/module-4-implementation` (after approval).
-- Keep the worktree up to date with `development` by rebasing or merging only with approval. Prefer a merge from `development` if others have changed it; never force-push.
-
-## 5. List and Inspect
+Run from the primary checkout, after the commit to verify is pushed:
 
 ```
-git worktree list
-git status          (run inside the worktree folder)
+git worktree add --detach ../ClaudeCodeBhaskar-wt/verify-<short-sha> <sha>
 ```
 
-Each worktree is listed with its path, commit and branch. A worktree whose branch is merged is removed (§7).
+- `--detach`: no branch is created.
+- Use a commit SHA or a tag (for example `v0.1.0`) as `<sha>`.
+- Run the build and tests inside that folder: `dotnet build`, `dotnet test`.
+- Do not commit inside a detached worktree. Nothing made there is kept.
 
-## 6. Rules
-
-| Rule | Reason |
-|---|---|
-| One branch per worktree | Git does not allow the same branch in two worktrees |
-| Never run implementation in the primary checkout while it is on `main` | Keeps `main` clean |
-| Never check out `main` in a worktree for editing | `main` changes only through release PRs |
-| Do not commit build output or local settings | See `03-Commit-Standards.md` §6 |
-| Worktree folder is never inside the repository folder | Avoids nested repositories |
-| Remove a worktree after its branch is merged | Keeps the folder list short |
-
-## 7. Remove
-
-After the feature branch is merged to `development` and deleted:
+## 5. Remove a Verification Worktree
 
 ```
-git worktree remove ../ClaudeCodeBhaskar-wt/feature-module-4-implementation
+git worktree remove ../ClaudeCodeBhaskar-wt/verify-<short-sha>
 git worktree prune
-git branch -d feature/module-4-implementation
 ```
 
-`git worktree remove` refuses to remove a folder with uncommitted changes. Do not force it without approval (see `06-Rollback-Process.md` §6).
+`git worktree remove` refuses if the folder has uncommitted changes. Do not force it without the user's approval (`06-Rollback-Process.md` §6).
 
-## 8. Checks for the Worktree Module (Module 3)
+## 6. Checks
 
 | Check | How | Pass when |
 |---|---|---|
-| Worktree created from `development` | `git worktree list`; `git log -1 feature/module-4-implementation` | Path and branch are as in §2; branch starts at the `development` commit |
-| No changes on `main` | `git rev-parse main` before and after | Unchanged |
-| Worktree removed after merge | `git worktree list` after cleanup | Only the primary checkout remains |
-| Prune run after manual folder deletion | `git worktree prune` | No stale entries |
+| Primary checkout on `development` | `git branch --show-current` | Prints `development` |
+| No other branches created | `git branch -a` | Only `development`, `main` and remote tracking branches |
+| Verification worktree is detached | `git worktree list` | Shows `(detached HEAD)` for each verify folder |
+| No stale worktrees | `git worktree list` after cleanup | Only the primary checkout remains |
+| `main` unchanged by Module 3 work | `git rev-parse main` before and after | Unchanged unless a release was approved |
 
-## 9. Windows Notes
+## 7. Module 3 Position
 
-- Paths use backslashes in Windows tools and forward slashes in Git commands. Both work from Git Bash.
-- Keep the total path length short. Use the sibling folder name given in §2.
-- Antivirus or sync tools that lock build folders can block `git worktree remove`. Close IDEs and build tools first.
+The Module 3 expected outcome is met in part:
+
+| Expected outcome | Status under the single-branch rule |
+|---|---|
+| Develop and test in a separate, controlled environment | Partly. Verification is isolated in a detached worktree. Development happens in the primary checkout |
+| Work without impact on the main branch | Met. `main` changes only by release PR |
+| Create and manage worktrees | Met. Creation and removal as in §4 and §5 |
+
+Decision D-9 asks whether this approach is acceptable for the training.
+
+## 8. Windows Notes
+
+- Use Git Bash for the commands above. Forward slashes work in Git commands.
+- Close IDEs and build tools before removing a worktree, otherwise locked build folders can block removal.
+- Keep the sibling folder name short to avoid path-length problems.
