@@ -43,9 +43,9 @@ Co-Authored-By: Claude Haiku 5.5 <noreply@anthropic.com>
 
 | Scope | Covers |
 |---|---|
-| `web` | `PMS.Web`: controllers, views, ViewModels, static files |
-| `business` | `PMS.Business`: services, DTOs, validators, mappers |
-| `data` | `PMS.Data`: DbContext, entities, repositories, migrations |
+| `web` | `PatientManagement.Web`: controllers, views, ViewModels, static files |
+| `business` | `PatientManagement.Business`: services, DTOs, validators, mappers |
+| `data` | `PatientManagement.Data`: DbContext, entities, repositories, migrations |
 | `tests` | Test projects |
 | `docs` | Files under `BRD/` and `Documentation/` |
 | `governance` | `CLAUDE.md` and this folder's standards |

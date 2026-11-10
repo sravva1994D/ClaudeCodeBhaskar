@@ -9,28 +9,28 @@
 flowchart TB
   Browser["Browser<br/>Chrome / Edge / Safari (desktop)"]
 
-  subgraph PRES["Presentation Layer — PMS.Web (ASP.NET Core MVC)"]
+  subgraph PRES["Presentation Layer — PatientManagement.Web (ASP.NET Core MVC)"]
     CTRL["Controllers"]
     VIEWS["Razor Views"]
     VM["ViewModels"]
     AUTH["Cookie auth, global [Authorize], anti-forgery"]
   end
 
-  subgraph BIZ["Business Layer — PMS.Business"]
+  subgraph BIZ["Business Layer — PatientManagement.Business"]
     SVC["Services (interfaces + implementations)"]
     DTO["DTOs"]
     VAL["Validators (errors + warnings)"]
     MAP["Mappers (entity ↔ DTO)"]
   end
 
-  subgraph DATA["Data Layer — PMS.Data"]
+  subgraph DATA["Data Layer — PatientManagement.Data"]
     REPO["Repositories"]
     CTX["EF Core DbContext"]
     ENT["Entities"]
     MIG["Migrations"]
   end
 
-  DB[("SQL Server<br/>localhost — database PMS")]
+  DB[("SQL Server<br/>localhost — database PatientManagement")]
 
   Browser -->|"HTTP on localhost; HTTPS beyond localhost"| CTRL
   CTRL --> VM
@@ -51,8 +51,8 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-  WEB["PMS.Web"] --> BUS["PMS.Business"]
-  BUS --> DAT["PMS.Data"]
+  WEB["PatientManagement.Web"] --> BUS["PatientManagement.Business"]
+  BUS --> DAT["PatientManagement.Data"]
   WEB -. "DI registration only" .-> DAT
 ```
 

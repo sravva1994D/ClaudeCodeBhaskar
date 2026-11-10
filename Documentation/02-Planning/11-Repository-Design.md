@@ -8,8 +8,8 @@
 
 | Item | Decision |
 |---|---|
-| Location | `PMS.Data/Repositories/` |
-| Interfaces | Declared in `PMS.Data/Abstractions/`, implemented in `PMS.Data/Repositories/` |
+| Location | `PatientManagement.Data/Repositories/` |
+| Interfaces | Declared in `PatientManagement.Data/Abstractions/`, implemented in `PatientManagement.Data/Repositories/` |
 | Unit of work | `DbContext.SaveChangesAsync()` is the unit of work. No separate UoW class in Phase 1 |
 | Lifetime | Scoped (per HTTP request) |
 | Queries | `AsNoTracking()` for read-only queries (lists, search, print model, exports) |

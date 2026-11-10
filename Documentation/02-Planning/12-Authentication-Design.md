@@ -89,7 +89,7 @@ sequenceDiagram
 
 | Setting | Value | Source |
 |---|---|---|
-| Cookie name | `PMS.Auth` | Design |
+| Cookie name | `PatientManagement.Auth` | Design |
 | ExpireTimeSpan | 24 hours | NFR-SEC-001 |
 | SlidingExpiration | true | Sliding, as decided under PDR-20 |
 | HttpOnly | true | Design |

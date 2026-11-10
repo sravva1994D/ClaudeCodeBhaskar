@@ -1,7 +1,7 @@
 # 07 — Database Design
 
 **Source:** `06-Entity-Design.md`; BRD: Performance, Scalability, Security
-**Platform:** SQL Server, local instance, database name `PMS` (AD-15)
+**Platform:** SQL Server, local instance, database name `PatientManagement` (AD-15)
 **Status:** Proposed for review
 
 ## 1. Tables

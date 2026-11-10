@@ -54,9 +54,9 @@ Every in-scope requirement has at least one screen or component, one test, one w
 
 | Layer | Project | Contents | Depends on |
 |---|---|---|---|
-| Presentation | `PMS.Web` | Controllers, Razor views, ViewModels, cookie authentication | Business (and Data for registration only) |
-| Business | `PMS.Business` | Services, interfaces, DTOs, validators, mappers | Data |
-| Data | `PMS.Data` | EF Core DbContext, entities, repositories, migrations | SQL Server |
+| Presentation | `PatientManagement.Web` | Controllers, Razor views, ViewModels, cookie authentication | Business (and Data for registration only) |
+| Business | `PatientManagement.Business` | Services, interfaces, DTOs, validators, mappers | Data |
+| Data | `PatientManagement.Data` | EF Core DbContext, entities, repositories, migrations | SQL Server |
 
 Design rules:
 - Controllers hold no business rules. Services hold them.

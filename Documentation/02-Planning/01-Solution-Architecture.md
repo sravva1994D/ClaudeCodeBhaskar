@@ -31,9 +31,9 @@
 
 | ID | Decision | Rationale | Req IDs |
 |---|---|---|---|
-| AD-01 | Three layers as separate class library projects: `PMS.Web` (Presentation), `PMS.Business` (Business), `PMS.Data` (Data). Test projects per layer. | Matches requester direction; keeps dependency direction explicit | All |
+| AD-01 | Three layers as separate class library projects: `PatientManagement.Web` (Presentation), `PatientManagement.Business` (Business), `PatientManagement.Data` (Data). Test projects per layer. | Matches requester direction; keeps dependency direction explicit | All |
 | AD-02 | Dependency direction: Web → Business → Data. Web references Data only for dependency-injection registration of the DbContext and repositories. | Controllers never touch EF Core types | All |
-| AD-03 | EF Core entities live only in `PMS.Data`. Business exchanges DTOs. Web uses ViewModels. No entity crosses into Web. | Stops persistence shape leaking into views | All |
+| AD-03 | EF Core entities live only in `PatientManagement.Data`. Business exchanges DTOs. Web uses ViewModels. No entity crosses into Web. | Stops persistence shape leaking into views | All |
 | AD-04 | Repositories are thin wrappers over the EF Core `DbContext`, one per aggregate root. No generic repository. EF Core is used for all data access, including document views. Dapper is not used (PDR-32, decided 2026-11-10). | Avoids over-abstraction for a single-user app | FR-PAT-*, FR-APT-*, FR-HIS-*, FR-RX-* |
 | AD-05 | Server-rendered MVC pages with forms. No SPA framework. Minimal JavaScript for confirmation dialogs and the 30-minute slot picker. | Simple, fast data entry (NFR-USB-001); fewer moving parts | NFR-USB-001, NFR-CMP-001 |
 | AD-06 | Cookie authentication, single user, 24-hour sliding idle timeout. Passwords hashed, never stored in plain text. | NFR-SEC-001 | NFR-SEC-001, NFR-SEC-002 |
@@ -64,10 +64,10 @@
 Developer machine (localhost)
 ├── Browser (Chrome | Edge | Safari, desktop)
 │     └── HTTP  http://localhost:<port>            (HTTPS redirect configurable; see PDR-21)
-├── PMS.Web (ASP.NET Core MVC host, Kestrel)
-│     └── PMS.Business (services, DTOs, validators)
-│           └── PMS.Data (EF Core, repositories)
-└── SQL Server (local instance)  — database: PMS
+├── PatientManagement.Web (ASP.NET Core MVC host, Kestrel)
+│     └── PatientManagement.Business (services, DTOs, validators)
+│           └── PatientManagement.Data (EF Core, repositories)
+└── SQL Server (local instance)  — database: PatientManagement
 ```
 
 No cloud, container, load balancer or background worker is in Phase 1. Reminders and alerts are out of scope (OOS-010), so there are no background jobs.

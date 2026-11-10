@@ -7,9 +7,9 @@
 
 | Layer | Owns | Must do | Must not do |
 |---|---|---|---|
-| **Presentation** `PMS.Web` | Controllers, Razor Views, ViewModels, route definitions, auth configuration, input binding, anti-forgery, layout and CSS | Bind input to ViewModels; call one service per action; map results to view or redirect; show errors and warnings | Contain business rules (age calculation, overlap, immutability, vitals ranges). Reference EF Core types. Query the database |
-| **Business** `PMS.Business` | Service interfaces and implementations, DTOs, validators, mappers, business rules, transaction boundaries, result types | Enforce every BRD rule that is not a database rule. Return `Result` objects with errors and warnings. Map entities to DTOs | Know about HTTP, views or cookies. Return entities. Format HTML or PDF output |
-| **Data** `PMS.Data` | EF Core `DbContext`, entities, EF configurations, migrations, repositories, seed data | Persist and query. Enforce structural constraints (not null, unique, lengths) | Enforce warn-and-allow rules. Know about DTOs or ViewModels |
+| **Presentation** `PatientManagement.Web` | Controllers, Razor Views, ViewModels, route definitions, auth configuration, input binding, anti-forgery, layout and CSS | Bind input to ViewModels; call one service per action; map results to view or redirect; show errors and warnings | Contain business rules (age calculation, overlap, immutability, vitals ranges). Reference EF Core types. Query the database |
+| **Business** `PatientManagement.Business` | Service interfaces and implementations, DTOs, validators, mappers, business rules, transaction boundaries, result types | Enforce every BRD rule that is not a database rule. Return `Result` objects with errors and warnings. Map entities to DTOs | Know about HTTP, views or cookies. Return entities. Format HTML or PDF output |
+| **Data** `PatientManagement.Data` | EF Core `DbContext`, entities, EF configurations, migrations, repositories, seed data | Persist and query. Enforce structural constraints (not null, unique, lengths) | Enforce warn-and-allow rules. Know about DTOs or ViewModels |
 
 ## 2. Responsibilities by Component
 

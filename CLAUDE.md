@@ -148,10 +148,10 @@ No feature, hotfix, documentation or milestone branches are used. No detached wo
 
 Full detail: `Documentation/02-Planning/01-Solution-Architecture.md`.
 
-- Three projects: `PMS.Web` (Presentation), `PMS.Business` (Business), `PMS.Data` (Data), plus test projects per layer.
+- Three projects: `PatientManagement.Web` (Presentation), `PatientManagement.Business` (Business), `PatientManagement.Data` (Data), plus test projects per layer.
 - Dependencies: Web → Business → Data. Web references Data only for dependency-injection registration.
 - Controllers hold no business rules and do not use EF Core. Services hold the rules.
-- EF Core entities stay in `PMS.Data`. Services return DTOs. Views use ViewModels.
+- EF Core entities stay in `PatientManagement.Data`. Services return DTOs. Views use ViewModels.
 - Repositories are thin, one per aggregate. No generic repository. `DbContext.SaveChangesAsync` is the unit of work.
 - No `ClinicId` or tenant columns (single clinic).
 - Dates and times are local clinic time. No UTC conversion.

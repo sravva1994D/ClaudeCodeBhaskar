@@ -8,9 +8,9 @@
 
 | Level | Scope | Tool (proposed) | Where |
 |---|---|---|---|
-| Unit | Services, validators, mappers, age calculation, vitals ranges | xUnit with NSubstitute (PDR-29) | `PMS.Business.Tests` |
-| Integration (data) | Repositories and EF Core mappings, constraints, indexes, migrations | xUnit against a real SQL Server test database | `PMS.Data.Tests` |
-| Integration (web) | Controllers with real service and test database; authentication; anti-forgery | ASP.NET Core `WebApplicationFactory` | `PMS.Web.Tests` |
+| Unit | Services, validators, mappers, age calculation, vitals ranges | xUnit with NSubstitute (PDR-29) | `PatientManagement.UnitTests` |
+| Integration (data) | Repositories and EF Core mappings, constraints, indexes, migrations | xUnit against a real SQL Server test database | `PatientManagement.IntegrationTests` |
+| Integration (web) | Controllers with real service and test database; authentication; anti-forgery | ASP.NET Core `WebApplicationFactory` | `PatientManagement.IntegrationTests` |
 | UI and acceptance | End-to-end scenarios per acceptance criterion | Manual script, no browser automation (PDR-29) | Test scripts in `Documentation/` (later module) |
 | Non-functional | Page load, search time, consultation time, browser matrix, encryption and login checks | Browser developer tools; stopwatch script; manual matrix | Test report (later module) |
 
