@@ -13,7 +13,7 @@ This guide gets the solution building, testing and running on your machine. It c
 | Item | Version used | How to check | Notes |
 |---|---|---|---|
 | .NET SDK | 10.0.401 (LTS) | `dotnet --version` | Install the .NET 10 SDK. Other SDKs can stay installed |
-| SQL Server | 16.0.1210.3 (SQL Server 2022, Express) | `sqlcmd -S "localhost\SQLEXPRESS" -E -Q "SELECT SERVERPROPERTY('ProductVersion')"` | Instance name `localhost\SQLEXPRESS` used here. Your instance name may differ |
+| SQL Server | 16.0.1210.3 (SQL Server 2022, Express) on the verification machine | `sqlcmd -S <your-instance> -E -Q "SELECT SERVERPROPERTY('ProductVersion')"` | Your instance name may differ. The project default is `localhost` |
 | sqlcmd | Shipped with SQL Server tools | `sqlcmd -?` | Used to run database scripts |
 | Git | Any recent version | `git --version` | Required to get the code |
 | dotnet-ef | 10.0.14 (optional now) | `dotnet ef --version` | Needed only when migrations are added (see Developer Guide) |
@@ -36,9 +36,9 @@ All work happens on `development` (CLAUDE.md §5). Do not create other branches.
 From the repository root:
 
 ```
-dotnet restore PatientManagement.slnx
-dotnet build PatientManagement.slnx
-dotnet test PatientManagement.slnx
+dotnet restore PatientManagement.sln
+dotnet build PatientManagement.sln
+dotnet test PatientManagement.sln
 ```
 
 Expected result:
@@ -47,17 +47,17 @@ Expected result:
 
 ## 4. Configure the Connection String
 
-The connection string is in `src/PatientManagement.Web/appsettings.json` under `ConnectionStrings:PatientManagement`. It uses Windows authentication and holds no password.
+The committed default is in `src/PatientManagement.Web/appsettings.json` under `ConnectionStrings:PatientManagement`. It is a neutral sample: server `localhost`, database `PatientManagement`, Windows authentication, no password.
 
-If your SQL Server instance has a different name, override it on your machine with user secrets. Do not edit the committed file for a personal setting.
+Machine-specific values, such as an instance name, are never committed (R-6). Set yours with user secrets, which are stored outside the repository (CLAUDE.md §9):
 
 ```
-dotnet user-secrets set "ConnectionStrings:PatientManagement" "Server=localhost\SQLEXPRESS;Database=PatientManagement;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True" --project src/PatientManagement.Web
+dotnet user-secrets set "ConnectionStrings:PatientManagement" "Server=<your-instance>;Database=PatientManagement;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True" --project src/PatientManagement.Web
 ```
 
-Replace `localhost\SQLEXPRESS` with your instance name (for example `(localdb)\MSSQLLocalDB` or `localhost`). Secrets are stored outside the repository (CLAUDE.md §9).
+Replace `<your-instance>` with your instance name, for example `localhost\SQLEXPRESS`, `(localdb)\MSSQLLocalDB` or `localhost`. Do not edit `appsettings.json` for a personal setting.
 
-Check which secrets are set (values are not shown by this command):
+Check that the secret is set (the value is not shown):
 
 ```
 dotnet user-secrets list --project src/PatientManagement.Web
@@ -68,10 +68,10 @@ dotnet user-secrets list --project src/PatientManagement.Web
 Run once per machine:
 
 ```
-sqlcmd -S "localhost\SQLEXPRESS" -E -b -i database/Scripts/01-create-database.sql
+sqlcmd -S <your-instance> -E -b -i database/Scripts/01-create-database.sql
 ```
 
-Output on first run: `Database PatientManagement created.` Running it again prints `already exists. No change made.`
+Use the same instance name as in your user secret (§4). Output on first run: `Database PatientManagement created.` Running it again prints `already exists. No change made.`
 
 Schema is created by EF Core migrations, which arrive with the feature work. The script creates the empty database only.
 
@@ -109,8 +109,9 @@ No patient data or secrets are written to logs (CLAUDE.md §8).
 
 | Check | Result |
 |---|---|
-| `dotnet build PatientManagement.slnx` | Succeeded, 0 warnings, 0 errors |
-| `dotnet test PatientManagement.slnx` | 4 unit tests and 2 integration tests passed |
+| `dotnet build PatientManagement.sln` | Succeeded, 0 warnings, 0 errors |
+| `dotnet test PatientManagement.sln` | 4 unit tests and 2 integration tests passed |
 | Web app start (Development and Production) | Starts, logs startup line, serves home page (HTTP 200) |
-| `01-create-database.sql` on `localhost\SQLEXPRESS` | Creates database; second run makes no change |
+| `01-create-database.sql` on the verification machine's SQL Server 2022 Express instance | Creates database; second run makes no change |
+| Connection string from user secrets | Set on the verification machine; `user-secrets list` shows the key. The committed default is neutral |
 | EF Core migration tooling | Not verified yet. No entities exist, so there is nothing to migrate |

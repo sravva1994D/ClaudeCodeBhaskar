@@ -9,7 +9,7 @@
 ## 1. Solution Layout
 
 ```
-PatientManagement.slnx
+PatientManagement.sln
 ├── src/
 │   ├── PatientManagement.Web/            Presentation (ASP.NET Core MVC)
 │   │   ├── Controllers/                  Controllers (no business rules, no EF Core)
@@ -104,7 +104,7 @@ Constraints (from the planning documents):
 |---|---|---|
 | Logging levels | `appsettings.json`, `appsettings.Development.json` | Yes |
 | Allowed hosts | `appsettings.json` | Yes |
-| Connection string (default) | `appsettings.json` (`ConnectionStrings:PatientManagement`) | Yes. Windows authentication, no password |
+| Connection string (neutral sample) | `appsettings.json` (`ConnectionStrings:PatientManagement`) | Yes. Server `localhost`, Windows authentication, no password |
 | Connection string (personal) | User secrets (`dotnet user-secrets`) | No |
 | Passwords, keys, certificates | User secrets or environment variables | Never |
 | Local launch URLs | `Properties/launchSettings.json` | Yes (change locally only if needed) |
@@ -143,7 +143,7 @@ Rules (CLAUDE.md §10):
 Commands:
 
 ```
-dotnet test PatientManagement.slnx
+dotnet test PatientManagement.sln
 dotnet test tests/PatientManagement.UnitTests
 dotnet test tests/PatientManagement.IntegrationTests
 ```
@@ -156,6 +156,7 @@ dotnet test tests/PatientManagement.IntegrationTests
 - Async for all I/O. Pass `CancellationToken`.
 - No commented-out code. No TODO without a requirement ID or decision reference.
 - Follow existing patterns before adding new ones.
+- Package versions are pinned (R-4). Every `PackageReference` has an explicit version. EF Core stays at 10.0.14 unless a specific issue needs an upgrade (R-3).
 
 ## 11. Commits and Workflow
 
@@ -164,6 +165,7 @@ dotnet test tests/PatientManagement.IntegrationTests
 - Before pushing: `dotnet build` and `dotnet test` must pass.
 - Commit only the files you changed. Check `git status` first.
 - Never commit `bin/`, `obj/`, `.vs/`, user secrets or local `appsettings` overrides.
+- Line endings: `.gitattributes` stores and checks out text files with LF. Binary files (for example `.docx`) are never converted. Do not turn on line-ending conversion in your own Git settings.
 
 ## 12. Things Not To Do
 
@@ -172,3 +174,18 @@ dotnet test tests/PatientManagement.IntegrationTests
 - Do not add a mobile or API surface (OOS-007; Phase 1 is MVC pages).
 - Do not implement BRD features ahead of their work package (`Documentation/02-Planning/16-`).
 - Do not put connection strings with passwords, or any secret, in source control.
+- Do not commit machine-specific values such as instance names (R-6).
+
+## 13. Implementation Order
+
+Approved 2026-11-10. Work in this order, and finish each item before starting the next:
+
+| Order | Item | Requirements (main) | Planning milestone |
+|---|---|---|---|
+| 1 | Authentication | NFR-SEC-001, NFR-SEC-002 (hashing, encryption settings) | M1 (login part) |
+| 2 | Patient Management | FR-PAT-001 to FR-PAT-004, FR-SRC-001 | M2 |
+| 3 | Appointments | FR-APT-001 to FR-APT-003, FR-APT-002 on the home page | M3 |
+| 4 | Consultations | FR-VIT-001, FR-CMP-001, FR-DIA-001, FR-HIS-001 to FR-HIS-003, FR-SRC-002, FR-SRC-003 | M4, M6 |
+| 5 | Prescriptions | FR-RX-001, FR-RX-002, SC-004 | M5 |
+
+Then: export (FR-EXP-001, FR-EXP-002; M7), non-functional verification (M8), and Phase 1 acceptance (M9). Full sequence: `Documentation/02-Planning/15-Development-Roadmap.md`.

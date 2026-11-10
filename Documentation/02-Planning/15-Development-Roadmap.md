@@ -11,6 +11,20 @@
 - Each milestone ends with its requirements tested (`14-Testing-Strategy.md`).
 - Non-functional verification runs on a release candidate, after all features are merged.
 
+## 1A. Implementation Priority (approved 2026-11-10)
+
+Implementation follows this order. Each item maps to the milestone in §2.
+
+| Order | Item | Milestone |
+|---|---|---|
+| 1 | Authentication (login, password rules, idle timeout, forgot password) | M1 (login part) |
+| 2 | Patient Management | M2 |
+| 3 | Appointments | M3 |
+| 4 | Consultations (vitals, complaints, diagnosis, visit history) | M4 |
+| 5 | Prescriptions | M5 |
+
+After item 5: M6 (history filter, recent patients), M7 (export), M8 (non-functional verification), M9 (acceptance). A polished home page can be completed later.
+
 ## 2. Milestones
 
 | Milestone | Name | Requirements | Depends on | Exit gate |
