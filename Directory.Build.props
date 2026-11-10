@@ -1,7 +1,7 @@
 <Project>
 
   <!--
-    Shared settings for every project in PatientManagement.slnx.
+    Shared settings for every project in PatientManagement.sln.
     Source: CLAUDE.md §8 (nullable reference types enabled).
   -->
   <PropertyGroup>

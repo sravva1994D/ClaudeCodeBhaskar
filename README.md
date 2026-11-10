@@ -9,9 +9,9 @@ Solution skeleton (Module 4, started 2026-11-10). No BRD feature is implemented 
 ## Quick Start
 
 ```
-dotnet restore PatientManagement.slnx
-dotnet build PatientManagement.slnx
-dotnet test PatientManagement.slnx
+dotnet restore PatientManagement.sln
+dotnet build PatientManagement.sln
+dotnet test PatientManagement.sln
 sqlcmd -S "localhost\SQLEXPRESS" -E -b -i database/Scripts/01-create-database.sql
 dotnet run --project src/PatientManagement.Web --launch-profile http
 ```
