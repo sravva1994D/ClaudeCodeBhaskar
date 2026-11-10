@@ -103,7 +103,7 @@ Consultation can be saved with missing vitals. Vitals can be added later (BRD).
 |---|---|---|
 | Username and password required | Error | BRD |
 | Password length ≥ 8 | Error | BRD |
-| Password complexity | Error (8 to 16 characters; upper case, lower case, digit, symbol) | PDR-02 |
+| Password complexity | Error (8 to 16 characters; upper case, lower case, digit, symbol). A symbol is any character that is not a letter, a digit or whitespace; whitespace is allowed but does not count as a symbol (Module 1, step 3) | PDR-02 |
 | Confirm password equals new password | Error | BRD (confirm password) |
 | Email matches a user | Error (PDR-03 message) | BRD |
 
