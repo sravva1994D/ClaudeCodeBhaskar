@@ -40,7 +40,8 @@ public class TestDatabaseGuardTests
     }
 }
 
-public class TestDatabaseFixtureTests(TestDatabaseFixture fixture) : IClassFixture<TestDatabaseFixture>
+[Collection(TestDatabaseCollection.Name)]
+public class TestDatabaseFixtureTests(TestDatabaseFixture fixture)
 {
     [Fact]
     public async Task Test_database_is_reachable_and_is_the_test_database()

@@ -79,7 +79,7 @@ Enforce by project references. A reference that breaks these rules is a defect, 
 
 - EF Core only. Dapper is not used (PDR-32).
 - The DbContext is `PatientManagementDbContext` in `PatientManagement.Data/Context`.
-- No `DbSet` is declared yet. Add one with the entity it serves.
+- `DbSet<User>` is declared (Module 1, step 1). Add one with the entity it serves. Entity column rules live in a configuration class per entity in `Data/Configurations`.
 - Schema changes are made with migrations and committed with the change that needs them (CLAUDE.md §6).
 
 Migration commands, for when the first entity exists. Install the matching tool first:
@@ -93,7 +93,7 @@ dotnet ef database update --project src/PatientManagement.Data --startup-project
 - `--project` is where the migration files go. `--startup-project` supplies the connection string.
 - Name migrations for what they change, for example `AddPatients`.
 - Check the generated SQL with `dotnet ef migrations script` before applying it.
-- Not verified on this machine yet (no entities exist to migrate).
+- Verified 2026-11-10: `dotnet-ef` 10.0.14 installed globally; migration `AddUsers` generated and its SQL script reviewed; applied to the test database by the test fixture.
 
 Constraints (from the planning documents):
 - No check constraints on vital-sign ranges. Ranges are warnings (AD-14).
