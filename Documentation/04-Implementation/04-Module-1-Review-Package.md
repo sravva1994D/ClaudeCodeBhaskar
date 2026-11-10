@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M1 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/03-Module-1-Plan.md`
-**Status:** Built and verified, 2026-11-10. Awaiting the Project Owner's review.
+**Status:** Built and verified, 2026-11-10. **Approved by the Project Owner, 2026-11-10.** Open items in §6 and §8 remain for follow-up.
 
 ---
 
