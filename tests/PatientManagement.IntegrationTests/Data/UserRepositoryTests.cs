@@ -83,4 +83,38 @@ public class UserRepositoryTests(TestDatabaseFixture fixture) : IAsyncLifetime
         var saved = await reader.Users.SingleAsync(u => u.Username == Username);
         Assert.Equal("hash-after", saved.PasswordHash);
     }
+
+    [Fact]
+    public async Task NFR_SEC_001_any_is_true_when_an_account_exists()
+    {
+        await using var context = fixture.CreateContext();
+        var repository = new UserRepository(context);
+
+        Assert.True(await repository.AnyAsync());
+    }
+
+    [Fact]
+    public async Task NFR_SEC_001_any_is_false_when_no_account_exists()
+    {
+        await fixture.ClearTablesAsync("Users");
+        await using var context = fixture.CreateContext();
+        var repository = new UserRepository(context);
+
+        Assert.False(await repository.AnyAsync());
+    }
+
+    [Fact]
+    public async Task NFR_SEC_001_add_saves_the_account()
+    {
+        await fixture.ClearTablesAsync("Users");
+        await using (var context = fixture.CreateContext())
+        {
+            var repository = new UserRepository(context);
+            await repository.AddAsync(new User { Username = Username, PasswordHash = "hash-added", Email = Email });
+        }
+
+        await using var reader = fixture.CreateContext();
+        var saved = await reader.Users.SingleAsync(u => u.Username == Username);
+        Assert.Equal("hash-added", saved.PasswordHash);
+    }
 }

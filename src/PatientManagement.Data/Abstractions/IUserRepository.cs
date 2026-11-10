@@ -10,6 +10,12 @@ public interface IUserRepository
 
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 
+    // True when at least one account exists. Used by the seed command (DEC-018).
+    Task<bool> AnyAsync(CancellationToken cancellationToken = default);
+
+    // Adds the account and saves it. Used by the seed command only (DEC-018).
+    Task AddAsync(User user, CancellationToken cancellationToken = default);
+
     // Saves the entity's current values, for example a new password hash.
     Task UpdateAsync(User user, CancellationToken cancellationToken = default);
 }

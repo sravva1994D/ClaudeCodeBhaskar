@@ -13,6 +13,15 @@ public sealed class UserRepository(PatientManagementDbContext db) : IUserReposit
     public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default) =>
         db.Users.SingleOrDefaultAsync(user => user.Email == email, cancellationToken);
 
+    public Task<bool> AnyAsync(CancellationToken cancellationToken = default) =>
+        db.Users.AnyAsync(cancellationToken);
+
+    public async Task AddAsync(User user, CancellationToken cancellationToken = default)
+    {
+        db.Users.Add(user);
+        await db.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task UpdateAsync(User user, CancellationToken cancellationToken = default)
     {
         db.Users.Update(user);

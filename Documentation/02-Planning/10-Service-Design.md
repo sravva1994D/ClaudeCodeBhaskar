@@ -21,7 +21,8 @@ Warnings and errors use the same shape. The difference is the flag that allows s
 | Method | Input | Output | Rules | Req IDs |
 |---|---|---|---|---|
 | SignInAsync | username, password | Result | Verify hash. Unknown user and wrong password return the same message | NFR-SEC-001 |
-| ResetPasswordAsync | email, newPassword, confirmPassword | Result | Email must match the user. Password meets policy (PDR-02). Hash and save. Caller signs in | NFR-SEC-001 |
+| ResetPasswordAsync | email, newPassword, confirmPassword | Result | Email must match the user. Password meets policy (PDR-02). Hash and save. Caller signs in. Confirmation must match. No match returns the PDR-03 message | NFR-SEC-001 |
+| CreateInitialAccountAsync | username, email, password | Result | Seed command only (DEC-018, plan A-1). Refused when an account exists. Username, valid email and password policy required. Stores the hash only | NFR-SEC-001, CON-002 |
 
 ### 2.2 IPatientService (FR-PAT-001 to FR-PAT-004, FR-SRC-001, FR-SRC-002)
 | Method | Input | Output | Rules | Req IDs |
