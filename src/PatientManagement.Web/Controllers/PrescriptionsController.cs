@@ -40,6 +40,48 @@ public class PrescriptionsController(
         return RedirectToAction("Edit", "Consultations", new { id = consultationId });
     }
 
+    // The print view (SCR-12, route 24). Read-only: it marks nothing.
+    [HttpGet("/Prescriptions/Print/{consultationId:int}")]
+    public async Task<IActionResult> Print(int consultationId, CancellationToken cancellationToken)
+    {
+        var result = await prescriptions.GetPrintModelAsync(consultationId, cancellationToken);
+        if (result.Errors.Any(error => error.Code == ConsultationService.NotFoundCode))
+        {
+            return NotFound();
+        }
+
+        if (!result.IsSuccess)
+        {
+            TempData["Error"] = string.Join(" ", result.Errors.Select(error => error.Message));
+            return RedirectToAction("Edit", "Consultations", new { id = consultationId });
+        }
+
+        return View(result.Value!);
+    }
+
+    // The Print command (route 23). Marks the prescription printed once, then shows the same view and opens the print dialog.
+    // Printing again is allowed and keeps the first print time (PDR-14).
+    [HttpPost("/Prescriptions/Print/{consultationId:int}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> MarkPrinted(int consultationId, CancellationToken cancellationToken)
+    {
+        var result = await prescriptions.MarkPrintedAsync(consultationId, cancellationToken);
+        if (result.Errors.Any(error => error.Code == ConsultationService.NotFoundCode))
+        {
+            return NotFound();
+        }
+
+        if (!result.IsSuccess)
+        {
+            TempData["Error"] = string.Join(" ", result.Errors.Select(error => error.Message));
+            return RedirectToAction("Edit", "Consultations", new { id = consultationId });
+        }
+
+        ViewData["AutoPrint"] = true;
+
+        return View("Print", result.Value!);
+    }
+
     private static MedicineLineInput ToInput(MedicineLineFormModel line) =>
         new(line.Name, line.Dosage, line.Frequency, line.Duration, line.Instructions);
 

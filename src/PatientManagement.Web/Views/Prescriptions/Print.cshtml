@@ -1,0 +1,130 @@
+@using System.Globalization
+@model PatientManagement.Business.DTOs.PrescriptionPrintDto
+@{
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    ViewData["Title"] = "Prescription";
+    var autoPrint = ViewData["AutoPrint"] is true;
+}
+
+<div class="d-print-none mb-3">
+    <form method="post" asp-controller="Prescriptions" asp-action="MarkPrinted" asp-route-consultationId="@Model.ConsultationId" class="d-inline">
+        <button type="submit" class="btn btn-primary">Print</button>
+    </form>
+    <a class="ms-3" asp-controller="Consultations" asp-action="Edit" asp-route-id="@Model.ConsultationId">Back to visit</a>
+    <p class="text-muted small mt-2 mb-0">
+        @(Model.IsPrinted
+            ? $"Printed on {Model.PrintedAt!.Value.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}. Printing again is allowed."
+            : "Not printed yet. Press Print to mark it printed and open the print dialog. In the dialog, choose Save as PDF to make a PDF.")
+    </p>
+    @if (!Model.Clinic.IsComplete)
+    {
+        <div class="alert alert-warning mt-2 mb-0" role="status">
+            Clinic details are incomplete. <a asp-controller="ClinicProfile" asp-action="Edit">Complete the clinic details</a>.
+        </div>
+    }
+</div>
+
+<article class="sheet">
+    <header class="d-flex justify-content-between align-items-start">
+        <div>
+            <p class="clinic-name">@(Model.Clinic.ClinicName ?? "Clinic name not entered")</p>
+            @if (!string.IsNullOrWhiteSpace(Model.Clinic.Address))
+            {
+                <div>@Model.Clinic.Address</div>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Clinic.Phone))
+            {
+                <div>Phone: @Model.Clinic.Phone</div>
+            }
+        </div>
+        <img src="~/img/clinic-logo-placeholder.svg" alt="Clinic logo (placeholder)" class="logo" />
+    </header>
+
+    @if (!Model.Clinic.IsComplete)
+    {
+        <p class="small mb-0">Clinic details are incomplete.</p>
+    }
+
+    <hr />
+
+    <table class="table table-sm table-borderless mb-0">
+        <tbody>
+            <tr>
+                <th scope="row" style="width: 30%;">Patient</th>
+                <td>@Model.PatientName</td>
+                <th scope="row" style="width: 20%;">Patient code</th>
+                <td>@Model.PatientCode</td>
+            </tr>
+            <tr>
+                <th scope="row">Date of birth</th>
+                <td>@Model.DateOfBirth.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)</td>
+                <th scope="row">Gender</th>
+                <td>@Model.Gender</td>
+            </tr>
+            <tr>
+                <th scope="row">Visit</th>
+                <td colspan="3">@Model.VisitDateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="section-title">Vitals</h2>
+    @if (Model.Vitals is null)
+    {
+        <p class="mb-0">Not recorded.</p>
+    }
+    else
+    {
+        <p class="mb-0">
+            Temperature @Model.Vitals.TemperatureC.ToString("0.0", CultureInfo.InvariantCulture) °C ·
+            Blood pressure @Model.Vitals.SystolicMmHg/@Model.Vitals.DiastolicMmHg mmHg ·
+            Pulse @Model.Vitals.PulseBpm bpm
+        </p>
+    }
+
+    <h2 class="section-title">Diagnosis</h2>
+    <p class="mb-0" style="white-space: pre-line">@(string.IsNullOrWhiteSpace(Model.Diagnosis) ? "Not recorded." : Model.Diagnosis)</p>
+
+    <h2 class="section-title">Medicines</h2>
+    <table class="prescription-table">
+        <thead>
+            <tr>
+                <th scope="col" style="width: 5%;">No.</th>
+                <th scope="col" style="width: 25%;">Medicine</th>
+                <th scope="col" style="width: 15%;">Dosage</th>
+                <th scope="col" style="width: 15%;">Frequency</th>
+                <th scope="col" style="width: 12%;">Duration</th>
+                <th scope="col">Instructions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var index = 0; index < Model.Lines.Count; index++)
+            {
+                var line = Model.Lines[index];
+                <tr>
+                    <td>@(index + 1)</td>
+                    <td>@line.Name</td>
+                    <td>@line.Dosage</td>
+                    <td>@line.Frequency</td>
+                    <td>@line.Duration</td>
+                    <td>@line.Instructions</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <footer class="mt-5">
+        <div>@Model.Clinic.DoctorName</div>
+        <div>Registration number: @Model.Clinic.RegistrationNumber</div>
+        <div class="signature-line">Doctor's signature</div>
+    </footer>
+</article>
+
+@if (autoPrint)
+{
+    <script>
+        window.addEventListener('load', function () {
+            window.print();
+        });
+    </script>
+}
