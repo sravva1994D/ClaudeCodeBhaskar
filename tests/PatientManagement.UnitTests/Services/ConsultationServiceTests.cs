@@ -26,11 +26,13 @@ public class ConsultationServiceTests
     private readonly IVitalSignRepository vitals = Substitute.For<IVitalSignRepository>();
     private readonly IAppointmentRepository appointments = Substitute.For<IAppointmentRepository>();
     private readonly IPatientRepository patients = Substitute.For<IPatientRepository>();
+    private readonly IPrescriptionRepository prescriptions = Substitute.For<IPrescriptionRepository>();
     private readonly ConsultationService service;
 
     public ConsultationServiceTests()
     {
-        service = new ConsultationService(consultations, vitals, appointments, patients, new FixedClock(Now));
+        service = new ConsultationService(consultations, vitals, prescriptions, appointments, patients, new FixedClock(Now));
+        prescriptions.GetByConsultationAsync(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns((Prescription?)null);
         patients.GetByIdAsync(7, Arg.Any<CancellationToken>()).Returns(Patient());
         consultations.MarkFinishedAsync(
             Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<Appointment?>(), Arg.Any<CancellationToken>()).Returns(true);
@@ -199,6 +201,26 @@ public class ConsultationServiceTests
         await consultations.Received(1).UpdateAsync(
             Arg.Is<Consultation>(c => c.Complaints == null && c.Diagnosis == null),
             Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task FR_RX_002_a_visit_with_a_printed_prescription_cannot_be_saved()
+    {
+        consultations.GetByIdAsync(11, true, Arg.Any<CancellationToken>()).Returns(Visit());
+        prescriptions.GetByConsultationAsync(11, Arg.Any<CancellationToken>()).Returns(new Prescription
+        {
+            Id = 3,
+            ConsultationId = 11,
+            IsPrinted = true,
+            PrintedAt = NowLocal
+        });
+
+        var result = await service.SaveAsync(11, Save(new VitalsInput(36.8m, 120, 80, 72)), confirmWarnings: true);
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal([PrescriptionService.PrintedCode], result.Errors.Select(e => e.Code));
+        await consultations.DidNotReceive().UpdateAsync(Arg.Any<Consultation>(), Arg.Any<CancellationToken>());
+        await vitals.DidNotReceive().UpsertAsync(Arg.Any<VitalSign>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

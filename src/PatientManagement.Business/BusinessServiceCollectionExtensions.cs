@@ -20,6 +20,8 @@ public static class BusinessServiceCollectionExtensions
         services.AddScoped<IPatientService, PatientService>();
         services.AddScoped<IAppointmentService, AppointmentService>();
         services.AddScoped<IConsultationService, ConsultationService>();
+        services.AddScoped<IPrescriptionService, PrescriptionService>();
+        services.AddScoped<IClinicProfileService, ClinicProfileService>();
 
         return services;
     }

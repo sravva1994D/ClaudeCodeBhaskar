@@ -11,6 +11,7 @@ namespace PatientManagement.Business.Services;
 public sealed class ConsultationService(
     IConsultationRepository consultations,
     IVitalSignRepository vitals,
+    IPrescriptionRepository prescriptions,
     IAppointmentRepository appointments,
     IPatientRepository patients,
     TimeProvider timeProvider) : IConsultationService
@@ -119,6 +120,13 @@ public sealed class ConsultationService(
         if (patient is null)
         {
             return NotFound();
+        }
+
+        // Once the prescription is printed, the visit's text and vitals are read-only (FR-RX-002 AC-4, D-M5-4).
+        if ((await prescriptions.GetByConsultationAsync(consultationId, cancellationToken))?.IsPrinted == true)
+        {
+            return Result<ConsultationDto>.Fail(new ResultMessage(PrescriptionService.PrintedCode,
+                "This visit has a printed prescription, so it can no longer be changed."));
         }
 
         // Errors win over warnings (13 §4): nothing is saved while an error exists.
