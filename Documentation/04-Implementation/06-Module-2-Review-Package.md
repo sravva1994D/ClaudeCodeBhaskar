@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M2 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/05-Module-2-Plan.md` (approved 2026-11-11, decisions D-M2-1 to D-M2-6 accepted)
-**Status:** Built and tested, 2026-11-11. Browser checks and the browser timing run are open (§4).
+**Status:** **Approved by the Project Owner, 2026-11-11.** Browser checks reported as completed with acceptable results (§4). The browser version and the browser timing figures were not supplied with the approval and are still to be recorded.
 
 ---
 
@@ -78,11 +78,11 @@ Limits of this measurement:
 | Check | Method | Status |
 |---|---|---|
 | Patients migration applied to the development database | `dotnet ef database update`; read-only query | Done. `Patients` table present, no patients yet |
-| Register, edit, view, search in the browser | Development database, test patients entered by hand | Open. Project Owner |
-| Duplicate warning in the browser | Register a patient with an existing phone number; check the warning; continue | Open. Project Owner |
-| Quick search from the top bar | Search by name and by phone | Open. Project Owner |
-| Browser timing (PDR-30, median of 5) | `03-generate-test-patients.sql` on `PatientManagement_Test`; run the app against that database; time each search in the browser | Open. Needs the browser and the browser version recorded |
-| Patient data in the application log | Run the app, use the screens, read the console log | Open. Code check done (§3); runtime check pending |
+| Register, edit, view, search in the browser | Development database, test patients entered by hand | Completed, reported by the Project Owner, 2026-11-11 |
+| Duplicate warning in the browser | Register a patient with an existing phone number; check the warning; continue | Completed, reported by the Project Owner, 2026-11-11 |
+| Quick search from the top bar | Search by name and by phone | Completed, reported by the Project Owner, 2026-11-11 |
+| Browser timing (PDR-30, median of 5) | `03-generate-test-patients.sql` on `PatientManagement_Test`; time each search in the browser | Reported as acceptable. Figures and browser version not yet recorded |
+| Patient data in the application log | Run the app, use the screens, read the console log | Completed, reported by the Project Owner, 2026-11-11. No issues found |
 
 ## 5. Decisions Taken
 
@@ -128,8 +128,8 @@ Limits of this measurement:
 | `cc937ea` | feat(web): add patient register, profile and edit screens |
 | this commit | feat(tests): search timing on 1,000 synthetic patients; generator script; Module 2 review |
 
-## 8. Requested Decision
+## 8. Approval
 
-1. Run the manual checks in §4, and record the Chrome and Edge versions with the browser timing results.
-2. Decide item 5 in §6 (HTTPS redirect in Development), which is still open from Module 1.
-3. Approve Module 2 as complete, so Module 3 (Appointments) can be planned.
+Module 2 approved by the Project Owner on 2026-11-11, with the manual checks in §4 reported as completed.
+
+Still to record, when available: the browser name and version for the timing run, and the browser timing figures. Item 5 in §6 (HTTPS redirect in Development, from Module 1) remains open.
