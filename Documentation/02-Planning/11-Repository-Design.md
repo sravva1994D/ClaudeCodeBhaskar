@@ -35,7 +35,7 @@ Sign-in always matches the username. There is no fallback to a single account (D
 | SearchAsync(term) | IReadOnlyList<Patient> | Name or phone contains (PDR-23) | FR-PAT-004, FR-SRC-001 |
 | FindPossibleDuplicatesAsync(name, dob, phone, excludeId?) | IReadOnlyList<Patient> | Duplicate warning | FR-PAT-001 |
 | AddAsync(patient) | void | Insert | FR-PAT-001 |
-| UpdateCodeAsync(id, code) | void | Set PatientCode after insert (AD-09) | FR-PAT-001 |
+| UpdateAsync(patient) | Task | Saves the entity's values. The patient code is a database computed column and is never changed by the application (Module 2, decision D-M2-1) | FR-PAT-002 |
 | ExistsAsync(id) | bool | Appointment and visit checks | FR-APT-001, FR-HIS-001 |
 
 Recent patients is served by `IConsultationRepository.GetRecentPatientIdsAsync(5)` (see 2.4), keeping the patient table free of visit logic.

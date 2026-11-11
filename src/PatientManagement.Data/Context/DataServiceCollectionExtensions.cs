@@ -24,6 +24,7 @@ public static class DataServiceCollectionExtensions
         services.AddDbContext<PatientManagementDbContext>(options => options.UseSqlServer(connectionString));
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPatientRepository, PatientRepository>();
 
         return services;
     }
