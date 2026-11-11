@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M3 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/07-Module-3-Plan.md` (approved 2026-11-11 with decisions D-M3-1 to D-M3-6)
-**Status:** **Ready for Project Owner review.** Automated tests pass. Browser checks in §4 are pending. Not yet approved.
+**Status:** **Browser checks passed (Project Owner, Chrome 157.0.8103.50). Awaiting approval.** Automated tests pass. Not yet approved.
 
 ---
 
@@ -59,17 +59,17 @@ dotnet ef database update --project src/PatientManagement.Data --startup-project
 
 | # | Check | Expected | Result |
 |---|---|---|---|
-| 1 | Sign in; home page shows "Today's appointments" and "New patient" | Page loads; list empty or as expected | Pending |
-| 2 | Open a patient profile → "Schedule appointment"; choose tomorrow; pick 09:00; Save | Profile opens with "Appointment booked for …" | Pending |
-| 3 | Schedule a second patient at the same slot | Form shows "That slot is already booked"; the slot is shown as "(booked)" and cannot be chosen | Pending |
+| 1 | Sign in; home page shows "Today's appointments" and "New patient" | Page loads; list empty or as expected | Passed (Project Owner, Chrome 157.0.8103.50) |
+| 2 | Open a patient profile → "Schedule appointment"; choose tomorrow; pick 09:00; Save | Profile opens with "Appointment booked for …" | Passed (Project Owner, Chrome 157.0.8103.50) |
+| 3 | Schedule a second patient at the same slot | Form shows "That slot is already booked"; the slot is shown as "(booked)" and cannot be chosen | Passed (Project Owner, Chrome 157.0.8103.50) |
 | 4 | Pick yesterday as the day, click "Show slots", pick a slot, Save | "The appointment date cannot be in the past." | Passed (Project Owner, Chrome 157.0.8103.50). First attempt booked today's 11:30 slot because the day box was changed without "Show slots"; the form now refuses that (see §7) |
-| 5 | Submit with no slot chosen | "Choose a slot." | Pending |
-| 6 | Daily list for tomorrow: "Check in" on the booking | Message "Appointment status set to Checked-In."; status shown | Pending |
-| 7 | On the Checked-In row | Offers Cancel, and no status that skips a step | Pending |
-| 8 | Cancel a different booking; then book that slot for another patient | The slot is free after the cancel and can be booked | Pending |
-| 9 | Archive a Cancelled or No-show row | Row disappears from the day list and from the home page; no screen shows it | Pending |
-| 10 | Search results: "Schedule" link on a row | Opens the schedule screen for that patient | Pending |
-| 11 | Top bar "Appointments" link | Opens the daily list for today | Pending |
+| 5 | Submit with no slot chosen | "Choose a slot." | Passed (Project Owner, Chrome 157.0.8103.50) |
+| 6 | Daily list for tomorrow: "Check in" on the booking | Message "Appointment status set to Checked-In."; status shown | Passed (Project Owner, Chrome 157.0.8103.50) |
+| 7 | On the Checked-In row | Offers Cancel, and no status that skips a step | Passed (Project Owner, Chrome 157.0.8103.50) |
+| 8 | Cancel a different booking; then book that slot for another patient | The slot is free after the cancel and can be booked | Passed (Project Owner, Chrome 157.0.8103.50) |
+| 9 | Archive a Cancelled or No-show row | Row disappears from the day list and from the home page; no screen shows it | Passed (Project Owner, Chrome 157.0.8103.50) |
+| 10 | Search results: "Schedule" link on a row | Opens the schedule screen for that patient | Passed (Project Owner, Chrome 157.0.8103.50) |
+| 11 | Top bar "Appointments" link | Opens the daily list for today | Passed (Project Owner, Chrome 157.0.8103.50) |
 
 Note for check 9: a Completed appointment can only be reached through the consultation Finish action (Module 4), so Archive is checked here with a Cancelled or No-show row.
 
@@ -129,4 +129,4 @@ The Business-layer decisions D-M3-1 to D-M3-6 are recorded here and in the plan,
 
 ## 9. Approval
 
-Module 3 is not yet approved. The Project Owner runs the checks in §4, records the results, and approves or requests changes. Items 5 and 9 in §6 need a decision or a note at approval.
+Module 3 is not yet approved. All browser checks in §4 passed. The Project Owner approves or requests changes. Items 5 and 9 in §6 need a decision or a note at approval.
