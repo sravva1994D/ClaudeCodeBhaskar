@@ -17,6 +17,7 @@ public static class BusinessServiceCollectionExtensions
 
         services.AddSingleton<AgeCalculator>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IPatientService, PatientService>();
 
         return services;
     }
