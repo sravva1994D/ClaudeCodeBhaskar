@@ -11,7 +11,8 @@ public sealed record AppointmentDto(
     int DurationMinutes,
     string Status,
     IReadOnlyList<string> NextStatuses,
-    bool CanArchive);
+    bool CanArchive,
+    bool CanStartConsultation);
 
 // The input to book an appointment (SCR-09).
 public sealed record AppointmentCreateDto(int PatientId, DateTime StartTime);

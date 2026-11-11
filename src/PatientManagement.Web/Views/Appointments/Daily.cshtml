@@ -72,6 +72,14 @@ else
                                         })</button>
                                     </form>
                                 }
+                                @if (item.CanStartConsultation)
+                                {
+                                    <form method="post" asp-controller="Consultations" asp-action="Start" class="d-inline">
+                                        <input type="hidden" name="patientId" value="@item.PatientId" />
+                                        <input type="hidden" name="appointmentId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-primary">Start consultation</button>
+                                    </form>
+                                }
                                 @if (item.CanArchive)
                                 {
                                     <form method="post" asp-controller="Appointments" asp-action="Archive" class="d-inline">

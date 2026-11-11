@@ -1,3 +1,4 @@
+using System.Globalization;
 using PatientManagement.Business.Common;
 
 namespace PatientManagement.Business.Validators;
@@ -56,7 +57,7 @@ public static class VitalsValidator
             if (temperature <= 0 || temperature > TemperatureEntryMax)
             {
                 errors.Add(new ResultMessage("Vitals.Temperature.Invalid",
-                    $"Enter a temperature between 0.1 and {TemperatureEntryMax:0.0} °C.", "TemperatureC"));
+                    $"Enter a temperature between 0.1 and {TemperatureEntryMax.ToString("0.0", CultureInfo.InvariantCulture)} °C.", "TemperatureC"));
             }
             else if (Math.Round(temperature, 1) != temperature)
             {
@@ -81,7 +82,7 @@ public static class VitalsValidator
         if (input.TemperatureC is { } temperature && (temperature < TemperatureMin || temperature > TemperatureMax))
         {
             warnings.Add(new ResultMessage("Vitals.Range.OutOfRange",
-                $"Temperature {temperature:0.0} °C is outside the expected range {TemperatureMin:0.0}–{TemperatureMax:0.0} °C. Confirm to save.",
+                $"Temperature {temperature.ToString("0.0", CultureInfo.InvariantCulture)} °C is outside the expected range {TemperatureMin.ToString("0.0", CultureInfo.InvariantCulture)}–{TemperatureMax.ToString("0.0", CultureInfo.InvariantCulture)} °C. Confirm to save.",
                 "TemperatureC"));
         }
 

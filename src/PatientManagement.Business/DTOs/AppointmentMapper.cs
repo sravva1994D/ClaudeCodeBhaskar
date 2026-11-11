@@ -15,5 +15,6 @@ public static class AppointmentMapper
         appointment.DurationMinutes,
         appointment.Status,
         AppointmentLifecycle.ManualNextStatuses(appointment.Status),
-        AppointmentLifecycle.CanArchive(appointment.Status));
+        AppointmentLifecycle.CanArchive(appointment.Status),
+        appointment.Status == AppointmentStatus.CheckedIn);
 }
