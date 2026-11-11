@@ -147,6 +147,26 @@ public class AppointmentPagesTests(TestDatabaseFixture database, TestWebApplicat
     }
 
     [Fact]
+    public async Task FR_APT_001_a_slot_on_a_different_day_from_the_day_box_is_refused()
+    {
+        using var client = await SignedInClientAsync();
+        var token = await TestSignIn.AntiForgeryTokenAsync(client, $"/Appointments/Create?patientId={patientId}&date={Day:yyyy-MM-dd}");
+
+        // The day box says Day, but the chosen slot is on the next day (the slot list was not reloaded).
+        var response = await client.PostAsync("/Appointments/Create", Form(
+            ("PatientId", patientId.ToString()),
+            ("Date", Day.ToString("yyyy-MM-dd")),
+            ("StartTime", Day.AddDays(1).ToDateTime(new TimeOnly(9, 0)).ToString("yyyy-MM-ddTHH:mm")),
+            ("__RequestVerificationToken", token)));
+
+        var html = await response.Content.ReadAsStringAsync();
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("The chosen slot is on a different day.", html);
+        await using var context = database.CreateContext();
+        Assert.Equal(0, await context.Appointments.CountAsync());
+    }
+
+    [Fact]
     public async Task FR_APT_001_an_unregistered_patient_gets_not_found_on_the_screen()
     {
         using var client = await SignedInClientAsync();

@@ -62,7 +62,7 @@ dotnet ef database update --project src/PatientManagement.Data --startup-project
 | 1 | Sign in; home page shows "Today's appointments" and "New patient" | Page loads; list empty or as expected | Pending |
 | 2 | Open a patient profile → "Schedule appointment"; choose tomorrow; pick 09:00; Save | Profile opens with "Appointment booked for …" | Pending |
 | 3 | Schedule a second patient at the same slot | Form shows "That slot is already booked"; the slot is shown as "(booked)" and cannot be chosen | Pending |
-| 4 | Pick yesterday as the day and submit | "The appointment date cannot be in the past." | Pending |
+| 4 | Pick yesterday as the day, click "Show slots", pick a slot, Save | "The appointment date cannot be in the past." | Passed (Project Owner, Chrome 157.0.8103.50). First attempt booked today's 11:30 slot because the day box was changed without "Show slots"; the form now refuses that (see §7) |
 | 5 | Submit with no slot chosen | "Choose a slot." | Pending |
 | 6 | Daily list for tomorrow: "Check in" on the booking | Message "Appointment status set to Checked-In."; status shown | Pending |
 | 7 | On the Checked-In row | Offers Cancel, and no status that skips a step | Pending |
@@ -109,6 +109,7 @@ Record the browser name and version for the run (PDR-28).
 | `11-Repository-Design` | `AddAsync` returns `Task` and raises `SlotTakenException`; `UpdateAsync` added |
 | `18-Planning-Traceability-Matrix` | FR-APT-001 to FR-APT-003 test names updated to the implemented tests; TC-003-3 and -5 marked for M4 |
 | `06-Entity-Design` | Status count corrected to six (plan commit) |
+| Schedule screen (SCR-09) | The day box is posted with the slot; "Show slots" reloads the list without saving; a save whose slot is on another day is refused. Added after browser check 4 (Module 3 review) |
 
 The Business-layer decisions D-M3-1 to D-M3-6 are recorded here and in the plan, not in `17-Planning-Decisions-and-Open-Items`. Add them there if the Project Owner wants them in the decision log.
 

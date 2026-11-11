@@ -7,22 +7,22 @@
 <h1 class="h3 mb-1">Schedule appointment</h1>
 <p class="text-muted mb-4">@Model.PatientName (@Model.PatientCode)</p>
 
-<form method="get" asp-controller="Appointments" asp-action="Create" class="row g-2 align-items-end mb-4">
-    <input type="hidden" name="patientId" value="@Model.PatientId" />
-    <div class="col-auto">
-        <label for="day" class="form-label">Day</label>
-        <input id="day" name="date" type="date" class="form-control" value="@Model.Date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" />
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-outline-secondary">Show slots</button>
-    </div>
-</form>
-
 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
 <form method="post" asp-controller="Appointments" asp-action="Create">
     <input type="hidden" name="PatientId" value="@Model.PatientId" />
-    <input type="hidden" name="Date" value="@Model.Date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" />
+
+    <div class="row g-2 align-items-end mb-4">
+        <div class="col-auto">
+            <label for="day" class="form-label">Day</label>
+            <input id="day" name="Date" type="date" class="form-control" value="@Model.Date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" />
+            <span asp-validation-for="Date" class="text-danger d-block"></span>
+        </div>
+        <div class="col-auto">
+            <!-- Reloads the slot list for the day in the box. Nothing is saved. -->
+            <button type="submit" class="btn btn-outline-secondary" formaction="/Appointments/Create" formmethod="get">Show slots</button>
+        </div>
+    </div>
 
     <fieldset class="mb-3">
         <legend class="form-label fs-6">Time (30 minutes)</legend>
@@ -51,5 +51,3 @@
         <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">Cancel</a>
     </div>
 </form>
-
-<span asp-validation-for="Date" class="text-danger d-block mt-3"></span>

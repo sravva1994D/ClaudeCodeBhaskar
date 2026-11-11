@@ -48,6 +48,15 @@ public class AppointmentsController(
             return View(await BuildFormAsync(patient.Value!, day, startTime: null, cancellationToken));
         }
 
+        // The slot must be on the day shown in the Day box. Otherwise the user changed the day without
+        // reloading the slots, and the save would book a slot the user did not see for that day.
+        if (DateOnly.FromDateTime(model.StartTime.Value) != day)
+        {
+            ModelState.AddModelError(nameof(model.Date),
+                "The chosen slot is on a different day. Choose the day, select Show slots, then pick a slot.");
+            return View(await BuildFormAsync(patient.Value!, day, model.StartTime, cancellationToken));
+        }
+
         var result = await appointments.ScheduleAsync(
             new AppointmentCreateDto(model.PatientId, model.StartTime.Value), cancellationToken);
 
