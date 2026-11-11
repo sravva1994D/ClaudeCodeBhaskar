@@ -47,7 +47,7 @@ Every test that verifies a requirement carries its ID in the name (CLAUDE §4.2,
 | Date of birth | Required. Not in the future. No minimum or maximum age (BRD is silent) | BRD; PDR-22 |
 | Phone | 7 to 15 digits; spaces, hyphens and a leading `+` allowed. Stored as entered | PDR-22 |
 | Email | Standard email format (same check as the account email) | PDR-22 |
-| Age | Calculated from date of birth and the system date at display time. Not stored. Whole years | BRD; AD-07 |
+| Age | Calculated from date of birth and the system date at display time. Not stored. Whole years. A 29 February birth has its birthday on 28 February in non-leap years (step 4; the BRD is silent) | BRD; AD-07 |
 | Duplicates | Exact match on name (case-insensitive), date of birth, or phone. Returned as a warning. The save continues only after confirmation | BRD; PDR-10; `13-` §4 |
 | Search | Contains match on name or phone, case-insensitive, no minimum length. Empty term is an error | PDR-23; D4 (approved 2026-11-10) |
 | Search input | `%` and `_` in the term are matched literally, not as wildcards | Plan (correctness of contains search) |
