@@ -21,10 +21,10 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 | FR-VIT-001 | Must | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync; vitals validator | IVitalSignRepository.UpsertAsync | VitalSigns | TC-FR-VIT-001-1 to -5, boundary set (implemented, M4) | WP-5.1, 5.2, 5.4 | M4 | 19 |
 | FR-CMP-001 | Must | SCR-11, SCR-08 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | IConsultationRepository.GetByIdAsync | Consultations | TC-FR-CMP-001-1, -2 (implemented, M4) | WP-5.4 | M4 | 12 |
 | FR-DIA-001 | Must | SCR-11, SCR-08 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | IConsultationRepository.GetByIdAsync | Consultations | TC-FR-DIA-001-1, -2 (implemented, M4) | WP-5.4 | M4 | — |
-| FR-RX-001 | Must | SCR-11 (medicine section) | Prescriptions.SaveItems (22) | PrescriptionService.SaveItemsAsync | IPrescriptionRepository.ReplaceItemsAsync | Prescriptions, PrescriptionItems | TC-FR-RX-001-1, -2 | WP-6.1, 6.2 | M5 | 13 |
-| FR-RX-002 | Must | SCR-12 | Prescriptions.Print (23, 24) | PrescriptionService.MarkPrintedAsync, GetPrintModelAsync | IPrescriptionRepository.GetByConsultationAsync; IClinicProfileRepository.GetAsync | Prescriptions, PrescriptionItems, ClinicProfile, VitalSigns | TC-FR-RX-002-1 to -3 | WP-6.1, 6.3, 6.4 | M5 | 14, 15, 16 |
+| FR-RX-001 | Must | SCR-11 (medicine section) | Prescriptions.SaveItems (22) | PrescriptionService.SaveItemsAsync | IPrescriptionRepository.ReplaceItemsAsync | Prescriptions, PrescriptionItems | TC-FR-RX-001-1, -2 (implemented, M5; see review package §2) | WP-6.1, 6.2 | M5 | 13 |
+| FR-RX-002 | Must | SCR-12 | Prescriptions.Print (23, 24) | PrescriptionService.MarkPrintedAsync, GetPrintModelAsync | IPrescriptionRepository.GetByConsultationAsync; IClinicProfileRepository.GetAsync | Prescriptions, PrescriptionItems, ClinicProfile, VitalSigns | TC-FR-RX-002-1 to -3 (implemented, M5; see review package §2) | WP-6.1, 6.3, 6.4 | M5 | 14, 15, 16 |
 | FR-HIS-001 | Must | SCR-07 | Visits.Index (13) | ConsultationService.ListVisitsAsync | IConsultationRepository.ListByPatientAsync | Consultations | TC-FR-HIS-001-1 (implemented, M4) | WP-5.1, 5.3, 5.5 | M4 | 11, 24, 26 |
-| FR-HIS-002 | Must | SCR-08 | Visits.Details (14) | ConsultationService.GetAsync | IConsultationRepository.GetByIdAsync (with vitals) | Consultations, VitalSigns | TC-FR-HIS-002-1 (implemented, M4) | WP-5.5 | M4 | — |
+| FR-HIS-002 | Must | SCR-08 | Visits.Details (14) | ConsultationService.GetAsync | IConsultationRepository.GetByIdAsync (with vitals) | Consultations, VitalSigns | TC-FR-HIS-002-1 (implemented, M4); TC-FR-HIS-002-2 medicines and print link (implemented, M5) | WP-5.5, 6.4 | M4, M5 | — |
 | FR-HIS-003 | Should | SCR-07 | Visits.Index (13, from and to) | ConsultationService.ListVisitsAsync | IConsultationRepository.ListByPatientAsync | Consultations | TC-FR-HIS-003-1, -2 | WP-7.1 | M6 | — |
 | FR-SRC-001 | Must | Top bar; SCR-03; SCR-04 | Patients.Search (7) | PatientService.SearchAsync | IPatientRepository.SearchAsync | Patients | TC-FR-SRC-001-1 | WP-3.5, 4.5 | M2, M3 | 23 |
 | FR-SRC-002 | Should | SCR-03 | Home.Index (1) | PatientService.GetRecentAsync | IConsultationRepository.GetRecentPatientIdsAsync | Consultations, Patients | TC-FR-SRC-002-1, -2 | WP-7.2 | M6 | 11 |
@@ -50,7 +50,7 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 |---|---|---|---|---|---|---|---|---|---|
 | SC-001 | Must (verification) | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | Consultations, VitalSigns, Prescriptions | Timed rehearsal | WP-9.2 | M8 | — |
 | SC-002 | Must (verification) | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService, VisitService | Patients, Consultations | Timed search and history | WP-3.6, 9.1 | M2, M8 | 30 |
-| SC-004 | Must (verification) | SCR-12 | Prescriptions.Print (23, 24) | PrescriptionService.MarkPrintedAsync | Prescriptions | Print check | WP-6.4 | M5 | 16 |
+| SC-004 | Must (verification) | SCR-12 | Prescriptions.Print (23, 24) | PrescriptionService.MarkPrintedAsync | Prescriptions | Browser check (Chrome, A4 print and Save as PDF); pending Project Owner, review package §4 | WP-6.4 | M5 | 16 |
 | SC-005 | Must (verification) | SCR-13 | Export.PatientCsv (26); Export.PatientPrint (27) | ExportService | — | File open check | WP-8.2, 8.3 | M7 | 17, 18 |
 
 ## 4. Deferred (not designed in Phase 1)

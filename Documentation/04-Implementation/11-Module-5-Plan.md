@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Covers:** Implementation item 5 (Medication and Prescription) and the clinic header data
 **Milestone:** M5 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
-**Status:** Proposed, 2026-11-11. Waiting for the Project Owner's approval. No code is written until the owner says "go ahead with module 5". Each step then proceeds on the owner's go-ahead.
+**Status:** Approved by the Project Owner on 2026-11-11 ("go ahead module 5 plan"), with steps 1 to 7 each approved on the owner's go-ahead. Decisions D-M5-1 to D-M5-8 were accepted with the plan. Built as planned except D-M5-8, second part (visit text and vitals in one save), which is still open. See `11-Module-5-Review-Package.md` §6.
 **Source rules:** BRD; CLAUDE.md §3, §4, §6, §7, §8, §9, §10; `Documentation/04-Implementation/09-Module-4-Plan.md` (pattern); PDR-13, PDR-14, PDR-15, PDR-16, PDR-18; DEC-021; `Documentation/02-Planning/06-Entity-Design.md` §2.6 to §2.8; `13-Validation-Strategy.md` §3.5
 
 ---

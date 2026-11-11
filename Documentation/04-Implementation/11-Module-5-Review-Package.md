@@ -1,0 +1,140 @@
+# 11 — Module 5 Review Package (Medication and Prescription)
+
+**Project:** Patient Management System, Phase 1 (localhost learning project)
+**Milestone:** M5 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
+**Plan:** `Documentation/04-Implementation/11-Module-5-Plan.md` (approved 2026-11-11; decisions D-M5-1 to D-M5-8)
+**Status:** **Awaiting the Project Owner's browser checks (§4) and approval (§9).** Automated tests pass. Open items are in §6.
+
+---
+
+## 1. Scope Delivered
+
+| Plan step | Work | Commit |
+|---|---|---|
+| Plan | Module 5 plan | `c139e5b` |
+| 1 | Prescription, PrescriptionItem and ClinicProfile entities, configurations and migration `AddPrescriptions` | `5264263` |
+| 2 | Prescription and clinic profile repositories; replace lines in one transaction; print once | `e498609` |
+| 3 | Medicine line rules; prescription service (save, print, print view); clinic profile service; printed lock in the visit save | `74c1c48` |
+| 4 | Medicine section on the consultation screen (SCR-11); save route 22; printed lock on the screen | `234f9dd` |
+| 5 | Clinic details screen (SCR-14) and menu link | `1bba3e8` |
+| 6 | Print view (SCR-12), Print command (route 23), reprint, medicines and print link on visit detail (SCR-08) | `e9bb4e4` |
+| 7 | Close-out: traceability matrix `18-`, this review | this commit |
+
+Out of scope for Module 5, as planned: visit date filter (FR-HIS-003, M6), recent patients (FR-SRC-002, M6), export (M7), search timing and browser matrix (M8).
+
+## 2. Requirements Covered
+
+| Requirement | Result | Tests (named in the test code) |
+|---|---|---|
+| FR-RX-001 Add medicines; only name required; more than one per prescription; at least one before print | Implemented | TC-FR-RX-001-1 (save and read back, in order): `PrescriptionServiceTests.FR_RX_001_saving_lines_saves_them_trimmed_in_order_and_leaves_out_blank_ones`; `MedicinePagesTests.FR_RX_001_saving_medicines_keeps_their_order_and_returns_to_the_visit`; `PrescriptionRepositoryTests.FR_RX_001_lines_are_read_back_in_display_order`. TC-FR-RX-001-2 (name required; blank lines ignored; limits): `PrescriptionServiceTests.FR_RX_001_a_line_without_a_name_saves_nothing`; `MedicinePagesTests.FR_RX_001_a_medicine_without_a_name_is_refused_and_the_typed_values_stay_on_the_page`; `MedicineLineValidatorTests` (boundaries 200/201, 100/101, 500/501; twenty lines allowed, twenty-one refused) |
+| FR-RX-002 Printable A4 view with Print; header, patient, vitals, diagnosis, medicines, footer; one per consultation; Print marks printed; edits blocked after print; reprint allowed | Implemented | TC-FR-RX-002-1 (view content): `PrescriptionPrintTests.FR_RX_002_the_print_view_shows_the_header_patient_vitals_diagnosis_and_medicines`; `PrescriptionServiceTests.FR_RX_002_print_view_shows_the_visit_the_patient_and_the_clinic_header`. TC-FR-RX-002-2 (Print marks printed; reprint keeps first time): `PrescriptionPrintTests.FR_RX_002_printing_marks_the_prescription_printed_and_opens_the_print_dialog`; `PrescriptionPrintTests.FR_RX_002_printing_again_is_allowed_and_keeps_the_first_print_time`; `PrescriptionRepositoryTests.FR_RX_002_a_second_print_changes_nothing`. TC-FR-RX-002-3 (edits blocked after print; no print without a medicine): `MedicinePagesTests.FR_RX_002_medicines_cannot_be_saved_once_printed`; `MedicinePagesTests.FR_RX_002_a_printed_visit_cannot_be_saved`; `PrescriptionPrintTests.FR_RX_002_the_print_view_is_not_available_without_a_medicine`; `PrescriptionServiceTests.FR_RX_002_a_visit_without_medicine_cannot_be_printed`. One per consultation: `PrescriptionPersistenceTests.FR_RX_002_only_one_prescription_can_belong_to_a_consultation`; `PrescriptionRepositoryTests.FR_RX_002_a_second_prescription_for_a_consultation_is_refused` |
+| FR-RX-002 Clinic header (PDR-15) | Implemented | `ClinicProfilePagesTests` (six tests: sign-in, menu link, trimmed save, single row, length refusal, blank header); `ClinicProfileServiceTests`; `ClinicProfileRepositoryTests`; `ClinicProfilePersistenceTests` |
+| FR-HIS-002 Medicines viewable from a visit | Implemented | TC-FR-HIS-002-2: `PrescriptionPrintTests.FR_HIS_002_visit_detail_shows_the_medicines_and_a_print_link`; `PrescriptionPrintTests.FR_HIS_002_visit_detail_without_a_medicine_says_so` |
+| SC-004 Prescriptions generate and print without error (A4 view) | Automated part implemented. **Browser part pending** (§4, checks 7 to 11) | Browser check only (PDR-29: no browser automation in Phase 1) |
+
+FR-VIT-001, FR-CMP-001, FR-DIA-001, FR-HIS-001 and FR-APT-003 were not changed in this module, except that a printed prescription now blocks their visit save (FR-RX-002 AC-4).
+
+## 3. Test Results
+
+Final run after step 6 (`e9bb4e4`). Step 7 changes documentation only.
+
+| Check | Result |
+|---|---|
+| Build (`dotnet build PatientManagement.sln --no-incremental`) | 0 errors, 0 warnings |
+| Unit tests | 336 passed, 0 failed |
+| Integration tests | 253 passed, 0 failed |
+
+Module 4 counts were 305 unit and 202 integration. Module 5 added 31 unit and 51 integration tests.
+
+## 4. Browser Checks (for the Project Owner)
+
+Before the checks, stop the app (the build locks its files), apply the new migration once, and start the app again. This is the only migration added in Module 5:
+
+```
+dotnet ef database update --project src/PatientManagement.Data --startup-project src/PatientManagement.Web
+```
+
+Use a patient from Module 4 with a visit that has vitals and a diagnosis, or start a new consultation.
+
+| # | Check | Expected | Result |
+|---|---|---|---|
+| 1 | Menu → **Clinic details**. Leave all fields blank; **Save** | "Clinic details saved." Fields stay blank | Pending |
+| 2 | Open the consultation screen for a visit; in **Medicines**, enter a name only for line 1 and name + dosage for line 2; **Save medicines** | "Medicines saved." Both lines shown in the order entered | Pending |
+| 3 | Add a medicine row with **Add medicine**, enter only a dosage, **Save medicines** | "Line N: enter the medicine name." beside that row. Nothing saved; the typed values stay | Pending |
+| 4 | **Remove** a row; **Save medicines** | The removed row is gone after the save; the others keep their order | Pending |
+| 5 | Enter complaints, diagnosis and vitals; **Save medicines** | Visit values stay as typed (not lost); message "Medicines saved." | Pending |
+| 6 | Visit detail for the visit (from the profile → **Visit history** → **Open**) | Medicines listed; "Not printed yet."; **Print prescription** button | Pending |
+| 7 | Click **Print prescription** | A4 sheet: clinic header with placeholder logo, patient name and code, date of birth, gender, visit time, vitals, diagnosis, medicines table, doctor name, registration number, signature line. Toolbar hidden in print. Blank clinic details (if left blank in check 1) show "Clinic details are incomplete." | Pending |
+| 8 | On the sheet, click **Print** | Browser print dialog opens; toolbar line says "Printed on …". Cancel the dialog is fine | Pending |
+| 9 | In the print dialog, check Print preview | One A4 page for this data; margins about 15 mm; no toolbar; no page cut through the medicines table | Pending |
+| 10 | **Save as PDF** from the print dialog (SC-004). Open the saved PDF | The PDF shows the same content as the sheet | Pending |
+| 11 | Click **Print** again on the sheet | Works; "Printed on …" keeps the first time | Pending |
+| 12 | Back to the visit (**Back to visit**) | Visit and medicine sections are greyed out; a note says the prescription is printed and the page is read-only; saving has no effect | Pending |
+| 13 | Start a walk-in consultation with no medicine. Note its visit number from the address bar, then open `/Prescriptions/Print/<number>` | Redirected back to the visit with "Add at least one medicine before printing." | Pending |
+| 14 | Open visit detail for check 13's visit | "No medicines recorded." and no print link | Pending |
+| 15 | Visit history shows the printed visit; open it | "Printed on …" shown with the medicines | Pending |
+
+Browser for this run (PDR-28): ______ (record name and version). Result line: ______ of 15 checks passed.
+
+Notes for the checks:
+- Check 8: some browsers block a print dialog that opens without a click. The dialog is opened after the page loads from the Print click. If it does not open, report the browser name and version; the Print button can be clicked again.
+- Check 9: the layout was written for A4 but not previewed. Long medicine lists may run onto a second page; report the page count.
+- Check 10 is the SC-004 check. A PDF must open and contain the sheet's content.
+
+## 5. Decisions Taken
+
+| Item | Decision | Reference |
+|---|---|---|
+| D-M5-1 medicines entry | Medicines are on the consultation screen. Saved by **Save medicines**, which replaces the lines in one transaction | Plan §4; `PrescriptionRepository.ReplaceItemsAsync` |
+| D-M5-2 blank lines | A line with every field empty is ignored; a line with other fields and no name is an error | Plan §4; `MedicineLineValidatorTests` |
+| D-M5-3 line limit and lengths | Twenty lines per prescription; lengths from the database columns | Plan §4; `MedicineLineValidator` |
+| D-M5-4 printed lock | After the first print, medicines, complaints, diagnosis and vitals cannot be saved. Finish stays allowed | Plan §4; `ConsultationService.SaveAsync`; `MedicinePagesTests` |
+| D-M5-5 print flow | The view is read-only (GET). The Print button posts (marks printed once), shows the same view, and opens the print dialog. Reprint is allowed | Plan §4; `PrescriptionsController`; `PrescriptionPrintTests` |
+| D-M5-6 clinic header not complete | Printing is allowed; the sheet says the details are incomplete. The profile row is created blank on first read | Plan §4; `ClinicProfileService`; `PrescriptionPrintTests` |
+| D-M5-7 logo | Static placeholder image (`wwwroot/img/clinic-logo-placeholder.svg`); no upload | Plan §4 |
+| D-M5-8 atomic save | Part 1 built: the medicine replace is one transaction. **Part 2 not built:** the visit text and vitals are still two saves | §6 item 1 |
+
+Decisions made during the build, not in the plan:
+- **Locked controls are disabled, not hidden.** When the prescription is printed, the whole consultation form is disabled and a note explains why. The plan said "hide"; disabling keeps the saved values visible.
+- **One form for the visit and the medicines.** The "Save medicines" button posts the whole page, so typed visit text is not lost when medicines are saved. The Enter key submits the visit Save (first button on the page).
+- **Printed prescriptions show the saved medicines,** not what was typed, even after a refused save.
+
+## 6. Known Limits and Open Items
+
+| # | Item | Effect | Proposed handling |
+|---|---|---|---|
+| 1 | D-M5-8 part 2: the visit text and the vitals are saved in two writes | If the second write fails, the text is kept and the vitals are not. As in Module 4 item 1 | Project Owner to approve the change (same pattern as the medicine replace: one transaction across both repositories). Not built in Module 5 |
+| 2 | Edits to a finished visit are still allowed until print (Module 4 open decision 3) | D-M5-4 keeps Finish open to edits; only print locks | Project Owner to confirm D-M5-4 as the answer to Module 4 decision 3, and record it in `17-` |
+| 3 | HTTPS redirect warning in Development (Module 1 item) | Log noise on plain HTTP | Project Owner decision still pending |
+| 4 | Archive restore for appointments (Module 3 item 7) | Not decided | Project Owner decision still pending |
+| 5 | Walk-ins: no limit on open walk-ins (D-M4-2) | A patient can have several open walk-in visits | BRD silent; accepted |
+| 6 | Print layout not previewed by the author | Page breaks may differ from the plan | Check 9 |
+| 7 | Print dialog on load | Some browsers may block it | Check 8; Print can be clicked again |
+| 8 | Latent: `AppointmentsController` UpdateStatus and Archive redirects format the date with the current culture (Module 4 note) | Could fail for non-English locales | Same fix as the Start redirect: invariant date format. Owner to approve |
+| 9 | Export and the browser matrix | Not built | Modules 7 and 8 |
+
+## 7. Design Documents
+
+Updated in this module:
+- `Documentation/02-Planning/18-Planning-Traceability-Matrix.md`: FR-RX-001, FR-RX-002, FR-HIS-002 (M5 test part) and SC-004 (browser check pending).
+- `Documentation/04-Implementation/11-Module-5-Plan.md`: approval status.
+
+Not changed:
+- `Documentation/01-Brainstorming/12-Requirement-Traceability-Matrix.md`: lists requirements and their sources, not implementation status, so no change is needed for M5.
+
+## 8. Commits
+
+| Commit | Message |
+|---|---|
+| `c139e5b` | docs(docs): add Module 5 implementation plan |
+| `5264263` | feat(data): add prescription, medicine line and clinic profile tables |
+| `e498609` | feat(data): add prescription and clinic profile repositories |
+| `74c1c48` | feat(business): add prescription and clinic header services and rules |
+| `234f9dd` | feat(web): add the medicine section to the consultation screen |
+| `1bba3e8` | feat(web): add the clinic details screen (SCR-14) |
+| `e9bb4e4` | feat(web): add the printable prescription and medicines on visit detail |
+| this commit | docs(docs): record Module 5 review package and traceability |
+
+## 9. Approval
+
+Module 5 is not yet approved. The Project Owner runs the checks in §4, records the results and the browser, and decides items 1, 2 and 8 in §6. Approval then closes Module 5. The final pull request `development` → `main` waits for Modules 6 to 8.
