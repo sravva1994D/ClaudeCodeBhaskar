@@ -20,7 +20,7 @@
         </div>
         <div class="col-auto">
             <!-- Reloads the slot list for the day in the box. Nothing is saved. -->
-            <button type="submit" class="btn btn-outline-secondary" formaction="/Appointments/Create" formmethod="get">Show slots</button>
+            <button id="show-slots" type="submit" class="btn btn-outline-secondary" formaction="/Appointments/Create" formmethod="get">Show slots</button>
         </div>
     </div>
 
@@ -51,3 +51,19 @@
         <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">Cancel</a>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        // Changing the day reloads the slot list for that day. Nothing is saved; the chosen slot is cleared.
+        // Without script, the Show slots button does the same.
+        (function () {
+            var day = document.getElementById("day");
+            var showSlots = document.getElementById("show-slots");
+            if (day && showSlots) {
+                day.addEventListener("change", function () {
+                    day.form.requestSubmit(showSlots);
+                });
+            }
+        })();
+    </script>
+}

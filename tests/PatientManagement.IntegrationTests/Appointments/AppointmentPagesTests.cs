@@ -217,6 +217,19 @@ public class AppointmentPagesTests(TestDatabaseFixture database, TestWebApplicat
     }
 
     [Fact]
+    public async Task FR_APT_001_changing_the_day_reloads_the_slot_list_and_the_day_box_is_part_of_the_save()
+    {
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Appointments/Create?patientId={patientId}&date={Day:yyyy-MM-dd}");
+
+        Assert.Contains("id=\"show-slots\"", html);
+        Assert.Contains("formmethod=\"get\"", html);
+        Assert.Contains("requestSubmit(showSlots)", html);
+        Assert.Contains("name=\"Date\"", html);
+    }
+
+    [Fact]
     public async Task FR_APT_001_the_patient_profile_links_to_the_schedule_screen()
     {
         using var client = await SignedInClientAsync();
