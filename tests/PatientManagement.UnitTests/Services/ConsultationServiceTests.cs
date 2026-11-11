@@ -23,7 +23,6 @@ public class ConsultationServiceTests
     private static readonly DateTime NowLocal = new(2026, 11, 11, 9, 0, 0);
 
     private readonly IConsultationRepository consultations = Substitute.For<IConsultationRepository>();
-    private readonly IVitalSignRepository vitals = Substitute.For<IVitalSignRepository>();
     private readonly IAppointmentRepository appointments = Substitute.For<IAppointmentRepository>();
     private readonly IPatientRepository patients = Substitute.For<IPatientRepository>();
     private readonly IPrescriptionRepository prescriptions = Substitute.For<IPrescriptionRepository>();
@@ -31,8 +30,9 @@ public class ConsultationServiceTests
 
     public ConsultationServiceTests()
     {
-        service = new ConsultationService(consultations, vitals, prescriptions, appointments, patients, new FixedClock(Now));
+        service = new ConsultationService(consultations, prescriptions, appointments, patients, new FixedClock(Now));
         prescriptions.GetByConsultationAsync(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns((Prescription?)null);
+        consultations.UpdateAsync(Arg.Any<Consultation>(), Arg.Any<CancellationToken>()).Returns(true);
         patients.GetByIdAsync(7, Arg.Any<CancellationToken>()).Returns(Patient());
         consultations.MarkFinishedAsync(
             Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<Appointment?>(), Arg.Any<CancellationToken>()).Returns(true);
@@ -220,7 +220,6 @@ public class ConsultationServiceTests
         Assert.False(result.IsSuccess);
         Assert.Equal([PrescriptionService.PrintedCode], result.Errors.Select(e => e.Code));
         await consultations.DidNotReceive().UpdateAsync(Arg.Any<Consultation>(), Arg.Any<CancellationToken>());
-        await vitals.DidNotReceive().UpsertAsync(Arg.Any<VitalSign>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -233,7 +232,6 @@ public class ConsultationServiceTests
         Assert.True(result.RequiresConfirmation);
         Assert.Contains("43.0 °C", result.Warnings.Single().Message);
         await consultations.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
-        await vitals.DidNotReceiveWithAnyArgs().UpsertAsync(default!, default);
     }
 
     [Fact]
@@ -245,9 +243,7 @@ public class ConsultationServiceTests
 
         Assert.True(result.IsSuccess);
         Assert.Single(result.Warnings);
-        await vitals.Received(1).UpsertAsync(
-            Arg.Is<VitalSign>(v => v.TemperatureC == 43.0m && v.ConsultationId == 11),
-            Arg.Any<CancellationToken>());
+        await consultations.Received(1).UpdateAsync(Arg.Is<Consultation>(c => c.Vitals != null && (c.Vitals!.TemperatureC == 43.0m && c.Vitals!.ConsultationId == 11)), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -259,7 +255,6 @@ public class ConsultationServiceTests
 
         Assert.True(result.IsSuccess);
         Assert.Equal([VitalsValidator.Notices(Empty()).Single().Code], result.Warnings.Select(w => w.Code));
-        await vitals.DidNotReceiveWithAnyArgs().UpsertAsync(default!, default);
     }
 
     [Fact]
@@ -271,7 +266,6 @@ public class ConsultationServiceTests
 
         Assert.Equal(["Vitals.Incomplete"], result.Errors.Select(e => e.Code));
         await consultations.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
-        await vitals.DidNotReceiveWithAnyArgs().UpsertAsync(default!, default);
     }
 
     [Fact]
@@ -282,9 +276,7 @@ public class ConsultationServiceTests
         var result = await service.SaveAsync(11, Save(Normal()), confirmWarnings: false);
 
         Assert.True(result.IsSuccess);
-        await vitals.Received(1).UpsertAsync(
-            Arg.Is<VitalSign>(v => v.ConsultationId == 11 && v.SystolicMmHg == 120 && v.PulseBpm == 72),
-            Arg.Any<CancellationToken>());
+        await consultations.Received(1).UpdateAsync(Arg.Is<Consultation>(c => c.Vitals != null && (c.Vitals!.ConsultationId == 11 && c.Vitals!.SystolicMmHg == 120 && c.Vitals!.PulseBpm == 72)), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -294,7 +286,9 @@ public class ConsultationServiceTests
 
         await service.SaveAsync(11, Save(Empty()), confirmWarnings: false);
 
-        await vitals.DidNotReceiveWithAnyArgs().UpsertAsync(default!, default);
+        await consultations.Received(1).UpdateAsync(
+            Arg.Is<Consultation>(c => c.Vitals!.TemperatureC == 36.8m && c.Vitals.SystolicMmHg == 120),
+            Arg.Any<CancellationToken>());
     }
 
     [Fact]

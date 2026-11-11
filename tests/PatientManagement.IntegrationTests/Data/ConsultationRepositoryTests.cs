@@ -204,6 +204,72 @@ public class ConsultationRepositoryTests(TestDatabaseFixture fixture) : IAsyncLi
         Assert.Equal(120, loaded.Vitals!.SystolicMmHg);
     }
 
+    [Fact]
+    public async Task FR_RX_002_a_visit_is_not_saved_once_its_prescription_is_printed()
+    {
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        var visitId = await SeedVisitWithPrintedPrescriptionAsync(anna);
+
+        await using (var context = fixture.CreateContext())
+        {
+            var visit = await context.Consultations.SingleAsync(consultation => consultation.Id == visitId);
+            visit.Complaints = "Test late note";
+
+            Assert.False(await new ConsultationRepository(context).UpdateAsync(visit));
+        }
+
+        await using var reader = fixture.CreateContext();
+        Assert.Null((await reader.Consultations.SingleAsync()).Complaints);
+        Assert.Equal(0, await reader.VitalSigns.CountAsync());
+    }
+
+    [Fact]
+    public async Task FR_VIT_001_visit_text_and_new_vitals_are_saved_in_one_save()
+    {
+        // D-M5-8: the visit text and the vitals are written together, or not at all.
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        int visitId;
+        await using (var context = fixture.CreateContext())
+        {
+            var visit = NewVisit(anna, appointmentId: null);
+            context.Consultations.Add(visit);
+            await context.SaveChangesAsync();
+            visitId = visit.Id;
+        }
+
+        await using (var context = fixture.CreateContext())
+        {
+            var visit = await context.Consultations.Include(consultation => consultation.Vitals)
+                .SingleAsync(consultation => consultation.Id == visitId);
+            visit.Complaints = "Test cough";
+            visit.Vitals = new VitalSign { ConsultationId = visitId, TemperatureC = 36.8m, SystolicMmHg = 120, DiastolicMmHg = 80, PulseBpm = 72 };
+
+            Assert.True(await new ConsultationRepository(context).UpdateAsync(visit));
+        }
+
+        await using var reader = fixture.CreateContext();
+        var saved = await reader.Consultations.Include(consultation => consultation.Vitals).SingleAsync();
+        Assert.Equal("Test cough", saved.Complaints);
+        Assert.Equal(120, saved.Vitals!.SystolicMmHg);
+    }
+
+    private async Task<int> SeedVisitWithPrintedPrescriptionAsync(int patientId)
+    {
+        await using var context = fixture.CreateContext();
+        var visit = NewVisit(patientId, appointmentId: null);
+        context.Consultations.Add(visit);
+        await context.SaveChangesAsync();
+        context.Prescriptions.Add(new Prescription
+        {
+            ConsultationId = visit.Id,
+            IsPrinted = true,
+            PrintedAt = Morning.AddMinutes(30),
+            Items = [new PrescriptionItem { Name = "Test Medicine", SortOrder = 1 }]
+        });
+        await context.SaveChangesAsync();
+        return visit.Id;
+    }
+
     private async Task<int> AddPatientAsync(string fullName, string phone)
     {
         await using var context = fixture.CreateContext();

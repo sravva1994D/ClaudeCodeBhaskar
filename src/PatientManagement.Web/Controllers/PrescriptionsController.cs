@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using PatientManagement.Business.Common;
 using PatientManagement.Business.DTOs;
 using PatientManagement.Business.Interfaces;
-using PatientManagement.Business.Services;
 using PatientManagement.Web.ViewModels.Consultations;
 using PatientManagement.Web.ViewModels.Prescriptions;
 
@@ -21,7 +20,7 @@ public class PrescriptionsController(
         var lines = model.Medicines.Select(ToInput).ToList();
         var result = await prescriptions.SaveItemsAsync(consultationId, lines, cancellationToken);
 
-        if (result.Errors.Any(error => error.Code == ConsultationService.NotFoundCode))
+        if (result.Errors.Any(error => error.Code == VisitErrors.NotFoundCode))
         {
             return NotFound();
         }
@@ -45,7 +44,7 @@ public class PrescriptionsController(
     public async Task<IActionResult> Print(int consultationId, CancellationToken cancellationToken)
     {
         var result = await prescriptions.GetPrintModelAsync(consultationId, cancellationToken);
-        if (result.Errors.Any(error => error.Code == ConsultationService.NotFoundCode))
+        if (result.Errors.Any(error => error.Code == VisitErrors.NotFoundCode))
         {
             return NotFound();
         }
@@ -66,7 +65,7 @@ public class PrescriptionsController(
     public async Task<IActionResult> MarkPrinted(int consultationId, CancellationToken cancellationToken)
     {
         var result = await prescriptions.MarkPrintedAsync(consultationId, cancellationToken);
-        if (result.Errors.Any(error => error.Code == ConsultationService.NotFoundCode))
+        if (result.Errors.Any(error => error.Code == VisitErrors.NotFoundCode))
         {
             return NotFound();
         }

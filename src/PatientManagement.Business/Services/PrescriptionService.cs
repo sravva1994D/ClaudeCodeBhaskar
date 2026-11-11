@@ -16,7 +16,7 @@ public sealed class PrescriptionService(
     IClinicProfileRepository clinicProfiles,
     TimeProvider timeProvider) : IPrescriptionService
 {
-    public const string PrintedCode = "Prescription.Printed";
+    public const string PrintedCode = VisitErrors.PrintedCode;
     public const string PrintedMessage = "This prescription has been printed, so it can no longer be changed.";
     public const string NoMedicineCode = "Prescription.NoMedicine";
     public const string NoMedicineMessage = "Add at least one medicine before printing.";
@@ -73,10 +73,11 @@ public sealed class PrescriptionService(
 
         if (!prescription.IsPrinted)
         {
-            // The flag is set once. If another request printed first, or the lines were removed, the re-read decides (PDR-14).
-            await prescriptions.MarkPrintedAsync(prescription.Id, Now(), cancellationToken);
+            // The flag is set once (PDR-14). The mark is refused when the lines were removed after the read above.
+            // A refused mark is an error only when the prescription is still unprinted; if another request printed it first, that is fine.
+            var marked = await prescriptions.MarkPrintedAsync(prescription.Id, Now(), cancellationToken);
             prescription = await prescriptions.GetByConsultationAsync(consultationId, cancellationToken);
-            if (prescription is null || !prescription.IsPrinted)
+            if (prescription is null || (!marked && !prescription.IsPrinted))
             {
                 return Result<PrescriptionPrintDto>.Fail(NoMedicine());
             }
@@ -145,7 +146,7 @@ public sealed class PrescriptionService(
 
     private DateTime Now() => timeProvider.GetLocalNow().DateTime;
 
-    private static ResultMessage NotFound() => new(ConsultationService.NotFoundCode, ConsultationService.NotFoundMessage);
+    private static ResultMessage NotFound() => new(VisitErrors.NotFoundCode, VisitErrors.NotFoundMessage);
 
     private static ResultMessage Printed() => new(PrintedCode, PrintedMessage);
 

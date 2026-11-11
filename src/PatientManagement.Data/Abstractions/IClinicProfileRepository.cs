@@ -8,6 +8,9 @@ public interface IClinicProfileRepository
     // The single row, or null when it has not been created yet.
     Task<ClinicProfile?> GetAsync(CancellationToken cancellationToken = default);
 
+    // The single row, created blank when it does not exist yet. Safe when two requests read it for the first time.
+    Task<ClinicProfile> GetOrCreateAsync(CancellationToken cancellationToken = default);
+
     // Saves the header. Always writes the row with Id = 1, adding it the first time.
     Task UpsertAsync(ClinicProfile profile, CancellationToken cancellationToken = default);
 }

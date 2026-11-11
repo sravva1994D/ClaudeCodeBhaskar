@@ -35,15 +35,19 @@ public static class ConsultationForms
         model.IsFinished = visit.IsFinished;
     }
 
-    // Once printed, the page shows the saved medicines. Otherwise the typed medicines are kept, so a refused save
-    // does not lose them; the saved medicines show only when nothing was typed (the GET of the page).
+    // Shows the saved medicines when the page is opened (loadSavedLines) or the prescription is printed. Otherwise the
+    // medicines as typed are kept, so a refused save does not lose them, and rows removed by the user stay removed.
     public static async Task ApplyPrescriptionAsync(
-        ConsultationFormViewModel model, int consultationId, IPrescriptionService prescriptions, CancellationToken cancellationToken)
+        ConsultationFormViewModel model,
+        int consultationId,
+        IPrescriptionService prescriptions,
+        bool loadSavedLines,
+        CancellationToken cancellationToken)
     {
         var saved = await prescriptions.GetAsync(consultationId, cancellationToken);
 
         model.PrescriptionIsPrinted = saved?.IsPrinted ?? false;
-        if (model.PrescriptionIsPrinted || model.Medicines.Count == 0)
+        if (loadSavedLines || model.PrescriptionIsPrinted)
         {
             model.Medicines = saved?.Lines.Select(FromLine).ToList() ?? [];
         }
@@ -62,7 +66,7 @@ public static class ConsultationForms
             ApplyHeader(model, visit.Value!);
         }
 
-        await ApplyPrescriptionAsync(model, consultationId, prescriptions, cancellationToken);
+        await ApplyPrescriptionAsync(model, consultationId, prescriptions, loadSavedLines: false, cancellationToken);
     }
 
     private static MedicineLineFormModel FromLine(MedicineLineDto line) => new()

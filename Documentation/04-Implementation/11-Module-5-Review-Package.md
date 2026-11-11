@@ -103,7 +103,7 @@ Decisions made during the build, not in the plan:
 
 | # | Item | Effect | Proposed handling |
 |---|---|---|---|
-| 1 | D-M5-8 part 2: the visit text and the vitals are saved in two writes | If the second write fails, the text is kept and the vitals are not. As in Module 4 item 1 | Project Owner to approve the change (same pattern as the medicine replace: one transaction across both repositories). Not built in Module 5 |
+| 1 | D-M5-8 part 2: the visit text and the vitals are saved in two writes | If the second write fails, the text is kept and the vitals are not. As in Module 4 item 1 | Fixed after code review (§10): the visit text, the vitals and the printed check are one save |
 | 2 | Edits to a finished visit are still allowed until print (Module 4 open decision 3) | D-M5-4 keeps Finish open to edits; only print locks | Project Owner to confirm D-M5-4 as the answer to Module 4 decision 3, and record it in `17-` |
 | 3 | HTTPS redirect warning in Development (Module 1 item) | Log noise on plain HTTP | Project Owner decision still pending |
 | 4 | Archive restore for appointments (Module 3 item 7) | Not decided | Project Owner decision still pending |
@@ -137,4 +137,21 @@ Not changed:
 
 ## 9. Approval
 
-Module 5 is not yet approved. The Project Owner runs the checks in §4, records the results and the browser, and decides items 1, 2 and 8 in §6. Approval then closes Module 5. The final pull request `development` → `main` waits for Modules 6 to 8.
+Module 5 is not yet approved. The Project Owner runs the checks in §4, records the results and the browser, and decides items 2 and 8 in §6. Approval then closes Module 5. The final pull request `development` → `main` waits for Modules 6 to 8.
+
+## 10. Fixes After Code Review
+
+The code review of Module 5 (requested by the Project Owner) raised six findings. All six are fixed in the commit after `eaecf2c`. The browser checks in §4 still apply. Checks 1, 4, 5 and 12 exercise the code changed here. No schema change was made, so no new migration is needed.
+
+| Finding | Fix | Tests |
+|---|---|---|
+| 1. The printed lock was check-then-act; the visit save could land after a print | `ConsultationRepository.UpdateAsync` now takes the prescription's row lock, refuses the save when it is printed, and writes the visit text and vitals in one transaction. This also closes D-M5-8 part 2 | `ConsultationRepositoryTests.FR_RX_002_a_visit_is_not_saved_once_its_prescription_is_printed`; `ConsultationRepositoryTests.FR_VIT_001_visit_text_and_new_vitals_are_saved_in_one_save`; `VitalSignRepositoryTests` (rewritten on the same save) |
+| 2. PDR-15 says the header fields are required; the code allows blanks | Recorded as an amendment of PDR-15 in `17-Planning-Decisions-and-Open-Items.md` (D-M5-6) | Documentation only |
+| 3. Removing every medicine row and then failing a visit save brought the saved medicines back on the page | The saved medicines load only when the page opens or the prescription is printed. A refused save keeps what was on the page | `MedicinePagesTests.FR_RX_001_removed_medicines_stay_removed_after_a_refused_visit_save` |
+| 4. Two first reads of the clinic profile could collide and fail with a 500 | `ClinicProfileRepository.GetOrCreateAsync` reads the row, creates it if missing, and reads it again if another request created it first | `ClinicProfileRepositoryTests.FR_RX_002_get_or_create_adds_one_blank_row_and_then_returns_it`; `ClinicProfileRepositoryTests.FR_RX_002_get_or_create_returns_the_row_another_request_saved`; `ClinicProfileServiceTests.FR_RX_002_the_first_read_creates_a_blank_profile` |
+| 5. The print step ignored the result of the mark | The mark's result decides: a refused mark is an error only when the prescription is still unprinted | `PrescriptionServiceTests.FR_RX_002_a_print_that_loses_its_lines_to_a_removal_is_refused` |
+| 6. Prescriptions depended on the consultation service's constants | Shared codes in `Business/Common/VisitErrors.cs` | Covered by the existing not-found and printed tests |
+
+Also removed: the vitals repository (`IVitalSignRepository`, `VitalSignRepository`), which had no caller after finding 1.
+
+Results after the fixes (clean build, 0 warnings): unit tests 337 passed, integration tests 258 passed, 0 failed.

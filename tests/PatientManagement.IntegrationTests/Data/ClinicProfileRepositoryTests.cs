@@ -22,6 +22,35 @@ public class ClinicProfileRepositoryTests(TestDatabaseFixture fixture) : IAsyncL
     }
 
     [Fact]
+    public async Task FR_RX_002_get_or_create_adds_one_blank_row_and_then_returns_it()
+    {
+        await using (var context = fixture.CreateContext())
+        {
+            var created = await new ClinicProfileRepository(context).GetOrCreateAsync();
+            Assert.Equal(1, created.Id);
+        }
+
+        await using (var context = fixture.CreateContext())
+        {
+            await new ClinicProfileRepository(context).GetOrCreateAsync();
+        }
+
+        await using var reader = fixture.CreateContext();
+        Assert.Equal(1, await reader.ClinicProfiles.CountAsync());
+    }
+
+    [Fact]
+    public async Task FR_RX_002_get_or_create_returns_the_row_another_request_saved()
+    {
+        await UpsertAsync(new ClinicProfile { ClinicName = "Test Clinic" });
+
+        await using var context = fixture.CreateContext();
+        var profile = await new ClinicProfileRepository(context).GetOrCreateAsync();
+
+        Assert.Equal("Test Clinic", profile.ClinicName);
+    }
+
+    [Fact]
     public async Task FR_RX_002_the_first_save_adds_row_one()
     {
         await UpsertAsync(new ClinicProfile { ClinicName = "Test Clinic" });

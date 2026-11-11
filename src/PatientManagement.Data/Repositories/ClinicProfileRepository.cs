@@ -13,6 +13,31 @@ public sealed class ClinicProfileRepository(PatientManagementDbContext db) : ICl
     public Task<ClinicProfile?> GetAsync(CancellationToken cancellationToken = default) =>
         db.ClinicProfiles.AsNoTracking().SingleOrDefaultAsync(profile => profile.Id == SingleRowId, cancellationToken);
 
+    public async Task<ClinicProfile> GetOrCreateAsync(CancellationToken cancellationToken = default)
+    {
+        var existing = await GetAsync(cancellationToken);
+        if (existing is not null)
+        {
+            return existing;
+        }
+
+        var profile = new ClinicProfile { Id = SingleRowId };
+        try
+        {
+            db.ClinicProfiles.Add(profile);
+            await db.SaveChangesAsync(cancellationToken);
+
+            return profile;
+        }
+        catch (DbUpdateException exception) when (UniqueViolation.IsUniqueViolation(exception))
+        {
+            // Another request created the row between the read and the insert. Use that row.
+            db.Entry(profile).State = EntityState.Detached;
+
+            return (await GetAsync(cancellationToken))!;
+        }
+    }
+
     public async Task UpsertAsync(ClinicProfile profile, CancellationToken cancellationToken = default)
     {
         var existing = await db.ClinicProfiles.FindAsync([SingleRowId], cancellationToken);

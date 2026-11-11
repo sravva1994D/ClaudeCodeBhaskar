@@ -45,7 +45,7 @@ public class ConsultationsController(
         }
 
         var model = ConsultationForms.FromDto(result.Value!);
-        await ConsultationForms.ApplyPrescriptionAsync(model, id, prescriptions, cancellationToken);
+        await ConsultationForms.ApplyPrescriptionAsync(model, id, prescriptions, loadSavedLines: true, cancellationToken);
 
         return View(model);
     }

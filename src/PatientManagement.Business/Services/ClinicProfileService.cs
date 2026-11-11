@@ -3,7 +3,6 @@ using PatientManagement.Business.DTOs;
 using PatientManagement.Business.Interfaces;
 using PatientManagement.Business.Validators;
 using PatientManagement.Data.Abstractions;
-using PatientManagement.Data.Entities;
 
 namespace PatientManagement.Business.Services;
 
@@ -12,14 +11,7 @@ public sealed class ClinicProfileService(IClinicProfileRepository clinicProfiles
 {
     public async Task<ClinicProfileDto> GetAsync(CancellationToken cancellationToken = default)
     {
-        var profile = await clinicProfiles.GetAsync(cancellationToken);
-        if (profile is null)
-        {
-            profile = new ClinicProfile();
-            await clinicProfiles.UpsertAsync(profile, cancellationToken);
-        }
-
-        return ClinicProfileMapper.ToDto(profile);
+        return ClinicProfileMapper.ToDto(await clinicProfiles.GetOrCreateAsync(cancellationToken));
     }
 
     public async Task<Result<ClinicProfileDto>> UpdateAsync(ClinicProfileInput input, CancellationToken cancellationToken = default)

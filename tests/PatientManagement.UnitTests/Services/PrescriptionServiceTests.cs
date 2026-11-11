@@ -169,6 +169,19 @@ public class PrescriptionServiceTests
     }
 
     [Fact]
+    public async Task FR_RX_002_a_print_that_loses_its_lines_to_a_removal_is_refused()
+    {
+        // The lines were removed after the read, so the mark is refused and the prescription is still unprinted.
+        prescriptions.GetByConsultationAsync(11, Arg.Any<CancellationToken>())
+            .Returns(Stored(false, "Test Medicine"), Stored(false));
+        prescriptions.MarkPrintedAsync(Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<CancellationToken>()).Returns(false);
+
+        var result = await service.MarkPrintedAsync(11);
+
+        Assert.Equal([PrescriptionService.NoMedicineCode], result.Errors.Select(error => error.Code));
+    }
+
+    [Fact]
     public async Task FR_RX_002_print_view_shows_the_visit_the_patient_and_the_clinic_header()
     {
         clinicProfiles.GetAsync(Arg.Any<CancellationToken>()).Returns(new ClinicProfile

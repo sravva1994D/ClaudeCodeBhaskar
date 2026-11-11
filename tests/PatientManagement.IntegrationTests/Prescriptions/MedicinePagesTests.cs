@@ -112,6 +112,21 @@ public class MedicinePagesTests(TestDatabaseFixture database, TestWebApplication
     }
 
     [Fact]
+    public async Task FR_RX_001_removed_medicines_stay_removed_after_a_refused_visit_save()
+    {
+        // The user removed every medicine row, then saved the visit with a partial vitals entry (refused).
+        // The saved medicines must not reappear on the page.
+        var visitId = await SeedVisitAsync();
+        await SeedPrescriptionAsync(visitId, printed: false, "Test Medicine");
+
+        var reply = await PostVisitAsync(visitId, ("SystolicMmHg", "120"));
+
+        Assert.Equal(HttpStatusCode.OK, reply.Status);
+        Assert.Contains("Enter all four vitals", reply.Body);
+        Assert.DoesNotContain("Test Medicine", reply.Body);
+    }
+
+    [Fact]
     public async Task FR_RX_002_medicines_cannot_be_saved_once_printed()
     {
         var visitId = await SeedVisitAsync();

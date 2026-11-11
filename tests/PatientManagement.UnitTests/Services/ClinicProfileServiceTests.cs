@@ -21,14 +21,12 @@ public class ClinicProfileServiceTests
     [Fact]
     public async Task FR_RX_002_the_first_read_creates_a_blank_profile()
     {
-        clinicProfiles.GetAsync(Arg.Any<CancellationToken>()).Returns((ClinicProfile?)null);
+        clinicProfiles.GetOrCreateAsync(Arg.Any<CancellationToken>()).Returns(new ClinicProfile { Id = 1 });
 
         var profile = await service.GetAsync();
 
         Assert.False(profile.IsComplete);
-        await clinicProfiles.Received(1).UpsertAsync(
-            Arg.Is<ClinicProfile>(saved => saved.ClinicName == null && saved.Phone == null),
-            Arg.Any<CancellationToken>());
+        await clinicProfiles.Received(1).GetOrCreateAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]

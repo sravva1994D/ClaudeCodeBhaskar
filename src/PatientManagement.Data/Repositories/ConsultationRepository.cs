@@ -51,10 +51,36 @@ public sealed class ConsultationRepository(PatientManagementDbContext db) : ICon
         }
     }
 
-    public async Task UpdateAsync(Consultation consultation, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateAsync(Consultation consultation, CancellationToken cancellationToken = default)
     {
-        db.Consultations.Update(consultation);
+        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
+
+        // The no-op update takes the prescription's row lock and matches only while it is unprinted. A concurrent Print
+        // waits for this save; if the print comes first, the check below refuses the save (AD-13, FR-RX-002 AC-4).
+        var unlocked = await db.Prescriptions
+            .Where(prescription => prescription.ConsultationId == consultation.Id && !prescription.IsPrinted)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(prescription => prescription.IsPrinted, prescription => prescription.IsPrinted),
+                cancellationToken);
+        if (unlocked == 0 && await db.Prescriptions.AnyAsync(prescription => prescription.ConsultationId == consultation.Id, cancellationToken))
+        {
+            return false;
+        }
+
+        if (db.Entry(consultation).State == EntityState.Detached)
+        {
+            db.Consultations.Update(consultation);
+        }
+
+        // Vitals that were not saved before are new rows; saved vitals are updated by change tracking.
+        if (consultation.Vitals is { } vitals && db.Entry(vitals).State == EntityState.Detached)
+        {
+            db.Entry(vitals).State = EntityState.Added;
+        }
+
         await db.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+
+        return true;
     }
 
     public async Task<bool> MarkFinishedAsync(

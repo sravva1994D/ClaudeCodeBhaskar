@@ -10,15 +10,14 @@ namespace PatientManagement.Business.Services;
 
 public sealed class ConsultationService(
     IConsultationRepository consultations,
-    IVitalSignRepository vitals,
     IPrescriptionRepository prescriptions,
     IAppointmentRepository appointments,
     IPatientRepository patients,
     TimeProvider timeProvider) : IConsultationService
 {
     public const string PatientNotFoundCode = "Consultation.Patient.NotFound";
-    public const string NotFoundCode = "Consultation.NotFound";
-    public const string NotFoundMessage = "The visit was not found.";
+    public const string NotFoundCode = VisitErrors.NotFoundCode;
+    public const string NotFoundMessage = VisitErrors.NotFoundMessage;
     public const string AppointmentNotFoundCode = "Consultation.Appointment.NotFound";
     public const string AppointmentOtherPatientCode = "Consultation.Appointment.OtherPatient";
     public const string AppointmentNotCheckedInCode = "Consultation.Appointment.NotCheckedIn";
@@ -125,8 +124,7 @@ public sealed class ConsultationService(
         // Once the prescription is printed, the visit's text and vitals are read-only (FR-RX-002 AC-4, D-M5-4).
         if ((await prescriptions.GetByConsultationAsync(consultationId, cancellationToken))?.IsPrinted == true)
         {
-            return Result<ConsultationDto>.Fail(new ResultMessage(PrescriptionService.PrintedCode,
-                "This visit has a printed prescription, so it can no longer be changed."));
+            return PrintedVisit();
         }
 
         // Errors win over warnings (13 §4): nothing is saved while an error exists.
@@ -146,19 +144,18 @@ public sealed class ConsultationService(
 
         visit.Complaints = Clean(input.Complaints);
         visit.Diagnosis = Clean(input.Diagnosis);
-        await consultations.UpdateAsync(visit, cancellationToken);
 
         // Empty vitals leave saved vitals as they are: the application never deletes clinical data (CLAUDE §6).
         if (!VitalsValidator.IsEmpty(input.Vitals))
         {
-            await vitals.UpsertAsync(new VitalSign
-            {
-                ConsultationId = visit.Id,
-                TemperatureC = input.Vitals.TemperatureC!.Value,
-                SystolicMmHg = (short)input.Vitals.SystolicMmHg!.Value,
-                DiastolicMmHg = (short)input.Vitals.DiastolicMmHg!.Value,
-                PulseBpm = (short)input.Vitals.PulseBpm!.Value
-            }, cancellationToken);
+            SetVitals(visit, input.Vitals);
+        }
+
+        // The text and the vitals are saved together, and only while the prescription is unprinted (D-M5-8, FR-RX-002 AC-4).
+        // The repository repeats the printed check under a lock, so a print that finishes first cannot be overtaken.
+        if (!await consultations.UpdateAsync(visit, cancellationToken))
+        {
+            return PrintedVisit();
         }
 
         var saved = await consultations.GetByIdAsync(visit.Id, includeVitals: true, cancellationToken);
@@ -231,6 +228,19 @@ public sealed class ConsultationService(
 
     private static Result<ConsultationDto> NotFound() =>
         Result<ConsultationDto>.Fail(new ResultMessage(NotFoundCode, NotFoundMessage));
+
+    // Changes the visit's vitals in place, or adds them when none were saved yet (1:0..1). Only called when the vitals are not empty.
+    private static void SetVitals(Consultation visit, VitalsInput input)
+    {
+        var vitals = visit.Vitals ?? (visit.Vitals = new VitalSign { ConsultationId = visit.Id });
+        vitals.TemperatureC = input.TemperatureC!.Value;
+        vitals.SystolicMmHg = (short)input.SystolicMmHg!.Value;
+        vitals.DiastolicMmHg = (short)input.DiastolicMmHg!.Value;
+        vitals.PulseBpm = (short)input.PulseBpm!.Value;
+    }
+
+    private static Result<ConsultationDto> PrintedVisit() =>
+        Result<ConsultationDto>.Fail(new ResultMessage(VisitErrors.PrintedCode, VisitErrors.PrintedVisitMessage));
 
     private static Result<ConsultationDto> AlreadyFinished() =>
         Result<ConsultationDto>.Fail(new ResultMessage(AlreadyFinishedCode, "This visit is already finished."));
