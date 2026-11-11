@@ -141,17 +141,40 @@ public class ConsultationRepositoryTests(TestDatabaseFixture fixture) : IAsyncLi
         await using (var context = fixture.CreateContext())
         {
             var repository = new ConsultationRepository(context);
-            var visit = await repository.GetByIdAsync(visitId);
             var appointment = await context.Appointments.SingleAsync(a => a.Id == appointmentId);
-            visit!.FinishedAt = Morning.AddMinutes(25);
             appointment.Status = "Completed";
-            await repository.UpdateAsync(visit, appointment);
+            Assert.True(await repository.MarkFinishedAsync(visitId, Morning.AddMinutes(25), appointment));
         }
 
         await using var reader = fixture.CreateContext();
         var saved = await reader.Consultations.SingleAsync();
         Assert.Equal(Morning.AddMinutes(25), saved.FinishedAt);
         Assert.Equal("Completed", (await reader.Appointments.SingleAsync()).Status);
+    }
+
+    [Fact]
+    public async Task FR_APT_003_a_second_finish_changes_nothing()
+    {
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        await using (var context = fixture.CreateContext())
+        {
+            await new ConsultationRepository(context).AddAsync(NewVisit(anna, appointmentId: null));
+        }
+
+        int visitId;
+        await using (var context = fixture.CreateContext())
+        {
+            visitId = (await context.Consultations.SingleAsync()).Id;
+            Assert.True(await new ConsultationRepository(context).MarkFinishedAsync(visitId, Morning.AddMinutes(25)));
+        }
+
+        await using (var context = fixture.CreateContext())
+        {
+            Assert.False(await new ConsultationRepository(context).MarkFinishedAsync(visitId, Morning.AddMinutes(40)));
+        }
+
+        await using var reader = fixture.CreateContext();
+        Assert.Equal(Morning.AddMinutes(25), (await reader.Consultations.SingleAsync()).FinishedAt);
     }
 
     [Fact]

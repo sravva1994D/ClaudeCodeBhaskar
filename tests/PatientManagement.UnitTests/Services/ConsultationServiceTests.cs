@@ -32,6 +32,8 @@ public class ConsultationServiceTests
     {
         service = new ConsultationService(consultations, vitals, appointments, patients, new FixedClock(Now));
         patients.GetByIdAsync(7, Arg.Any<CancellationToken>()).Returns(Patient());
+        consultations.MarkFinishedAsync(
+            Arg.Any<int>(), Arg.Any<DateTime>(), Arg.Any<Appointment?>(), Arg.Any<CancellationToken>()).Returns(true);
     }
 
     private static Patient Patient(int id = 7) => new()
@@ -184,7 +186,6 @@ public class ConsultationServiceTests
         Assert.True(result.IsSuccess);
         await consultations.Received(1).UpdateAsync(
             Arg.Is<Consultation>(c => c.Complaints == "Test cough" && c.Diagnosis == "Test diagnosis"),
-            null,
             Arg.Any<CancellationToken>());
     }
 
@@ -197,7 +198,6 @@ public class ConsultationServiceTests
 
         await consultations.Received(1).UpdateAsync(
             Arg.Is<Consultation>(c => c.Complaints == null && c.Diagnosis == null),
-            null,
             Arg.Any<CancellationToken>());
     }
 
@@ -210,7 +210,7 @@ public class ConsultationServiceTests
 
         Assert.True(result.RequiresConfirmation);
         Assert.Contains("43.0 °C", result.Warnings.Single().Message);
-        await consultations.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default, default);
+        await consultations.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
         await vitals.DidNotReceiveWithAnyArgs().UpsertAsync(default!, default);
     }
 
@@ -248,7 +248,7 @@ public class ConsultationServiceTests
         var result = await service.SaveAsync(11, Save(new VitalsInput(36.8m, 120, null, 72)), confirmWarnings: true);
 
         Assert.Equal(["Vitals.Incomplete"], result.Errors.Select(e => e.Code));
-        await consultations.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default, default);
+        await consultations.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
         await vitals.DidNotReceiveWithAnyArgs().UpsertAsync(default!, default);
     }
 
@@ -284,8 +284,8 @@ public class ConsultationServiceTests
         var result = await service.FinishAsync(11);
 
         Assert.True(result.IsSuccess);
-        await consultations.Received(1).UpdateAsync(
-            Arg.Is<Consultation>(c => c.FinishedAt == NowLocal),
+        await consultations.Received(1).MarkFinishedAsync(
+            11, NowLocal,
             Arg.Is<Appointment>(a => a.Status == AppointmentStatus.Completed),
             Arg.Any<CancellationToken>());
     }
@@ -303,7 +303,7 @@ public class ConsultationServiceTests
         var error = Assert.Single(result.Errors);
         Assert.Equal(ConsultationService.FinishStatusCode, error.Code);
         Assert.Contains(status, error.Message);
-        await consultations.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default, default);
+        await consultations.DidNotReceiveWithAnyArgs().MarkFinishedAsync(default, default, default, default);
     }
 
     [Fact]
@@ -317,6 +317,35 @@ public class ConsultationServiceTests
     }
 
     [Fact]
+    public async Task FR_APT_003_finish_that_loses_a_race_to_another_finish_is_refused()
+    {
+        consultations.GetByIdAsync(11, true, Arg.Any<CancellationToken>()).Returns(Visit());
+        consultations.MarkFinishedAsync(
+            11, Arg.Any<DateTime>(), null, Arg.Any<CancellationToken>()).Returns(false);
+
+        var result = await service.FinishAsync(11);
+
+        Assert.Equal([ConsultationService.AlreadyFinishedCode], result.Errors.Select(e => e.Code));
+    }
+
+    [Fact]
+    public async Task FR_HIS_002_visit_whose_patient_is_missing_is_not_found_and_nothing_is_saved()
+    {
+        consultations.GetByIdAsync(11, true, Arg.Any<CancellationToken>()).Returns(Visit());
+        patients.GetByIdAsync(7, Arg.Any<CancellationToken>()).Returns((Patient?)null);
+
+        var read = await service.GetAsync(11);
+        var saved = await service.SaveAsync(11, Save(Empty()), confirmWarnings: false);
+        var finished = await service.FinishAsync(11);
+
+        Assert.Equal(ConsultationService.NotFoundCode, read.Errors.Single().Code);
+        Assert.Equal(ConsultationService.NotFoundCode, saved.Errors.Single().Code);
+        Assert.Equal(ConsultationService.NotFoundCode, finished.Errors.Single().Code);
+        await consultations.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
+        await consultations.DidNotReceiveWithAnyArgs().MarkFinishedAsync(default, default, default, default);
+    }
+
+    [Fact]
     public async Task FR_HIS_001_finish_of_a_walk_in_sets_the_finished_time_and_changes_no_appointment()
     {
         consultations.GetByIdAsync(11, true, Arg.Any<CancellationToken>()).Returns(Visit(appointmentId: null));
@@ -324,10 +353,8 @@ public class ConsultationServiceTests
         var result = await service.FinishAsync(11);
 
         Assert.True(result.IsSuccess);
-        await consultations.Received(1).UpdateAsync(
-            Arg.Is<Consultation>(c => c.FinishedAt == NowLocal),
-            null,
-            Arg.Any<CancellationToken>());
+        await consultations.Received(1).MarkFinishedAsync(
+            11, NowLocal, null, Arg.Any<CancellationToken>());
         await appointments.DidNotReceiveWithAnyArgs().GetByIdAsync(default, default);
     }
 

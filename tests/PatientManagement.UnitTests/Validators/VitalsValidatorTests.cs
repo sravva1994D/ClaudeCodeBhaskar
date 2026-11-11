@@ -85,7 +85,7 @@ public class VitalsValidatorTests
 
         Assert.Contains("43.0 °C", temperature.Message);
         Assert.Contains("260 mmHg", systolic.Message);
-        Assert.Contains("Confirm to save.", systolic.Message);
+        Assert.Equal("Systolic pressure 260 mmHg is outside the expected range 70–250 mmHg.", systolic.Message);
     }
 
     [Fact]

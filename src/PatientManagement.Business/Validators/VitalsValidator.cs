@@ -82,7 +82,7 @@ public static class VitalsValidator
         if (input.TemperatureC is { } temperature && (temperature < TemperatureMin || temperature > TemperatureMax))
         {
             warnings.Add(new ResultMessage("Vitals.Range.OutOfRange",
-                $"Temperature {temperature.ToString("0.0", CultureInfo.InvariantCulture)} °C is outside the expected range {TemperatureMin.ToString("0.0", CultureInfo.InvariantCulture)}–{TemperatureMax.ToString("0.0", CultureInfo.InvariantCulture)} °C. Confirm to save.",
+                $"Temperature {temperature.ToString("0.0", CultureInfo.InvariantCulture)} °C is outside the expected range {TemperatureMin.ToString("0.0", CultureInfo.InvariantCulture)}–{TemperatureMax.ToString("0.0", CultureInfo.InvariantCulture)} °C.",
                 "TemperatureC"));
         }
 
@@ -114,7 +114,7 @@ public static class VitalsValidator
         if (value is { } number && (number < min || number > max))
         {
             warnings.Add(new ResultMessage("Vitals.Range.OutOfRange",
-                $"{label} {number} {unit} is outside the expected range {min}–{max} {unit}. Confirm to save.",
+                $"{label} {number} {unit} is outside the expected range {min}–{max} {unit}.",
                 field));
         }
     }

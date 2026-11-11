@@ -51,11 +51,39 @@ public sealed class ConsultationRepository(PatientManagementDbContext db) : ICon
         }
     }
 
-    public async Task UpdateAsync(Consultation consultation, Appointment? linkedAppointment = null, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(Consultation consultation, CancellationToken cancellationToken = default)
     {
         db.Consultations.Update(consultation);
-        MarkLinkedAppointment(linkedAppointment);
         await db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<bool> MarkFinishedAsync(
+        int consultationId, DateTime finishedAt, Appointment? linkedAppointment = null, CancellationToken cancellationToken = default)
+    {
+        // The conditional UPDATE takes the row lock. A second overlapping Finish waits, then matches no row.
+        // Bulk updates skip the change tracker, so nothing else is written for these entities.
+        await using var transaction = await db.Database.BeginTransactionAsync(cancellationToken);
+
+        var marked = await db.Consultations
+            .Where(consultation => consultation.Id == consultationId && consultation.FinishedAt == null)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(consultation => consultation.FinishedAt, (DateTime?)finishedAt),
+                cancellationToken);
+        if (marked == 0)
+        {
+            return false;
+        }
+
+        if (linkedAppointment is not null)
+        {
+            await db.Appointments
+                .Where(appointment => appointment.Id == linkedAppointment.Id)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(appointment => appointment.Status, linkedAppointment.Status),
+                    cancellationToken);
+        }
+
+        await transaction.CommitAsync(cancellationToken);
+
+        return true;
     }
 
     private void MarkLinkedAppointment(Appointment? linkedAppointment)

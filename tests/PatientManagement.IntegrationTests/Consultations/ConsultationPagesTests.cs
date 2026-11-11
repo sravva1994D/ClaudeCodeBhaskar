@@ -93,6 +93,27 @@ public class ConsultationPagesTests(TestDatabaseFixture database, TestWebApplica
     }
 
     [Fact]
+    public async Task FR_APT_003_refused_start_from_a_list_day_returns_to_that_day()
+    {
+        var appointmentId = await SeedAppointmentAsync("Scheduled");
+        using var client = await SignedInClientAsync();
+        var token = await TestSignIn.AntiForgeryTokenAsync(client, "/Appointments/Daily");
+
+        // A day other than today, so the test shows the posted day was used and not the fallback to today.
+        var day = new DateOnly(2026, 12, 1);
+
+        var response = await client.PostAsync("/Consultations/Start", Form(
+            ("patientId", patientId.ToString()), ("appointmentId", appointmentId.ToString()),
+            ("date", day.ToString("yyyy-MM-dd")), ("__RequestVerificationToken", token)));
+
+        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        var location = new Uri(new Uri("http://localhost"), response.Headers.Location!);
+        Assert.Equal("/Appointments/Daily", location.AbsolutePath);
+        var redirectedDay = System.Web.HttpUtility.ParseQueryString(location.Query)["date"];
+        Assert.Equal(day, DateOnly.ParseExact(redirectedDay!, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
     public async Task FR_VIT_001_save_records_the_vitals_complaints_and_diagnosis()
     {
         var visitId = await SeedVisitAsync();

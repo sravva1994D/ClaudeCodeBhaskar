@@ -98,8 +98,12 @@ public sealed class ConsultationService(
         }
 
         var patient = await patients.GetByIdAsync(visit.PatientId, cancellationToken);
+        if (patient is null)
+        {
+            return NotFound();
+        }
 
-        return Result<ConsultationDto>.Ok(ConsultationMapper.ToDto(visit, patient!));
+        return Result<ConsultationDto>.Ok(ConsultationMapper.ToDto(visit, patient));
     }
 
     public async Task<Result<ConsultationDto>> SaveAsync(
@@ -107,6 +111,12 @@ public sealed class ConsultationService(
     {
         var visit = await consultations.GetByIdAsync(consultationId, includeVitals: true, cancellationToken);
         if (visit is null)
+        {
+            return NotFound();
+        }
+
+        var patient = await patients.GetByIdAsync(visit.PatientId, cancellationToken);
+        if (patient is null)
         {
             return NotFound();
         }
@@ -128,7 +138,7 @@ public sealed class ConsultationService(
 
         visit.Complaints = Clean(input.Complaints);
         visit.Diagnosis = Clean(input.Diagnosis);
-        await consultations.UpdateAsync(visit, linkedAppointment: null, cancellationToken);
+        await consultations.UpdateAsync(visit, cancellationToken);
 
         // Empty vitals leave saved vitals as they are: the application never deletes clinical data (CLAUDE §6).
         if (!VitalsValidator.IsEmpty(input.Vitals))
@@ -144,9 +154,8 @@ public sealed class ConsultationService(
         }
 
         var saved = await consultations.GetByIdAsync(visit.Id, includeVitals: true, cancellationToken);
-        var patient = await patients.GetByIdAsync(saved!.PatientId, cancellationToken);
 
-        return Result<ConsultationDto>.Ok(ConsultationMapper.ToDto(saved, patient!), warnings.Concat(notices));
+        return Result<ConsultationDto>.Ok(ConsultationMapper.ToDto(saved!, patient), warnings.Concat(notices));
     }
 
     public async Task<Result<ConsultationDto>> FinishAsync(int consultationId, CancellationToken cancellationToken = default)
@@ -157,10 +166,16 @@ public sealed class ConsultationService(
             return NotFound();
         }
 
-        // Finish is one-time (D-M4-3).
+        var patient = await patients.GetByIdAsync(visit.PatientId, cancellationToken);
+        if (patient is null)
+        {
+            return NotFound();
+        }
+
+        // Finish is one-time (D-M4-3). The save below enforces it too, for requests that overlap.
         if (visit.FinishedAt is not null)
         {
-            return Result<ConsultationDto>.Fail(new ResultMessage(AlreadyFinishedCode, "This visit is already finished."));
+            return AlreadyFinished();
         }
 
         Appointment? appointment = null;
@@ -182,12 +197,15 @@ public sealed class ConsultationService(
             appointment.Status = AppointmentStatus.Completed;
         }
 
-        visit.FinishedAt = Now();
-        await consultations.UpdateAsync(visit, appointment, cancellationToken);
+        var finishedAt = Now();
+        if (!await consultations.MarkFinishedAsync(visit.Id, finishedAt, appointment, cancellationToken))
+        {
+            return AlreadyFinished();
+        }
 
-        var patient = await patients.GetByIdAsync(visit.PatientId, cancellationToken);
+        visit.FinishedAt = finishedAt;
 
-        return Result<ConsultationDto>.Ok(ConsultationMapper.ToDto(visit, patient!));
+        return Result<ConsultationDto>.Ok(ConsultationMapper.ToDto(visit, patient));
     }
 
     public async Task<IReadOnlyList<VisitSummaryDto>> ListVisitsAsync(int patientId, CancellationToken cancellationToken = default)
@@ -205,6 +223,9 @@ public sealed class ConsultationService(
 
     private static Result<ConsultationDto> NotFound() =>
         Result<ConsultationDto>.Fail(new ResultMessage(NotFoundCode, NotFoundMessage));
+
+    private static Result<ConsultationDto> AlreadyFinished() =>
+        Result<ConsultationDto>.Fail(new ResultMessage(AlreadyFinishedCode, "This visit is already finished."));
 
     private static Result<ConsultationDto> AlreadyVisited() =>
         Result<ConsultationDto>.Fail(new ResultMessage(AppointmentAlreadyVisitedCode,

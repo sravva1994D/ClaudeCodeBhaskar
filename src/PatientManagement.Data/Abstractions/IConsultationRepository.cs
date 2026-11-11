@@ -21,6 +21,11 @@ public interface IConsultationRepository
     // so Start either changes both or neither (Module 4 plan §7).
     Task AddAsync(Consultation consultation, Appointment? linkedAppointment = null, CancellationToken cancellationToken = default);
 
-    // Saves the visit. When linkedAppointment is given, its status change is saved in the same save (Finish).
-    Task UpdateAsync(Consultation consultation, Appointment? linkedAppointment = null, CancellationToken cancellationToken = default);
+    // Saves the visit's text. Vitals are saved by IVitalSignRepository.
+    Task UpdateAsync(Consultation consultation, CancellationToken cancellationToken = default);
+
+    // Finishes the visit once (D-M4-3). Returns false when it was already finished, so two overlapping
+    // Finish requests cannot both succeed. When linkedAppointment is given, its status is saved in the same transaction.
+    Task<bool> MarkFinishedAsync(int consultationId, DateTime finishedAt, Appointment? linkedAppointment = null,
+        CancellationToken cancellationToken = default);
 }

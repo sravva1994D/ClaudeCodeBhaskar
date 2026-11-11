@@ -22,7 +22,7 @@ public class VitalSignRepositoryTests(TestDatabaseFixture fixture) : IAsyncLifet
 
         await using var context = fixture.CreateContext();
 
-        Assert.Null(await new VitalSignRepository(context).GetByConsultationAsync(consultationId));
+        Assert.Null(await context.VitalSigns.SingleOrDefaultAsync(vitals => vitals.ConsultationId == consultationId));
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class VitalSignRepositoryTests(TestDatabaseFixture fixture) : IAsyncLifet
         }
 
         await using var reader = fixture.CreateContext();
-        var saved = await new VitalSignRepository(reader).GetByConsultationAsync(consultationId);
+        var saved = await reader.VitalSigns.SingleOrDefaultAsync(vitals => vitals.ConsultationId == consultationId);
         Assert.Equal(37.2m, saved!.TemperatureC);
         Assert.Equal(1, await reader.VitalSigns.CountAsync());
     }
@@ -74,7 +74,7 @@ public class VitalSignRepositoryTests(TestDatabaseFixture fixture) : IAsyncLifet
         }
 
         await using var reader = fixture.CreateContext();
-        var saved = await new VitalSignRepository(reader).GetByConsultationAsync(consultationId);
+        var saved = await reader.VitalSigns.SingleOrDefaultAsync(vitals => vitals.ConsultationId == consultationId);
         Assert.Equal(43.0m, saved!.TemperatureC);
         Assert.Equal(260, saved.SystolicMmHg);
     }

@@ -7,9 +7,6 @@ namespace PatientManagement.Data.Repositories;
 
 public sealed class VitalSignRepository(PatientManagementDbContext db) : IVitalSignRepository
 {
-    public Task<VitalSign?> GetByConsultationAsync(int consultationId, CancellationToken cancellationToken = default) =>
-        db.VitalSigns.SingleOrDefaultAsync(vitals => vitals.ConsultationId == consultationId, cancellationToken);
-
     public async Task UpsertAsync(VitalSign vitals, CancellationToken cancellationToken = default)
     {
         var existing = await db.VitalSigns.FindAsync([vitals.ConsultationId], cancellationToken);

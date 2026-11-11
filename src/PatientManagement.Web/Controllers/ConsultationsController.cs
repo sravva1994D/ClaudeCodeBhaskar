@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using PatientManagement.Business.Common;
 using PatientManagement.Business.DTOs;
@@ -14,7 +15,7 @@ public class ConsultationsController(IConsultationService consultations, TimePro
 {
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Start(int patientId, int? appointmentId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Start(int patientId, int? appointmentId, DateOnly? date, CancellationToken cancellationToken)
     {
         var result = await consultations.StartAsync(patientId, appointmentId, cancellationToken);
 
@@ -25,10 +26,10 @@ public class ConsultationsController(IConsultationService consultations, TimePro
 
         TempData["Error"] = Message(result);
 
-        // Back to where the user started: the daily list for an appointment, the profile for a walk-in.
+        // Back to where the user started: the list day for an appointment, the profile for a walk-in.
         return appointmentId is null
             ? RedirectToAction("Details", "Patients", new { id = patientId })
-            : RedirectToAction("Daily", "Appointments", new { date = Today() });
+            : RedirectToAction("Daily", "Appointments", new { date = (date ?? Today()).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) });
     }
 
     [HttpGet]
