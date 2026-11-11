@@ -24,6 +24,9 @@
 
     <dt class="col-sm-3">Address</dt>
     <dd class="col-sm-9">@Model.Address</dd>
+
+    <dt class="col-sm-3">Last visit</dt>
+    <dd class="col-sm-9">@(Model.LastVisit is null ? "No visits yet" : Model.LastVisit.Value.ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture))</dd>
 </dl>
 
 @if (TempData["Message"] is string message)
@@ -38,6 +41,7 @@
 <div class="d-flex flex-wrap gap-3 align-items-center">
     <a class="btn btn-outline-primary" asp-controller="Patients" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
     <a class="btn btn-outline-primary" asp-controller="Appointments" asp-action="Create" asp-route-patientId="@Model.Id">Schedule appointment</a>
+    <a class="btn btn-outline-primary" asp-controller="Visits" asp-action="Index" asp-route-patientId="@Model.Id">Visit history</a>
     <form method="post" asp-controller="Consultations" asp-action="Start" class="d-inline">
         <input type="hidden" name="patientId" value="@Model.Id" />
         <button type="submit" class="btn btn-outline-primary">Start consultation</button>

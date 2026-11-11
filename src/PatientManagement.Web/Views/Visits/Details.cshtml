@@ -1,0 +1,36 @@
+@using System.Globalization
+@model PatientManagement.Business.DTOs.ConsultationDto
+@{
+    ViewData["Title"] = "Visit detail";
+}
+
+<h1 class="h3 mb-1">Visit</h1>
+<p class="text-muted mb-4">
+    <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">@Model.PatientName</a> (@Model.PatientCode) ·
+    @Model.VisitDateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) ·
+    @(Model.IsFinished ? "Finished" : "In progress") ·
+    @(Model.AppointmentId is null ? "Walk-in" : "Appointment")
+</p>
+
+<dl class="row mb-4">
+    <dt class="col-sm-3">Temperature</dt>
+    <dd class="col-sm-9">@(Model.Vitals is null ? "No vitals recorded" : $"{Model.Vitals.TemperatureC.ToString("0.0", CultureInfo.InvariantCulture)} °C")</dd>
+
+    <dt class="col-sm-3">Blood pressure</dt>
+    <dd class="col-sm-9">@(Model.Vitals is null ? "No vitals recorded" : $"{Model.Vitals.SystolicMmHg}/{Model.Vitals.DiastolicMmHg} mmHg")</dd>
+
+    <dt class="col-sm-3">Pulse</dt>
+    <dd class="col-sm-9">@(Model.Vitals is null ? "No vitals recorded" : $"{Model.Vitals.PulseBpm} bpm")</dd>
+
+    <dt class="col-sm-3">Complaints</dt>
+    <dd class="col-sm-9" style="white-space: pre-line">@(string.IsNullOrWhiteSpace(Model.Complaints) ? "None recorded" : Model.Complaints)</dd>
+
+    <dt class="col-sm-3">Diagnosis</dt>
+    <dd class="col-sm-9" style="white-space: pre-line">@(string.IsNullOrWhiteSpace(Model.Diagnosis) ? "None recorded" : Model.Diagnosis)</dd>
+</dl>
+
+<div class="d-flex flex-wrap gap-3">
+    <a class="btn btn-outline-primary" asp-controller="Consultations" asp-action="Edit" asp-route-id="@Model.Id">Edit visit</a>
+    <a asp-controller="Visits" asp-action="Index" asp-route-patientId="@Model.PatientId">Back to visit history</a>
+    <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">Back to patient</a>
+</div>

@@ -1,0 +1,43 @@
+@using System.Globalization
+@model PatientManagement.Web.ViewModels.Visits.VisitHistoryViewModel
+@{
+    ViewData["Title"] = "Visit history";
+}
+
+<h1 class="h3 mb-1">Visit history</h1>
+<p class="text-muted mb-4">
+    <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">@Model.PatientName</a> (@Model.PatientCode)
+</p>
+
+@if (Model.Visits.Count == 0)
+{
+    <p>No visits yet. <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">Back to the patient profile</a> to start a consultation.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Visit</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Status</th>
+                    <th scope="col"><span class="visually-hidden">Open</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var visit in Model.Visits)
+                {
+                    <tr>
+                        <td>@visit.VisitDateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)</td>
+                        <td>@(visit.AppointmentId is null ? "Walk-in" : "Appointment")</td>
+                        <td>@(visit.IsFinished ? "Finished" : "In progress")</td>
+                        <td><a asp-controller="Visits" asp-action="Details" asp-route-id="@visit.Id">Open</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<p class="mt-4"><a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">Back to the patient profile</a></p>

@@ -10,4 +10,5 @@ public sealed record PatientDto(
     string Gender,
     string Phone,
     string Email,
-    string Address);
+    string Address,
+    DateTime? LastVisit = null);

@@ -5,7 +5,8 @@ namespace PatientManagement.Business.DTOs;
 // Maps patient entities to DTOs and back to entity values. Entities never leave the Business layer (AD-03).
 public static class PatientMapper
 {
-    public static PatientDto ToDto(Patient patient, int age) => new(
+    // LastVisit is the latest visit time from visits only (PDR-11); null when there is no visit yet.
+    public static PatientDto ToDto(Patient patient, int age, DateTime? lastVisit = null) => new(
         patient.Id,
         patient.PatientCode,
         patient.FullName,
@@ -14,7 +15,8 @@ public static class PatientMapper
         patient.Gender,
         patient.Phone,
         patient.Email,
-        patient.Address);
+        patient.Address,
+        lastVisit);
 
     public static PatientSummaryDto ToSummary(Patient patient) => new(
         patient.Id,

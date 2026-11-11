@@ -20,12 +20,13 @@ public class PatientServiceTests
     private static readonly DateTimeOffset Now = new(2026, 11, 11, 9, 0, 0, TimeSpan.Zero);
 
     private readonly IPatientRepository patients = Substitute.For<IPatientRepository>();
+    private readonly IConsultationRepository consultations = Substitute.For<IConsultationRepository>();
     private readonly PatientService service;
 
     public PatientServiceTests()
     {
         var clock = new FixedClock(Now);
-        service = new PatientService(patients, new AgeCalculator(clock), clock);
+        service = new PatientService(patients, new AgeCalculator(clock), consultations, clock);
 
         // Mimics the database: a saved patient receives an identity and a computed code.
         patients.AddAsync(Arg.Do<Patient>(p => { p.Id = 7; p.PatientCode = "PT-000007"; }), Arg.Any<CancellationToken>())
@@ -177,6 +178,22 @@ public class PatientServiceTests
         Assert.Equal("Test Anna Example", result.Value.FullName);
         Assert.Equal("anna@example.test", result.Value.Email);
         Assert.Equal(36, result.Value.Age);
+    }
+
+    [Fact]
+    public async Task FR_HIS_001_profile_shows_the_latest_visit_time_and_none_when_there_is_no_visit()
+    {
+        patients.GetByIdAsync(123, Arg.Any<CancellationToken>()).Returns(ExistingPatient());
+        var latest = new DateTime(2026, 11, 10, 9, 30, 0);
+        consultations.GetLatestVisitTimeAsync(123, Arg.Any<CancellationToken>()).Returns(latest);
+
+        var withVisit = await service.GetAsync(123);
+
+        consultations.GetLatestVisitTimeAsync(123, Arg.Any<CancellationToken>()).Returns((DateTime?)null);
+        var withoutVisit = await service.GetAsync(123);
+
+        Assert.Equal(latest, withVisit.Value!.LastVisit);
+        Assert.Null(withoutVisit.Value!.LastVisit);
     }
 
     [Fact]

@@ -10,6 +10,7 @@ namespace PatientManagement.Business.Services;
 public sealed class PatientService(
     IPatientRepository patients,
     AgeCalculator ages,
+    IConsultationRepository consultations,
     TimeProvider timeProvider) : IPatientService
 {
     public const string NotFoundCode = "Patient.NotFound";
@@ -73,8 +74,15 @@ public sealed class PatientService(
     public async Task<Result<PatientDto>> GetAsync(int id, CancellationToken cancellationToken = default)
     {
         var patient = await patients.GetByIdAsync(id, cancellationToken);
+        if (patient is null)
+        {
+            return NotFound();
+        }
 
-        return patient is null ? NotFound() : Result<PatientDto>.Ok(ToDto(patient));
+        // The profile shows the last visit (D-M4-8). Register and update results do not show it.
+        var lastVisit = await consultations.GetLatestVisitTimeAsync(id, cancellationToken);
+
+        return Result<PatientDto>.Ok(ToDto(patient, lastVisit));
     }
 
     public async Task<Result<IReadOnlyList<PatientSummaryDto>>> SearchAsync(
@@ -94,8 +102,8 @@ public sealed class PatientService(
 
     private DateOnly Today() => DateOnly.FromDateTime(timeProvider.GetLocalNow().DateTime);
 
-    private PatientDto ToDto(Patient patient) =>
-        PatientMapper.ToDto(patient, ages.CurrentAge(patient.DateOfBirth));
+    private PatientDto ToDto(Patient patient, DateTime? lastVisit = null) =>
+        PatientMapper.ToDto(patient, ages.CurrentAge(patient.DateOfBirth), lastVisit);
 
     private Task<IReadOnlyList<Patient>> FindDuplicatesAsync(
         PatientInput input, int? excludeId, CancellationToken cancellationToken) =>
