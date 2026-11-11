@@ -264,5 +264,5 @@ public class ConsultationRepositoryTests(TestDatabaseFixture fixture) : IAsyncLi
     };
 
     private async Task Clear() =>
-        await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+        await fixture.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
 }

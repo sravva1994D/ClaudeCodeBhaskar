@@ -339,7 +339,7 @@ public class ConsultationPagesTests(TestDatabaseFixture database, TestWebApplica
     }
 
     private async Task Clear() =>
-        await database.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+        await database.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
 
     private async Task<HttpClient> SignedInClientAsync()
     {

@@ -13,9 +13,9 @@ public class AppointmentRepositoryTests(TestDatabaseFixture fixture) : IAsyncLif
     private static readonly DateOnly Day = new(2026, 12, 1);
     private static readonly DateTime NineAm = new(2026, 12, 1, 9, 0, 0);
 
-    public async Task InitializeAsync() => await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+    public async Task InitializeAsync() => await fixture.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
 
-    public async Task DisposeAsync() => await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+    public async Task DisposeAsync() => await fixture.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
 
     [Fact]
     public async Task FR_APT_002_daily_list_shows_only_the_chosen_day_in_time_order()

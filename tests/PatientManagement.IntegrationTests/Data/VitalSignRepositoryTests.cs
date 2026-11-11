@@ -110,5 +110,5 @@ public class VitalSignRepositoryTests(TestDatabaseFixture fixture) : IAsyncLifet
     };
 
     private async Task Clear() =>
-        await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+        await fixture.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
 }

@@ -71,6 +71,39 @@ namespace PatientManagement.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PatientManagement.Data.Entities.ClinicProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ClinicName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("DoctorName")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("RegistrationNumber")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClinicProfile", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_ClinicProfile_Id", "[Id] = 1");
+                        });
+                });
+
             modelBuilder.Entity("PatientManagement.Data.Entities.Consultation", b =>
                 {
                     b.Property<int>("Id")
@@ -171,6 +204,76 @@ namespace PatientManagement.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PatientManagement.Data.Entities.Prescription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConsultationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsPrinted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime?>("PrintedAt")
+                        .HasColumnType("datetime2(0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConsultationId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Prescriptions_ConsultationId");
+
+                    b.ToTable("Prescriptions", (string)null);
+                });
+
+            modelBuilder.Entity("PatientManagement.Data.Entities.PrescriptionItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Dosage")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Duration")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Frequency")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Instructions")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("PrescriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<short>("SortOrder")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PrescriptionId");
+
+                    b.ToTable("PrescriptionItems", (string)null);
+                });
+
             modelBuilder.Entity("PatientManagement.Data.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -249,6 +352,26 @@ namespace PatientManagement.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PatientManagement.Data.Entities.Prescription", b =>
+                {
+                    b.HasOne("PatientManagement.Data.Entities.Consultation", null)
+                        .WithMany()
+                        .HasForeignKey("ConsultationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PatientManagement.Data.Entities.PrescriptionItem", b =>
+                {
+                    b.HasOne("PatientManagement.Data.Entities.Prescription", "Prescription")
+                        .WithMany("Items")
+                        .HasForeignKey("PrescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Prescription");
+                });
+
             modelBuilder.Entity("PatientManagement.Data.Entities.VitalSign", b =>
                 {
                     b.HasOne("PatientManagement.Data.Entities.Consultation", "Consultation")
@@ -263,6 +386,11 @@ namespace PatientManagement.Data.Migrations
             modelBuilder.Entity("PatientManagement.Data.Entities.Consultation", b =>
                 {
                     b.Navigation("Vitals");
+                });
+
+            modelBuilder.Entity("PatientManagement.Data.Entities.Prescription", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

@@ -9,9 +9,9 @@ namespace PatientManagement.IntegrationTests.Data;
 [Collection(TestDatabaseCollection.Name)]
 public class PatientRepositoryTests(TestDatabaseFixture fixture) : IAsyncLifetime
 {
-    public async Task InitializeAsync() => await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+    public async Task InitializeAsync() => await fixture.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
 
-    public async Task DisposeAsync() => await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+    public async Task DisposeAsync() => await fixture.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
 
     [Fact]
     public async Task FR_PAT_004_search_by_name_part_finds_matching_patients()

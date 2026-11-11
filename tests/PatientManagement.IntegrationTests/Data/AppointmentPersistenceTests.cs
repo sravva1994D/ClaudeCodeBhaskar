@@ -13,9 +13,9 @@ public class AppointmentPersistenceTests(TestDatabaseFixture fixture) : IAsyncLi
     private static readonly DateTime Slot = new(2026, 12, 1, 9, 0, 0);
 
     // Children first: Appointments reference Patients.
-    public async Task InitializeAsync() => await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+    public async Task InitializeAsync() => await fixture.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
 
-    public async Task DisposeAsync() => await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+    public async Task DisposeAsync() => await fixture.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
 
     [Fact]
     public async Task FR_APT_001_appointment_is_saved_with_thirty_minutes_and_not_archived()

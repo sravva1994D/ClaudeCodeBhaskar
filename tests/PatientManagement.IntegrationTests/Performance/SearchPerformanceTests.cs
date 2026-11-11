@@ -38,7 +38,7 @@ public class SearchPerformanceTests(TestDatabaseFixture database, TestWebApplica
 
     public async Task InitializeAsync()
     {
-        await database.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+        await database.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
         await TestSignIn.SeedAccountAsync(database);
 
         await using var context = database.CreateContext();
@@ -48,7 +48,7 @@ public class SearchPerformanceTests(TestDatabaseFixture database, TestWebApplica
 
     public async Task DisposeAsync()
     {
-        await database.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
+        await database.ClearTablesAsync("PrescriptionItems", "Prescriptions", "VitalSigns", "Consultations", "Appointments", "Patients");
         await database.ClearTablesAsync("Users");
     }
 
