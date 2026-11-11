@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Covers:** Implementation item 2 (Patient Management) and FR-SRC-001 (quick search from the top bar)
 **Milestone:** M2 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
-**Status:** Plan for review, 2026-11-11. No code written. Implementation starts on the Project Owner's approval.
+**Status:** Approved 2026-11-11 with all six recommendations (D-M2-1 to D-M2-6) accepted. Implementation in progress.
 **Source rules:** BRD (amended 2026-11-10); CLAUDE.md §3, §4, §6, §8, §9, §10; `Documentation/04-Implementation/03-Module-1-Plan.md` (pattern)
 
 ---
@@ -41,7 +41,7 @@ Every test that verifies a requirement carries its ID in the name (CLAUDE §4.2,
 
 | Point | Design | Source |
 |---|---|---|
-| Patient code | `PT-` followed by the identity, zero-padded to six digits (for example `PT-000123`). Stored in a persisted computed column with a unique index, so it is set by the database at insert and cannot be changed | AD-09; `06-` §2.2; `07-` §2 (see decision D-M2-1) |
+| Patient code | `PT-` followed by the identity, zero-padded to six digits (for example `PT-000123`). From 1,000,000 onward the full number is used (`PT-1000000`), so codes never repeat. Stored in a persisted computed column with a unique index, so it is set by the database at insert and cannot be changed | AD-09; `06-` §2.2; `07-` §2 (see decision D-M2-1) |
 | Required fields | Full name, date of birth, gender, phone, email, address. Errors block the save | BRD Patient Management; PDR-01; `13-` §3.1 |
 | Gender | One of Male, Female or Other. A database CHECK backs the list | PDR-01; `07-` §2 |
 | Date of birth | Required. Not in the future. No minimum or maximum age (BRD is silent) | BRD; PDR-22 |
@@ -108,7 +108,7 @@ Steps 1 to 6 are data and business logic and need no web project. Steps 7 to 8 a
 | Contains search on 1,000 rows misses the 2 to 5 s target (`07-` §4 search note) | Medium | Medium | Measure early (step 9 before M2 closes); options recorded for the Project Owner |
 | LIKE wildcards in user input match too much | Medium | Low | Escape `%`, `_` and `\` in the repository; tested (step 2) |
 | Duplicate warnings on common names or phones | Medium | Low | Warning only, never a block; the user confirms |
-| Patient code overflows six digits | Low | Low | Six digits give room beyond 999,999 patients; the sample is 1,000 |
+| Patient code outgrows six digits | Low | Low | The SQL uses the full number from 1,000,000, so codes stay unique. Corrected in step 1: the first draft of the code rule would have repeated codes beyond 999,999 |
 | Personal data appears in logs or test fixtures | Low | High | Logging rules; synthetic names and numbers only; log check in §6 |
 | Phone formats differ between entries, so duplicates are missed | Medium | Low | Decision D-M2-2; the warning is a convenience, not a guarantee |
 

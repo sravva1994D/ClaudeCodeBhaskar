@@ -12,10 +12,13 @@ public class PatientManagementDbContext(DbContextOptions<PatientManagementDbCont
 {
     public DbSet<User> Users => Set<User>();
 
+    public DbSet<Patient> Patients => Set<Patient>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+        modelBuilder.ApplyConfiguration(new PatientConfiguration());
     }
 }
