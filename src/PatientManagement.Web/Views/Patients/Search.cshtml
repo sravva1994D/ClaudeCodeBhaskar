@@ -1,0 +1,49 @@
+@model PatientManagement.Web.ViewModels.Patients.PatientSearchViewModel
+@{
+    ViewData["Title"] = "Patient search";
+}
+
+<h1 class="h3 mb-4">Patient search</h1>
+
+<form asp-controller="Patients" asp-action="Search" method="get" class="row g-2 mb-4" role="search">
+    <div class="col-sm-8 col-md-6">
+        <input name="q" value="@Model.Term" class="form-control" placeholder="Name or phone number" aria-label="Search patients" autofocus />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+@if (Model.Searched)
+{
+    if (Model.Results.Count == 0)
+    {
+        <p>No patients match your search.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Code</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Date of birth</th>
+                    <th scope="col">Phone</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.Results)
+                {
+                    <tr>
+                        <td>@row.PatientCode</td>
+                        <td>@row.FullName</td>
+                        <td>@row.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                        <td>@row.Phone</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

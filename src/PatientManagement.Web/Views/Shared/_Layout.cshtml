@@ -26,6 +26,10 @@
                     </ul>
                     @if (User.Identity?.IsAuthenticated == true)
                     {
+                        <form asp-controller="Patients" asp-action="Search" method="get" class="d-flex me-3" role="search">
+                            <input name="q" type="search" class="form-control form-control-sm me-2" placeholder="Name or phone" aria-label="Quick search" />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Search</button>
+                        </form>
                         <div class="navbar-nav align-items-center">
                             <span class="navbar-text me-3">@User.Identity.Name</span>
                             <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
