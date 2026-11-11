@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M3 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/07-Module-3-Plan.md` (approved 2026-11-11 with decisions D-M3-1 to D-M3-6)
-**Status:** **Browser checks passed (Project Owner, Chrome 157.0.8103.50). Awaiting approval.** Automated tests pass. Not yet approved.
+**Status:** **Approved by the Project Owner, 2026-11-11.** Automated tests pass. Browser checks passed on Chrome 157.0.8103.50. Items 5 and 7 in §6 remain open.
 
 ---
 
@@ -129,4 +129,4 @@ The Business-layer decisions D-M3-1 to D-M3-6 are recorded here and in the plan,
 
 ## 9. Approval
 
-Module 3 is not yet approved. All browser checks in §4 passed. The Project Owner approves or requests changes. Items 5 and 9 in §6 need a decision or a note at approval.
+Module 3 approved by the Project Owner on 2026-11-11, with all browser checks in §4 passed (Chrome 157.0.8103.50). Open items at approval: §6 item 5 (HTTPS redirect warning in Development, from Module 1) and §6 item 7 (restoring archived appointments). Both remain open for a later decision. Items 5 and 9 in §6 need a decision or a note at approval.
