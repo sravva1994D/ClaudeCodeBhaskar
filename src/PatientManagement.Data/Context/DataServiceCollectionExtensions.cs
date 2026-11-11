@@ -28,6 +28,8 @@ public static class DataServiceCollectionExtensions
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         services.AddScoped<IConsultationRepository, ConsultationRepository>();
         services.AddScoped<IVitalSignRepository, VitalSignRepository>();
+        services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+        services.AddScoped<IClinicProfileRepository, ClinicProfileRepository>();
 
         return services;
     }
