@@ -22,6 +22,55 @@ namespace PatientManagement.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("PatientManagement.Data.Entities.Appointment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<short>("DurationMinutes")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((short)30);
+
+                    b.Property<bool>("IsArchived")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("StartTime")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Appointments_Slot")
+                        .HasFilter("[IsArchived] = 0 AND [Status] <> N'Cancelled' AND [Status] <> N'No-show'");
+
+                    b.HasIndex("StartTime", "IsArchived")
+                        .HasDatabaseName("IX_Appointments_StartTime");
+
+                    b.ToTable("Appointments", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Appointments_DurationMinutes", "[DurationMinutes] = 30");
+
+                            t.HasCheckConstraint("CK_Appointments_Status", "[Status] IN (N'Scheduled', N'Checked-In', N'In Consultation', N'Completed', N'Cancelled', N'No-show')");
+                        });
+                });
+
             modelBuilder.Entity("PatientManagement.Data.Entities.Patient", b =>
                 {
                     b.Property<int>("Id")
@@ -111,6 +160,15 @@ namespace PatientManagement.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("PatientManagement.Data.Entities.Appointment", b =>
+                {
+                    b.HasOne("PatientManagement.Data.Entities.Patient", null)
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

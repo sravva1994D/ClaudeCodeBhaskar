@@ -14,11 +14,14 @@ public class PatientManagementDbContext(DbContextOptions<PatientManagementDbCont
 
     public DbSet<Patient> Patients => Set<Patient>();
 
+    public DbSet<Appointment> Appointments => Set<Appointment>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new PatientConfiguration());
+        modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
     }
 }
