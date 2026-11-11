@@ -26,7 +26,13 @@
     <dd class="col-sm-9">@Model.Address</dd>
 </dl>
 
+@if (TempData["Message"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+
 <div class="d-flex gap-3">
     <a class="btn btn-outline-primary" asp-controller="Patients" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    <a class="btn btn-outline-primary" asp-controller="Appointments" asp-action="Create" asp-route-patientId="@Model.Id">Schedule appointment</a>
     <a asp-controller="Patients" asp-action="Search">Back to search</a>
 </div>

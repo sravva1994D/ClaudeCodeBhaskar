@@ -31,6 +31,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Date of birth</th>
                     <th scope="col">Phone</th>
+                    <th scope="col"><span class="visually-hidden">Actions</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +42,7 @@
                         <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@row.Id">@row.FullName</a></td>
                         <td>@row.DateOfBirth.ToString("yyyy-MM-dd")</td>
                         <td>@row.Phone</td>
+                        <td><a asp-controller="Appointments" asp-action="Create" asp-route-patientId="@row.Id">Schedule</a></td>
                     </tr>
                 }
             </tbody>

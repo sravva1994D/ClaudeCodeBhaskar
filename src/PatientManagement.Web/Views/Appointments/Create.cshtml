@@ -1,0 +1,55 @@
+@using System.Globalization
+@model PatientManagement.Web.ViewModels.Appointments.AppointmentFormViewModel
+@{
+    ViewData["Title"] = "Schedule appointment";
+}
+
+<h1 class="h3 mb-1">Schedule appointment</h1>
+<p class="text-muted mb-4">@Model.PatientName (@Model.PatientCode)</p>
+
+<form method="get" asp-controller="Appointments" asp-action="Create" class="row g-2 align-items-end mb-4">
+    <input type="hidden" name="patientId" value="@Model.PatientId" />
+    <div class="col-auto">
+        <label for="day" class="form-label">Day</label>
+        <input id="day" name="date" type="date" class="form-control" value="@Model.Date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Show slots</button>
+    </div>
+</form>
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+<form method="post" asp-controller="Appointments" asp-action="Create">
+    <input type="hidden" name="PatientId" value="@Model.PatientId" />
+    <input type="hidden" name="Date" value="@Model.Date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" />
+
+    <fieldset class="mb-3">
+        <legend class="form-label fs-6">Time (30 minutes)</legend>
+        <div class="row">
+            @foreach (var slot in Model.Slots)
+            {
+                <div class="col-6 col-md-4 col-lg-3 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="StartTime"
+                               id="slot-@slot.Label.Replace(":", "")"
+                               value="@slot.StartTime.ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)"
+                               checked="@(Model.StartTime == slot.StartTime)"
+                               disabled="@slot.IsTaken" />
+                        <label class="form-check-label" for="slot-@slot.Label.Replace(":", "")">
+                            @slot.Label @(slot.IsTaken ? "(booked)" : string.Empty)
+                        </label>
+                    </div>
+                </div>
+            }
+        </div>
+        <span asp-validation-for="StartTime" class="text-danger d-block"></span>
+    </fieldset>
+
+    <div class="d-flex gap-3">
+        <button type="submit" class="btn btn-primary">Save appointment</button>
+        <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">Cancel</a>
+    </div>
+</form>
+
+<span asp-validation-for="Date" class="text-danger d-block mt-3"></span>
