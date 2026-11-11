@@ -61,21 +61,21 @@ dotnet ef database update --project src/PatientManagement.Data --startup-project
 
 | # | Check | Expected | Result |
 |---|---|---|---|
-| 1 | Home page loads after the migration | Page loads; list as before | Pending |
-| 2 | Profile → **Start consultation** | Consultation screen opens; header shows "In progress" | Pending |
-| 3 | Enter temperature 43.0 with the other three vitals normal; **Save** | Warning "Temperature 43.0 °C is outside the expected range …" and **Confirm and save** shown; nothing saved yet | Pending |
-| 4 | Click **Confirm and save** | "Visit saved." with the accepted warning shown | Pending |
-| 5 | Enter 37.5, 120, 80, 72; **Save** | "Visit saved." and the values shown on reload | Pending |
-| 6 | Clear all four vitals; **Save** | "Visit saved. No vitals recorded. You can add them later." Earlier vitals are still shown on the visit detail (empty input does not delete them) | Pending |
-| 7 | Enter only systolic 120; **Save** | "Enter all four vitals, or leave all four empty." Nothing saved | Pending |
-| 8 | Enter complaints and diagnosis; **Save**; open the visit from the profile → **Visit history** → **Open** | Complaints and diagnosis shown on the detail; vitals shown as entered | Pending |
-| 9 | On the consultation screen, **Finish visit** | "Visit finished."; the Finish button disappears | Pending |
-| 10 | Finish the same visit again (use a second browser tab opened before step 9, or the browser back button and resubmit) | "This visit is already finished." | Pending |
-| 11 | Schedule an appointment for today; on the daily list **Check in**; the row shows **Start consultation** | Button shown only on the Checked-In row | Pending |
-| 12 | Click **Start consultation** on that row | Consultation screen opens; the daily list row shows **In Consultation** | Pending |
-| 13 | **Finish visit** on that consultation; check the daily list | "Visit finished."; the row shows **Completed**; the row can now be archived | Pending |
-| 14 | Profile: **Last visit** line | Shows the date and time of the latest visit | Pending |
-| 15 | Visit history: newest first; **Open** on a visit → **Edit visit** → back links | Each link goes where it says | Pending |
+| 1 | Home page loads after the migration | Page loads; list as before | Passed |
+| 2 | Profile → **Start consultation** | Consultation screen opens; header shows "In progress" | Passed |
+| 3 | Enter temperature 43.0 with the other three vitals normal; **Save** | Warning "Temperature 43.0 °C is outside the expected range …" and **Confirm and save** shown; nothing saved yet | Passed |
+| 4 | Click **Confirm and save** | "Visit saved." with the accepted warning shown | Passed |
+| 5 | Enter 37.5, 120, 80, 72; **Save** | "Visit saved." and the values shown on reload | Passed |
+| 6 | Clear all four vitals; **Save** | "Visit saved. No vitals recorded. You can add them later." Earlier vitals are still shown on the visit detail (empty input does not delete them) | Passed |
+| 7 | Enter only systolic 120; **Save** | "Enter all four vitals, or leave all four empty." Nothing saved | Passed |
+| 8 | Enter complaints and diagnosis; **Save**; open the visit from the profile → **Visit history** → **Open** | Complaints and diagnosis shown on the detail; vitals shown as entered | Passed |
+| 9 | On the consultation screen, **Finish visit** | "Visit finished."; the Finish button disappears | Passed |
+| 10 | Finish the same visit again (use a second browser tab opened before step 9, or the browser back button and resubmit) | "This visit is already finished." | Passed |
+| 11 | Schedule an appointment for today; on the daily list **Check in**; the row shows **Start consultation** | Button shown only on the Checked-In row | Passed |
+| 12 | Click **Start consultation** on that row | Consultation screen opens; the daily list row shows **In Consultation** | Passed |
+| 13 | **Finish visit** on that consultation; check the daily list | "Visit finished."; the row shows **Completed**; the row can now be archived | Passed |
+| 14 | Profile: **Last visit** line | Shows the date and time of the latest visit | Passed |
+| 15 | Visit history: newest first; **Open** on a visit → **Edit visit** → back links | Each link goes where it says | Passed |
 
 Record the browser name and version for the run (PDR-28).
 
