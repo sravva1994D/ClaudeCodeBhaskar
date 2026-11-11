@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Covers:** Implementation item 4 (Consultation Workflow) and the visit parts of the patient profile
 **Milestone:** M4 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
-**Status:** Proposed. Waiting for Project Owner approval. No code until approved.
+**Status:** Approved by the Project Owner, 2026-11-11, with all nine recommendations (D-M4-1 to D-M4-9) accepted. Implementation proceeds one step at a time on the Project Owner's go-ahead.
 **Source rules:** BRD (amended 2026-11-10); CLAUDE.md §3, §4, §6, §7, §8, §9, §10; `Documentation/04-Implementation/07-Module-3-Plan.md` (pattern); `Documentation/02-Planning/19-Appointment-Status-Lifecycle.md` §4 and §6
 
 ---
