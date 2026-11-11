@@ -81,7 +81,7 @@ Limits of this measurement:
 | Register, edit, view, search in the browser | Development database, test patients entered by hand | Completed, reported by the Project Owner, 2026-11-11 |
 | Duplicate warning in the browser | Register a patient with an existing phone number; check the warning; continue | Completed, reported by the Project Owner, 2026-11-11 |
 | Quick search from the top bar | Search by name and by phone | Completed, reported by the Project Owner, 2026-11-11 |
-| Browser timing (PDR-30, median of 5) | `03-generate-test-patients.sql` on `PatientManagement_Test`; time each search in the browser | Reported as acceptable. Figures and browser version not yet recorded |
+| Browser timing (PDR-30, median of 5) | `03-generate-test-patients.sql` on `PatientManagement_Test`; time each search in the browser | Reported by the Project Owner, 2026-11-11: browser Chrome (version not given); searches under 1 second (approximate; the median-of-5 table was not supplied) |
 | Patient data in the application log | Run the app, use the screens, read the console log | Completed, reported by the Project Owner, 2026-11-11. No issues found |
 
 ## 5. Decisions Taken
@@ -132,4 +132,4 @@ Limits of this measurement:
 
 Module 2 approved by the Project Owner on 2026-11-11, with the manual checks in §4 reported as completed.
 
-Still to record, when available: the browser name and version for the timing run, and the browser timing figures. Item 5 in §6 (HTTPS redirect in Development, from Module 1) remains open.
+Browser timing run (reported 2026-11-11): Chrome, version not recorded; searches under 1 second. The exact median-of-5 figures and the Chrome version are still to be recorded if the Project Owner wants them in the record. Item 5 in §6 (HTTPS redirect in Development, from Module 1) remains open.
