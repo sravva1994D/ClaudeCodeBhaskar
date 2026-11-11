@@ -46,7 +46,8 @@ Recent patients is served by `IConsultationRepository.GetRecentPatientIdsAsync(5
 | GetByIdAsync(id) | Appointment? | Status update, archive | FR-APT-003 |
 | GetDailyAsync(date) | IReadOnlyList<Appointment> (with Patient name and code) | Daily list | FR-APT-002 |
 | HasOverlapAsync(startTime, excludeId?) | bool | Overlap check (non-archived) | FR-APT-001 |
-| AddAsync(appointment) | void | Schedule | FR-APT-001 |
+| AddAsync(appointment) | Task | Schedule. A second live booking in the same slot is refused by the unique index and raised as SlotTakenException, which the service reports as "slot taken" (Module 3, step 4) | FR-APT-001 |
+| UpdateAsync(appointment) | Task | Status change and archive | FR-APT-003 |
 
 ### 2.4 IConsultationRepository (FR-HIS-001 to FR-HIS-003, FR-SRC-002, FR-SRC-003)
 | Method | Returns | Purpose | Req IDs |

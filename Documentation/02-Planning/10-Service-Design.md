@@ -42,7 +42,7 @@ Duplicate check: same FullName, same DateOfBirth, or same Phone as an existing p
 | GetDailyAsync | date | IReadOnlyList<AppointmentDto> | Non-archived rows for that date, ordered by StartTime | FR-APT-002 |
 | GetSlotsAsync | date | IReadOnlyList<SlotDto> | Returns slot state (free or taken) for the day. Grid per PDR-06 | FR-APT-001 |
 | UpdateStatusAsync | id, status | Result | Status in the six lifecycle values. Only allowed moves (`19-`); no reversal | FR-APT-003 |
-| ArchiveAsync | id | Result | Sets IsArchived. Manual action (PDR-09) | FR-APT-003 |
+| ArchiveAsync | id | Result<AppointmentDto> | Sets IsArchived; status unchanged. Manual action (PDR-09). Only Completed, Cancelled or No-show may be archived (D-M3-3). Archived or unknown appointments are not found. Returns a typed result, as the codebase has no non-generic Result (Module 3, step 4) | FR-APT-003 |
 
 ### 2.4 IConsultationService (FR-VIT-001, FR-CMP-001, FR-DIA-001, FR-HIS-002)
 | Method | Input | Output | Rules | Req IDs |

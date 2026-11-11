@@ -124,7 +124,8 @@ Nullable here because the BRD does not say when the header must be complete (PDR
 | IX_Patients_PatientCode (unique) | PatientCode | Lookup by code; uniqueness | FR-PAT-001 |
 | IX_Patients_DOB_Phone (duplicate check) | DateOfBirth, Phone | Duplicate warning | FR-PAT-001 |
 | IX_Appointments_StartTime | StartTime, IsArchived | Daily appointment list | FR-APT-002 |
-| IX_Appointments_Slot (unique, filtered) | StartTime where IsArchived = 0 and Status in (Scheduled, Checked-In, In Consultation, Completed) | DB-level no-overlap guard. The service check is the primary rule (D6) | FR-APT-001 |
+| IX_Appointments_Slot (unique, filtered) | StartTime where IsArchived = 0 and Status <> Cancelled and Status <> No-show | DB-level no-overlap guard. The service check is the primary rule (D6). Written with <> because SQL Server filtered indexes do not accept IN; equivalent for the six statuses (Module 3, step 1) | FR-APT-001 |
+| IX_Appointments_PatientId | PatientId | Foreign key lookup (added in Module 3, step 1; not in the first draft) | FR-APT-001 |
 | IX_Consultations_Patient_Visit | PatientId, VisitDateTime DESC | Visit history, last visit, recent patients | FR-HIS-001, FR-HIS-003, FR-SRC-002 |
 | IX_Consultations_AppointmentId (unique, filtered) | AppointmentId where not null | One consultation per appointment (PDR-26) | FR-APT-001, FR-HIS-001 |
 | IX_Prescriptions_ConsultationId (unique) | ConsultationId | One prescription per visit | FR-RX-002 |
