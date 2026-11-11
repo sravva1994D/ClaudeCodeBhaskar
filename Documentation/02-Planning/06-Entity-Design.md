@@ -134,7 +134,7 @@ The BRD requires these header fields but does not say where they are entered (PD
 | Patient has Name, DOB, Gender, Phone, Email, Address | Validator (errors) and not-null columns | FR-PAT-001 |
 | Duplicate patient warning on Name, DOB or Phone match | Service returns a warning; saves only when confirmed | FR-PAT-001 |
 | Appointment is 30 minutes and does not overlap | Validator and service (rule in PDR-06, PDR-07) | FR-APT-001 |
-| Appointment status is one of four values | Validator and check constraint | FR-APT-003 |
+| Appointment status is one of six values | Validator and check constraint | FR-APT-003 |
 | Vitals out of range need confirmation | Validator (warning). No DB check | FR-VIT-001 |
 | Printed prescription cannot change | Service rejects edits when IsPrinted | FR-RX-002 |
 | One prescription per consultation | Unique index and service | FR-RX-002 |
