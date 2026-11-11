@@ -1,8 +1,47 @@
-﻿@{
+﻿@using System.Globalization
+@model PatientManagement.Web.ViewModels.Home.HomeViewModel
+@{
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-5">Patient Management System</h1>
-    <p class="lead">Phase 1 solution skeleton. No BRD features are implemented yet.</p>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h1 class="h3 mb-1">Today's appointments</h1>
+        <p class="text-muted mb-0">@Model.Today.ToString("dddd, yyyy-MM-dd", CultureInfo.InvariantCulture)</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-primary" asp-controller="Patients" asp-action="Create">New patient</a>
+        <a class="btn btn-outline-primary" asp-controller="Appointments" asp-action="Daily" asp-route-date="@Model.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)">Full day list</a>
+    </div>
 </div>
+
+@if (Model.Appointments.Count == 0)
+{
+    <p>No appointments today.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Time</th>
+                    <th scope="col">Patient</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Appointments)
+                {
+                    <tr>
+                        <td>@item.StartTime.ToString("HH:mm", CultureInfo.InvariantCulture)</td>
+                        <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@item.PatientId">@item.PatientName</a></td>
+                        <td>@item.PatientCode</td>
+                        <td>@item.Status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

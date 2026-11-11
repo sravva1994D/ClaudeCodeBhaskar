@@ -1,16 +1,22 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PatientManagement.Business.Interfaces;
 using PatientManagement.Web.ViewModels;
+using PatientManagement.Web.ViewModels.Home;
 
 namespace PatientManagement.Web.Controllers;
 
-public class HomeController : Controller
+// The home page (SCR-03; FR-APT-002, FR-SRC-001): today's appointments, New patient, and the top-bar quick search.
+// Recent patients join this page in Module 6 (FR-SRC-002).
+public class HomeController(IAppointmentService appointments, TimeProvider timeProvider) : Controller
 {
-    // Placeholder landing page for the solution skeleton. No BRD feature is shown here.
-    public IActionResult Index()
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        return View();
+        var today = DateOnly.FromDateTime(timeProvider.GetLocalNow().DateTime);
+        var items = await appointments.GetDailyAsync(today, cancellationToken);
+
+        return View(new HomeViewModel { Today = today, Appointments = items });
     }
 
     // The error page must render for signed-out users too (AllowAnonymous overrides the global policy).

@@ -56,14 +56,14 @@ public partial class LayoutTests(TestDatabaseFixture database, TestWebApplicatio
     }
 
     [Fact]
-    public async Task Home_page_shows_the_skeleton_banner_after_sign_in()
+    public async Task Home_page_shows_todays_appointments_after_sign_in()
     {
         using var client = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
         await SignInAsync(client);
 
         var html = await client.GetStringAsync("/");
 
-        Assert.Contains("Phase 1 solution skeleton", html);
+        Assert.Contains("Today's appointments", html);
     }
 
     [Fact]
