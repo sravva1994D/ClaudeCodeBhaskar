@@ -1,0 +1,32 @@
+@model PatientManagement.Business.DTOs.PatientDto
+@{
+    ViewData["Title"] = "Patient profile";
+}
+
+<h1 class="h3 mb-1">@Model.FullName</h1>
+<p class="text-muted mb-4">@Model.PatientCode</p>
+
+<dl class="row mb-4">
+    <dt class="col-sm-3">Date of birth</dt>
+    <dd class="col-sm-9">@Model.DateOfBirth.ToString("yyyy-MM-dd")</dd>
+
+    <dt class="col-sm-3">Age</dt>
+    <dd class="col-sm-9">@Model.Age</dd>
+
+    <dt class="col-sm-3">Gender</dt>
+    <dd class="col-sm-9">@Model.Gender</dd>
+
+    <dt class="col-sm-3">Phone</dt>
+    <dd class="col-sm-9">@Model.Phone</dd>
+
+    <dt class="col-sm-3">Email</dt>
+    <dd class="col-sm-9">@Model.Email</dd>
+
+    <dt class="col-sm-3">Address</dt>
+    <dd class="col-sm-9">@Model.Address</dd>
+</dl>
+
+<div class="d-flex gap-3">
+    <a class="btn btn-outline-primary" asp-controller="Patients" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    <a asp-controller="Patients" asp-action="Search">Back to search</a>
+</div>

@@ -20,7 +20,7 @@
 {
     if (Model.Results.Count == 0)
     {
-        <p>No patients match your search.</p>
+        <p>No patients match your search. <a asp-controller="Patients" asp-action="Create">Register a new patient</a></p>
     }
     else
     {
@@ -38,7 +38,7 @@
                 {
                     <tr>
                         <td>@row.PatientCode</td>
-                        <td>@row.FullName</td>
+                        <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@row.Id">@row.FullName</a></td>
                         <td>@row.DateOfBirth.ToString("yyyy-MM-dd")</td>
                         <td>@row.Phone</td>
                     </tr>

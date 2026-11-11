@@ -139,6 +139,8 @@ sequenceDiagram
 
 Wording is a proposal. Final text is subject to review.
 
+Form fields are nullable in the web view models (Module 2, step 8). A non-nullable text field makes the web layer add its own "required" message before the service runs, which would replace the service's messages.
+
 ## 6. Validation Test Mapping
 
 Each rule above maps to at least one test case in `14-Testing-Strategy.md` §4. Ranges (boundary values 33.9, 34.0, 42.0, 42.1, etc.) are tested at both sides of each boundary.

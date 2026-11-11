@@ -37,6 +37,13 @@ public static partial class TestSignIn
         ]));
     }
 
+    // Reads the anti-forgery token from a page. Tokens are bound to the signed-in user, so read them after sign-in.
+    public static async Task<string> AntiForgeryTokenAsync(HttpClient client, string path)
+    {
+        var html = await client.GetStringAsync(path);
+        return TokenPattern().Match(html).Groups[1].Value;
+    }
+
     [GeneratedRegex("name=\"__RequestVerificationToken\" type=\"hidden\" value=\"([^\"]+)\"")]
     private static partial Regex TokenPattern();
 }

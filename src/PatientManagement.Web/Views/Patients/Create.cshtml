@@ -1,0 +1,19 @@
+@model PatientManagement.Web.ViewModels.Patients.PatientFormViewModel
+@{
+    ViewData["Title"] = "Register patient";
+}
+
+<h1 class="h3 mb-4">Register patient</h1>
+
+<form asp-controller="Patients" asp-action="Create" method="post">
+    <partial name="_PatientFields" model="Model" />
+
+    <div class="d-flex gap-2 align-items-center">
+        <button type="submit" class="btn btn-primary">Save</button>
+        @if (Model.Warnings.Count > 0)
+        {
+            <button type="submit" name="ConfirmWarnings" value="true" class="btn btn-warning">Confirm and save</button>
+        }
+        <a asp-controller="Patients" asp-action="Search">Back to search</a>
+    </div>
+</form>
