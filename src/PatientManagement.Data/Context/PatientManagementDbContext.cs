@@ -16,6 +16,10 @@ public class PatientManagementDbContext(DbContextOptions<PatientManagementDbCont
 
     public DbSet<Appointment> Appointments => Set<Appointment>();
 
+    public DbSet<Consultation> Consultations => Set<Consultation>();
+
+    public DbSet<VitalSign> VitalSigns => Set<VitalSign>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -23,5 +27,7 @@ public class PatientManagementDbContext(DbContextOptions<PatientManagementDbCont
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new PatientConfiguration());
         modelBuilder.ApplyConfiguration(new AppointmentConfiguration());
+        modelBuilder.ApplyConfiguration(new ConsultationConfiguration());
+        modelBuilder.ApplyConfiguration(new VitalSignConfiguration());
     }
 }

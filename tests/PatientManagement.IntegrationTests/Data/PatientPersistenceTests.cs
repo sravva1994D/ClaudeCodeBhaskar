@@ -8,9 +8,9 @@ namespace PatientManagement.IntegrationTests.Data;
 [Collection(TestDatabaseCollection.Name)]
 public class PatientPersistenceTests(TestDatabaseFixture fixture) : IAsyncLifetime
 {
-    public async Task InitializeAsync() => await fixture.ClearTablesAsync("Appointments", "Patients");
+    public async Task InitializeAsync() => await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
 
-    public async Task DisposeAsync() => await fixture.ClearTablesAsync("Appointments", "Patients");
+    public async Task DisposeAsync() => await fixture.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
 
     [Fact]
     public async Task FR_PAT_001_code_has_the_pt_format_with_six_digits()

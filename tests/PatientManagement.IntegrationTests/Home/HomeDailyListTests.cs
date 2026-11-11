@@ -13,13 +13,13 @@ public class HomeDailyListTests(TestDatabaseFixture database, TestWebApplication
 {
     public async Task InitializeAsync()
     {
-        await database.ClearTablesAsync("Appointments", "Patients");
+        await database.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
         await TestSignIn.SeedAccountAsync(database);
     }
 
     public async Task DisposeAsync()
     {
-        await database.ClearTablesAsync("Appointments", "Patients");
+        await database.ClearTablesAsync("VitalSigns", "Consultations", "Appointments", "Patients");
         await database.ClearTablesAsync("Users");
     }
 

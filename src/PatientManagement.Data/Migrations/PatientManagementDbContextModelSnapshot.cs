@@ -71,6 +71,46 @@ namespace PatientManagement.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("PatientManagement.Data.Entities.Consultation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Complaints")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Diagnosis")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FinishedAt")
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("VisitDateTime")
+                        .HasColumnType("datetime2(0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Consultations_AppointmentId")
+                        .HasFilter("[AppointmentId] IS NOT NULL");
+
+                    b.HasIndex("PatientId", "VisitDateTime")
+                        .IsDescending(false, true)
+                        .HasDatabaseName("IX_Consultations_Patient_Visit");
+
+                    b.ToTable("Consultations", (string)null);
+                });
+
             modelBuilder.Entity("PatientManagement.Data.Entities.Patient", b =>
                 {
                     b.Property<int>("Id")
@@ -162,13 +202,67 @@ namespace PatientManagement.Data.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("PatientManagement.Data.Entities.VitalSign", b =>
+                {
+                    b.Property<int>("ConsultationId")
+                        .HasColumnType("int");
+
+                    b.Property<short>("DiastolicMmHg")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("PulseBpm")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("SystolicMmHg")
+                        .HasColumnType("smallint");
+
+                    b.Property<decimal>("TemperatureC")
+                        .HasColumnType("decimal(4,1)");
+
+                    b.HasKey("ConsultationId");
+
+                    b.ToTable("VitalSigns", (string)null);
+                });
+
             modelBuilder.Entity("PatientManagement.Data.Entities.Appointment", b =>
                 {
+                    b.HasOne("PatientManagement.Data.Entities.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("PatientManagement.Data.Entities.Consultation", b =>
+                {
+                    b.HasOne("PatientManagement.Data.Entities.Appointment", null)
+                        .WithMany()
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("PatientManagement.Data.Entities.Patient", null)
                         .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PatientManagement.Data.Entities.VitalSign", b =>
+                {
+                    b.HasOne("PatientManagement.Data.Entities.Consultation", "Consultation")
+                        .WithOne("Vitals")
+                        .HasForeignKey("PatientManagement.Data.Entities.VitalSign", "ConsultationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Consultation");
+                });
+
+            modelBuilder.Entity("PatientManagement.Data.Entities.Consultation", b =>
+                {
+                    b.Navigation("Vitals");
                 });
 #pragma warning restore 612, 618
         }
