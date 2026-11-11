@@ -77,7 +77,7 @@ dotnet ef database update --project src/PatientManagement.Data --startup-project
 | 14 | Profile: **Last visit** line | Shows the date and time of the latest visit | Passed |
 | 15 | Visit history: newest first; **Open** on a visit → **Edit visit** → back links | Each link goes where it says | Passed |
 
-Record the browser name and version for the run (PDR-28).
+Browser for this run (PDR-28): Chrome 157.0.8103.51 (Project Owner, 2026-11-11). All 15 checks passed.
 
 Notes for the checks:
 - Check 6 is the one that matters most for the rule that saving with empty fields never deletes saved vitals.
