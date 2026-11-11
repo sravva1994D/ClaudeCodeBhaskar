@@ -51,15 +51,11 @@ public sealed class AppointmentRepository(PatientManagementDbContext db) : IAppo
         {
             await db.SaveChangesAsync(cancellationToken);
         }
-        catch (DbUpdateException exception) when (IsUniqueViolation(exception))
+        catch (DbUpdateException exception) when (UniqueViolation.IsUniqueViolation(exception))
         {
             throw new SlotTakenException(exception);
         }
     }
-
-    // SQL Server error 2601 (unique index) and 2627 (unique constraint).
-    private static bool IsUniqueViolation(DbUpdateException exception) =>
-        exception.InnerException is Microsoft.Data.SqlClient.SqlException { Number: 2601 or 2627 };
 
     public async Task UpdateAsync(Appointment appointment, CancellationToken cancellationToken = default)
     {
