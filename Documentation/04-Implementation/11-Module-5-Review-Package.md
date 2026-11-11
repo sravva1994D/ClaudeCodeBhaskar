@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M5 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/11-Module-5-Plan.md` (approved 2026-11-11; decisions D-M5-1 to D-M5-8)
-**Status:** Browser checks passed (§4, 15 of 15, Chrome 157.0.8103.51). Awaiting the Project Owner's approval (§9). Item 8 in §6 is still open.
+**Status:** **Approved by the Project Owner on 2026-11-11.** Browser checks passed (§4, 15 of 15, Chrome 157.0.8103.51). Items 2 and 8 in §6 remain open for a later decision.
 
 ---
 
@@ -139,7 +139,7 @@ Not changed:
 
 ## 9. Approval
 
-Module 5 is not yet approved. The Project Owner runs the checks in §4, records the results and the browser, and decides items 2 and 8 in §6. Approval then closes Module 5. The final pull request `development` → `main` waits for Modules 6 to 8.
+Module 5 approved by the Project Owner on 2026-11-11, with all 15 browser checks in §4 passed (Chrome 157.0.8103.51). Items 2 and 8 in §6 were not decided at approval and remain open. Item 3 was fixed (D-M5-10). The final pull request `development` → `main` waits for Modules 6 to 8.
 
 ## 10. Fixes After Code Review
 
