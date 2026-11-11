@@ -1,3 +1,4 @@
+using PatientManagement.Business.Appointments;
 using PatientManagement.Data.Entities;
 
 namespace PatientManagement.Business.DTOs;
@@ -12,5 +13,7 @@ public static class AppointmentMapper
         patient.FullName,
         appointment.StartTime,
         appointment.DurationMinutes,
-        appointment.Status);
+        appointment.Status,
+        AppointmentLifecycle.ManualNextStatuses(appointment.Status),
+        AppointmentLifecycle.CanArchive(appointment.Status));
 }

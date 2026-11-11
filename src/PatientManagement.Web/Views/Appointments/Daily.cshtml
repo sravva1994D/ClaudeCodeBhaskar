@@ -1,0 +1,90 @@
+@using System.Globalization
+@model PatientManagement.Web.ViewModels.Appointments.DailyAppointmentsViewModel
+@{
+    ViewData["Title"] = "Appointments";
+    var dayText = Model.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+}
+
+<h1 class="h3 mb-1">Appointments</h1>
+<p class="text-muted mb-4">@Model.Date.ToString("dddd, yyyy-MM-dd", CultureInfo.InvariantCulture)</p>
+
+<form method="get" asp-controller="Appointments" asp-action="Daily" class="row g-2 align-items-end mb-4">
+    <div class="col-auto">
+        <label for="day" class="form-label">Day</label>
+        <input id="day" name="date" type="date" class="form-control" value="@dayText" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Show day</button>
+    </div>
+    <div class="col-auto">
+        <a asp-controller="Appointments" asp-action="Daily">Today</a>
+    </div>
+</form>
+
+@if (TempData["Message"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger" role="alert">@error</div>
+}
+
+@if (Model.Items.Count == 0)
+{
+    <p>No appointments on this day. <a asp-controller="Patients" asp-action="Search">Find a patient</a> to schedule one.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Time</th>
+                    <th scope="col">Patient</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.StartTime.ToString("HH:mm", CultureInfo.InvariantCulture)</td>
+                        <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@item.PatientId">@item.PatientName</a></td>
+                        <td>@item.PatientCode</td>
+                        <td>@item.Status</td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var next in item.NextStatuses)
+                                {
+                                    <form method="post" asp-controller="Appointments" asp-action="UpdateStatus" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <input type="hidden" name="status" value="@next" />
+                                        <input type="hidden" name="date" value="@dayText" />
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">@(next switch
+                                        {
+                                            "Checked-In" => "Check in",
+                                            "Cancelled" => "Cancel",
+                                            "No-show" => "No-show",
+                                            _ => next
+                                        })</button>
+                                    </form>
+                                }
+                                @if (item.CanArchive)
+                                {
+                                    <form method="post" asp-controller="Appointments" asp-action="Archive" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <input type="hidden" name="date" value="@dayText" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Archive</button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

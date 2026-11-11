@@ -123,6 +123,20 @@ public class AppointmentLifecycleTests
         Assert.Equal(holds, AppointmentStatus.HoldsSlot(status));
     }
 
+    [Fact]
+    public void FR_APT_003_a_scheduled_appointment_offers_the_three_manual_moves()
+    {
+        Assert.Equal(
+            [AppointmentStatus.CheckedIn, AppointmentStatus.Cancelled, AppointmentStatus.NoShow],
+            AppointmentLifecycle.ManualNextStatuses(AppointmentStatus.Scheduled));
+    }
+
+    [Fact]
+    public void FR_APT_003_a_completed_appointment_offers_no_manual_moves()
+    {
+        Assert.Empty(AppointmentLifecycle.ManualNextStatuses(AppointmentStatus.Completed));
+    }
+
     [Theory]
     [InlineData(AppointmentStatus.Completed, true)]
     [InlineData(AppointmentStatus.Cancelled, true)]

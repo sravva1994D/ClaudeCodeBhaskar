@@ -1,6 +1,7 @@
 namespace PatientManagement.Business.DTOs;
 
 // A booked appointment as shown on the daily list and after a change (SCR-09, SCR-10; FR-APT-001, FR-APT-002).
+// NextStatuses and CanArchive tell the list which actions to offer; the rules themselves stay in the Business layer.
 public sealed record AppointmentDto(
     int Id,
     int PatientId,
@@ -8,7 +9,9 @@ public sealed record AppointmentDto(
     string PatientName,
     DateTime StartTime,
     int DurationMinutes,
-    string Status);
+    string Status,
+    IReadOnlyList<string> NextStatuses,
+    bool CanArchive);
 
 // The input to book an appointment (SCR-09).
 public sealed record AppointmentCreateDto(int PatientId, DateTime StartTime);

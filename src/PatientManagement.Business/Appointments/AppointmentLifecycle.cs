@@ -29,5 +29,9 @@ public static class AppointmentLifecycle
     public static bool CanMoveManually(string from, string to) =>
         CanMove(from, to) && !SystemOnlyTargets.Contains(to);
 
+    // The statuses a user can move to by hand from this one. The list screen offers exactly these.
+    public static IReadOnlyList<string> ManualNextStatuses(string from) =>
+        AppointmentStatus.All.Where(to => CanMoveManually(from, to)).ToList();
+
     public static bool CanArchive(string status) => Archivable.Contains(status);
 }

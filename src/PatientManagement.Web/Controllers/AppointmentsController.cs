@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PatientManagement.Business.Common;
 using PatientManagement.Business.DTOs;
 using PatientManagement.Business.Interfaces;
+using PatientManagement.Business.Services;
 using PatientManagement.Web.ViewModels.Appointments;
 
 namespace PatientManagement.Web.Controllers;
@@ -59,8 +60,65 @@ public class AppointmentsController(
         TempData["Message"] =
             $"Appointment booked for {model.StartTime.Value:yyyy-MM-dd} at {model.StartTime.Value:HH:mm}.";
 
-        // The daily list (SCR-10) arrives in step 6; until then the profile confirms the booking.
         return RedirectToAction("Details", "Patients", new { id = model.PatientId });
+    }
+
+    // The daily list (SCR-10; FR-APT-002). Archived appointments are not returned by the service.
+    [HttpGet]
+    public async Task<IActionResult> Daily(DateOnly? date, CancellationToken cancellationToken)
+    {
+        var day = date ?? Today();
+        var items = await appointments.GetDailyAsync(day, cancellationToken);
+
+        return View(new DailyAppointmentsViewModel { Date = day, Items = items });
+    }
+
+    // Status changes are posted from the list. The result goes back to the list as a message (FR-APT-003).
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateStatus(int id, string status, DateOnly? date, CancellationToken cancellationToken)
+    {
+        var result = await appointments.UpdateStatusAsync(id, status, cancellationToken);
+
+        if (result.Errors.Any(error => error.Code == AppointmentService.NotFoundCode))
+        {
+            return NotFound();
+        }
+
+        if (result.IsSuccess)
+        {
+            TempData["Message"] = $"Appointment status set to {result.Value!.Status}.";
+        }
+        else
+        {
+            TempData["Error"] = string.Join(" ", result.Errors.Select(error => error.Message));
+        }
+
+        return RedirectToAction(nameof(Daily), new { date = date ?? Today() });
+    }
+
+    // Archive hides the appointment everywhere and keeps its status (PDR-09, DEC-022).
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Archive(int id, DateOnly? date, CancellationToken cancellationToken)
+    {
+        var result = await appointments.ArchiveAsync(id, cancellationToken);
+
+        if (result.Errors.Any(error => error.Code == AppointmentService.NotFoundCode))
+        {
+            return NotFound();
+        }
+
+        if (result.IsSuccess)
+        {
+            TempData["Message"] = "Appointment archived.";
+        }
+        else
+        {
+            TempData["Error"] = string.Join(" ", result.Errors.Select(error => error.Message));
+        }
+
+        return RedirectToAction(nameof(Daily), new { date = date ?? Today() });
     }
 
     private async Task<AppointmentFormViewModel> BuildFormAsync(
