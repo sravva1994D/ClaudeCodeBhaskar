@@ -13,6 +13,12 @@ public class ClinicProfilePagesTests(TestDatabaseFixture database, TestWebApplic
 {
     private const string Page = "/ClinicProfile/Edit";
 
+    private static readonly (string Name, string Value)[] CompleteHeader =
+    [
+        ("ClinicName", "Test Clinic"), ("Address", "Test address"), ("Phone", "5550199"),
+        ("DoctorName", "Test Doctor"), ("RegistrationNumber", "TEST-1")
+    ];
+
     public async Task InitializeAsync()
     {
         await Clear();
@@ -69,9 +75,9 @@ public class ClinicProfilePagesTests(TestDatabaseFixture database, TestWebApplic
     public async Task FR_RX_002_a_second_save_updates_the_same_single_row()
     {
         using var client = await SignedInClientAsync();
-        await PostAsync(client, ("ClinicName", "Test Clinic"));
+        await PostAsync(client, CompleteHeader);
 
-        await PostAsync(client, ("ClinicName", "Test Clinic Renamed"));
+        await PostAsync(client, CompleteHeader.Select(field => field.Name == "ClinicName" ? (field.Name, "Test Clinic Renamed") : field).ToArray());
 
         await using var reader = database.CreateContext();
         var rows = await reader.ClinicProfiles.ToListAsync();
@@ -83,7 +89,7 @@ public class ClinicProfilePagesTests(TestDatabaseFixture database, TestWebApplic
     {
         using var client = await SignedInClientAsync();
 
-        var response = await PostAsync(client, ("Phone", new string('5', 21)));
+        var response = await PostAsync(client, CompleteHeader.Select(field => field.Name == "Phone" ? (field.Name, new string('5', 21)) : field).ToArray());
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Contains("at most 20 characters", await response.Content.ReadAsStringAsync());
@@ -93,13 +99,16 @@ public class ClinicProfilePagesTests(TestDatabaseFixture database, TestWebApplic
     }
 
     [Fact]
-    public async Task FR_RX_002_a_blank_header_is_saved_and_the_print_notice_is_left_to_the_print_view()
+    public async Task FR_RX_002_a_blank_required_field_is_refused_and_nothing_is_saved()
     {
         using var client = await SignedInClientAsync();
 
-        var response = await PostAsync(client, ("ClinicName", ""), ("Phone", "   "));
+        var response = await PostAsync(client, ("ClinicName", "Test Clinic"), ("Phone", "   "));
 
-        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadAsStringAsync();
+        Assert.Contains("Phone is required.", body);
+        Assert.Contains("Address is required.", body);
         await using var reader = database.CreateContext();
         var saved = await reader.ClinicProfiles.SingleAsync();
         Assert.Null(saved.ClinicName);

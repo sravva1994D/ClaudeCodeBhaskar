@@ -2,7 +2,7 @@ using PatientManagement.Business.DTOs;
 
 namespace PatientManagement.Web.ViewModels.ClinicProfile;
 
-// The clinic header form (SCR-14; FR-RX-002, PDR-15). Every field is optional; the service checks the lengths.
+// The clinic header form (SCR-14; FR-RX-002, PDR-15). Every field is required; the service checks that and the lengths.
 // Field names match the service's error fields, so each error appears next to its input.
 public sealed class ClinicProfileFormViewModel
 {

@@ -58,13 +58,13 @@ Use a patient from Module 4 with a visit that has vitals and a diagnosis, or sta
 
 | # | Check | Expected | Result |
 |---|---|---|---|
-| 1 | Menu → **Clinic details**. Leave all fields blank; **Save** | "Clinic details saved." Fields stay blank | Pending |
+| 1 | Menu → **Clinic details**. Leave all fields blank; **Save** | Refused: "Clinic name is required." and the same for each empty field. Nothing saved. Then fill all five fields and **Save**: "Clinic details saved." | Pending |
 | 2 | Open the consultation screen for a visit; in **Medicines**, enter a name only for line 1 and name + dosage for line 2; **Save medicines** | "Medicines saved." Both lines shown in the order entered | Pending |
 | 3 | Add a medicine row with **Add medicine**, enter only a dosage, **Save medicines** | "Line N: enter the medicine name." beside that row. Nothing saved; the typed values stay | Pending |
 | 4 | **Remove** a row; **Save medicines** | The removed row is gone after the save; the others keep their order | Pending |
 | 5 | Enter complaints, diagnosis and vitals; **Save medicines** | Visit values stay as typed (not lost); message "Medicines saved." | Pending |
 | 6 | Visit detail for the visit (from the profile → **Visit history** → **Open**) | Medicines listed; "Not printed yet."; **Print prescription** button | Pending |
-| 7 | Click **Print prescription** | A4 sheet: clinic header with placeholder logo, patient name and code, date of birth, gender, visit time, vitals, diagnosis, medicines table, doctor name, registration number, signature line. Toolbar hidden in print. Blank clinic details (if left blank in check 1) show "Clinic details are incomplete." | Pending |
+| 7 | Click **Print prescription** | A4 sheet: clinic header with placeholder logo, patient name and code, date of birth, gender, visit time, vitals, diagnosis, medicines table, doctor name, registration number, signature line. Toolbar hidden in print. Clinic details were saved in full (check 1), so the sheet shows no incomplete notice | Pending |
 | 8 | On the sheet, click **Print** | Browser print dialog opens; toolbar line says "Printed on …". Cancel the dialog is fine | Pending |
 | 9 | In the print dialog, check Print preview | One A4 page for this data; margins about 15 mm; no toolbar; no page cut through the medicines table | Pending |
 | 10 | **Save as PDF** from the print dialog (SC-004). Open the saved PDF | The PDF shows the same content as the sheet | Pending |
@@ -90,7 +90,8 @@ Notes for the checks:
 | D-M5-3 line limit and lengths | Twenty lines per prescription; lengths from the database columns | Plan §4; `MedicineLineValidator` |
 | D-M5-4 printed lock | After the first print, medicines, complaints, diagnosis and vitals cannot be saved. Finish stays allowed | Plan §4; `ConsultationService.SaveAsync`; `MedicinePagesTests` |
 | D-M5-5 print flow | The view is read-only (GET). The Print button posts (marks printed once), shows the same view, and opens the print dialog. Reprint is allowed | Plan §4; `PrescriptionsController`; `PrescriptionPrintTests` |
-| D-M5-6 clinic header not complete | Printing is allowed; the sheet says the details are incomplete. The profile row is created blank on first read | Plan §4; `ClinicProfileService`; `PrescriptionPrintTests` |
+| D-M5-6 clinic header not complete | **Superseded by D-M5-9.** Was: printing allowed with a notice. The profile row is still created blank on first read, and the print notice still shows for a header never saved | Plan §4; `ClinicProfileService`; `PrescriptionPrintTests` |
+| D-M5-9 clinic header required (Project Owner, 2026-11-11) | All five header fields are required on save; a save with any blank field is refused with "<field> is required." Column lengths still apply. Restores the original PDR-15 rule | `ClinicProfileValidator`; `ClinicProfileServiceTests`; `ClinicProfilePagesTests` |
 | D-M5-7 logo | Static placeholder image (`wwwroot/img/clinic-logo-placeholder.svg`); no upload | Plan §4 |
 | D-M5-8 atomic save | Part 1 built: the medicine replace is one transaction. **Part 2 not built:** the visit text and vitals are still two saves | §6 item 1 |
 
@@ -146,7 +147,7 @@ The code review of Module 5 (requested by the Project Owner) raised six findings
 | Finding | Fix | Tests |
 |---|---|---|
 | 1. The printed lock was check-then-act; the visit save could land after a print | `ConsultationRepository.UpdateAsync` now takes the prescription's row lock, refuses the save when it is printed, and writes the visit text and vitals in one transaction. This also closes D-M5-8 part 2 | `ConsultationRepositoryTests.FR_RX_002_a_visit_is_not_saved_once_its_prescription_is_printed`; `ConsultationRepositoryTests.FR_VIT_001_visit_text_and_new_vitals_are_saved_in_one_save`; `VitalSignRepositoryTests` (rewritten on the same save) |
-| 2. PDR-15 says the header fields are required; the code allows blanks | Recorded as an amendment of PDR-15 in `17-Planning-Decisions-and-Open-Items.md` (D-M5-6) | Documentation only |
+| 2. PDR-15 says the header fields are required; the code allowed blanks | First handled as an amendment (D-M5-6). Reversed on 2026-11-11 by the Project Owner (D-M5-9): all five fields are required on save again | `ClinicProfileServiceTests`; `ClinicProfilePagesTests.FR_RX_002_a_blank_required_field_is_refused_and_nothing_is_saved` |
 | 3. Removing every medicine row and then failing a visit save brought the saved medicines back on the page | The saved medicines load only when the page opens or the prescription is printed. A refused save keeps what was on the page | `MedicinePagesTests.FR_RX_001_removed_medicines_stay_removed_after_a_refused_visit_save` |
 | 4. Two first reads of the clinic profile could collide and fail with a 500 | `ClinicProfileRepository.GetOrCreateAsync` reads the row, creates it if missing, and reads it again if another request created it first | `ClinicProfileRepositoryTests.FR_RX_002_get_or_create_adds_one_blank_row_and_then_returns_it`; `ClinicProfileRepositoryTests.FR_RX_002_get_or_create_returns_the_row_another_request_saved`; `ClinicProfileServiceTests.FR_RX_002_the_first_read_creates_a_blank_profile` |
 | 5. The print step ignored the result of the mark | The mark's result decides: a refused mark is an error only when the prescription is still unprinted | `PrescriptionServiceTests.FR_RX_002_a_print_that_loses_its_lines_to_a_removal_is_refused` |
