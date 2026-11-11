@@ -12,7 +12,9 @@ public sealed class AppointmentRepository(PatientManagementDbContext db) : IAppo
     private const string NoShow = "No-show";
 
     public Task<Appointment?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
-        db.Appointments.SingleOrDefaultAsync(appointment => appointment.Id == id, cancellationToken);
+        db.Appointments
+            .Include(appointment => appointment.Patient)
+            .SingleOrDefaultAsync(appointment => appointment.Id == id, cancellationToken);
 
     public async Task<IReadOnlyList<Appointment>> GetDailyAsync(DateOnly date, CancellationToken cancellationToken = default)
     {
@@ -44,8 +46,20 @@ public sealed class AppointmentRepository(PatientManagementDbContext db) : IAppo
     public async Task AddAsync(Appointment appointment, CancellationToken cancellationToken = default)
     {
         db.Appointments.Add(appointment);
-        await db.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            await db.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException exception) when (IsUniqueViolation(exception))
+        {
+            throw new SlotTakenException(exception);
+        }
     }
+
+    // SQL Server error 2601 (unique index) and 2627 (unique constraint).
+    private static bool IsUniqueViolation(DbUpdateException exception) =>
+        exception.InnerException is Microsoft.Data.SqlClient.SqlException { Number: 2601 or 2627 };
 
     public async Task UpdateAsync(Appointment appointment, CancellationToken cancellationToken = default)
     {

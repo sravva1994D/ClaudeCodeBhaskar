@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PatientManagement.Data.Abstractions;
 using PatientManagement.Data.Entities;
 using PatientManagement.Data.Repositories;
 using PatientManagement.IntegrationTests.Fixtures;
@@ -130,6 +131,18 @@ public class AppointmentRepositoryTests(TestDatabaseFixture fixture) : IAsyncLif
         await using var reader = fixture.CreateContext();
         var saved = await reader.Appointments.SingleAsync();
         Assert.Equal(NineAm, saved.StartTime);
+    }
+
+    [Fact]
+    public async Task FR_APT_001_a_second_live_appointment_in_the_same_slot_raises_slot_taken()
+    {
+        var patientId = await AddPatientAsync("Test Anna Example", "5550101");
+        await SeedAsync(Appt(patientId, NineAm));
+
+        await using var context = fixture.CreateContext();
+        var repository = new AppointmentRepository(context);
+
+        await Assert.ThrowsAsync<SlotTakenException>(() => repository.AddAsync(Appt(patientId, NineAm)));
     }
 
     [Fact]
