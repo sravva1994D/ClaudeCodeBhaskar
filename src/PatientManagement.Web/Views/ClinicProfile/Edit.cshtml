@@ -1,0 +1,53 @@
+@model PatientManagement.Web.ViewModels.ClinicProfile.ClinicProfileFormViewModel
+@{
+    ViewData["Title"] = "Clinic details";
+}
+
+<h1 class="h3 mb-1">Clinic details</h1>
+<p class="text-muted mb-4">
+    These details print at the top of each prescription. A blank detail prints with a notice that the clinic details are incomplete.
+</p>
+
+@if (TempData["Message"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+<form method="post" asp-controller="ClinicProfile" asp-action="Edit" class="row g-3" style="max-width: 40rem;">
+    <div class="col-12">
+        <label asp-for="ClinicName" class="form-label">Clinic name</label>
+        <input asp-for="ClinicName" class="form-control" />
+        <span asp-validation-for="ClinicName" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Address" class="form-label">Address</label>
+        <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <label asp-for="Phone" class="form-label">Phone</label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+
+    <div class="col-12 col-md-6">
+        <label asp-for="RegistrationNumber" class="form-label">Registration number</label>
+        <input asp-for="RegistrationNumber" class="form-control" />
+        <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="DoctorName" class="form-label">Doctor name</label>
+        <input asp-for="DoctorName" class="form-control" />
+        <span asp-validation-for="DoctorName" class="text-danger"></span>
+    </div>
+
+    <div class="col-12 d-flex flex-wrap gap-3 align-items-center">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-controller="Home" asp-action="Index">Back to home</a>
+    </div>
+</form>
