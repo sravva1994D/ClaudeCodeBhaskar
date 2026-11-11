@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M4 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/09-Module-4-Plan.md` (approved 2026-11-11 with decisions D-M4-1 to D-M4-9)
-**Status:** **Ready for Project Owner review.** Automated tests pass. Browser checks in §4 are pending. Not yet approved.
+**Status:** **Approved by the Project Owner, 2026-11-11.** Automated tests pass. Browser checks in §4 were not reported before approval and are still to be recorded. Items 1 and 7 in §6 remain open.
 
 ---
 
