@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M5 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/11-Module-5-Plan.md` (approved 2026-11-11; decisions D-M5-1 to D-M5-8)
-**Status:** **Awaiting the Project Owner's browser checks (§4) and approval (§9).** Automated tests pass. Open items are in §6.
+**Status:** Browser checks passed (§4, 15 of 15, Chrome 157.0.8103.51). Awaiting the Project Owner's approval (§9). Item 8 in §6 is still open.
 
 ---
 
@@ -36,13 +36,13 @@ FR-VIT-001, FR-CMP-001, FR-DIA-001, FR-HIS-001 and FR-APT-003 were not changed i
 
 ## 3. Test Results
 
-Final run after step 6 (`e9bb4e4`). Step 7 changes documentation only.
+Run after step 6 (`e9bb4e4`), then after the review fixes (`5d6f62c`) and the Project Owner changes (`07c5971` and the HTTPS change in this commit).
 
 | Check | Result |
 |---|---|
 | Build (`dotnet build PatientManagement.sln --no-incremental`) | 0 errors, 0 warnings |
-| Unit tests | 336 passed, 0 failed |
-| Integration tests | 253 passed, 0 failed |
+| Unit tests | 338 passed, 0 failed (after the D-M5-9 and D-M5-10 changes) |
+| Integration tests | 258 passed, 0 failed (after the D-M5-9 and D-M5-10 changes) |
 
 Module 4 counts were 305 unit and 202 integration. Module 5 added 31 unit and 51 integration tests.
 
@@ -58,23 +58,23 @@ Use a patient from Module 4 with a visit that has vitals and a diagnosis, or sta
 
 | # | Check | Expected | Result |
 |---|---|---|---|
-| 1 | Menu → **Clinic details**. Leave all fields blank; **Save** | Refused: "Clinic name is required." and the same for each empty field. Nothing saved. Then fill all five fields and **Save**: "Clinic details saved." | Pending |
-| 2 | Open the consultation screen for a visit; in **Medicines**, enter a name only for line 1 and name + dosage for line 2; **Save medicines** | "Medicines saved." Both lines shown in the order entered | Pending |
-| 3 | Add a medicine row with **Add medicine**, enter only a dosage, **Save medicines** | "Line N: enter the medicine name." beside that row. Nothing saved; the typed values stay | Pending |
-| 4 | **Remove** a row; **Save medicines** | The removed row is gone after the save; the others keep their order | Pending |
-| 5 | Enter complaints, diagnosis and vitals; **Save medicines** | Visit values stay as typed (not lost); message "Medicines saved." | Pending |
-| 6 | Visit detail for the visit (from the profile → **Visit history** → **Open**) | Medicines listed; "Not printed yet."; **Print prescription** button | Pending |
-| 7 | Click **Print prescription** | A4 sheet: clinic header with placeholder logo, patient name and code, date of birth, gender, visit time, vitals, diagnosis, medicines table, doctor name, registration number, signature line. Toolbar hidden in print. Clinic details were saved in full (check 1), so the sheet shows no incomplete notice | Pending |
-| 8 | On the sheet, click **Print** | Browser print dialog opens; toolbar line says "Printed on …". Cancel the dialog is fine | Pending |
-| 9 | In the print dialog, check Print preview | One A4 page for this data; margins about 15 mm; no toolbar; no page cut through the medicines table | Pending |
-| 10 | **Save as PDF** from the print dialog (SC-004). Open the saved PDF | The PDF shows the same content as the sheet | Pending |
-| 11 | Click **Print** again on the sheet | Works; "Printed on …" keeps the first time | Pending |
-| 12 | Back to the visit (**Back to visit**) | Visit and medicine sections are greyed out; a note says the prescription is printed and the page is read-only; saving has no effect | Pending |
-| 13 | Start a walk-in consultation with no medicine. Note its visit number from the address bar, then open `/Prescriptions/Print/<number>` | Redirected back to the visit with "Add at least one medicine before printing." | Pending |
-| 14 | Open visit detail for check 13's visit | "No medicines recorded." and no print link | Pending |
-| 15 | Visit history shows the printed visit; open it | "Printed on …" shown with the medicines | Pending |
+| 1 | Menu → **Clinic details**. Leave all fields blank; **Save** | Refused: "Clinic name is required." and the same for each empty field. Nothing saved. Then fill all five fields and **Save**: "Clinic details saved." | Passed |
+| 2 | Open the consultation screen for a visit; in **Medicines**, enter a name only for line 1 and name + dosage for line 2; **Save medicines** | "Medicines saved." Both lines shown in the order entered | Passed |
+| 3 | Add a medicine row with **Add medicine**, enter only a dosage, **Save medicines** | "Line N: enter the medicine name." beside that row. Nothing saved; the typed values stay | Passed |
+| 4 | **Remove** a row; **Save medicines** | The removed row is gone after the save; the others keep their order | Passed |
+| 5 | Enter complaints, diagnosis and vitals; **Save medicines** | Visit values stay as typed (not lost); message "Medicines saved." | Passed |
+| 6 | Visit detail for the visit (from the profile → **Visit history** → **Open**) | Medicines listed; "Not printed yet."; **Print prescription** button | Passed |
+| 7 | Click **Print prescription** | A4 sheet: clinic header with placeholder logo, patient name and code, date of birth, gender, visit time, vitals, diagnosis, medicines table, doctor name, registration number, signature line. Toolbar hidden in print. Clinic details were saved in full (check 1), so the sheet shows no incomplete notice | Passed |
+| 8 | On the sheet, click **Print** | Browser print dialog opens; toolbar line says "Printed on …". Cancel the dialog is fine | Passed |
+| 9 | In the print dialog, check Print preview | One A4 page for this data; margins about 15 mm; no toolbar; no page cut through the medicines table | Passed |
+| 10 | **Save as PDF** from the print dialog (SC-004). Open the saved PDF | The PDF shows the same content as the sheet | Passed |
+| 11 | Click **Print** again on the sheet | Works; "Printed on …" keeps the first time | Passed |
+| 12 | Back to the visit (**Back to visit**) | Visit and medicine sections are greyed out; a note says the prescription is printed and the page is read-only; saving has no effect | Passed |
+| 13 | Start a walk-in consultation with no medicine. Note its visit number from the address bar, then open `/Prescriptions/Print/<number>` | Redirected back to the visit with "Add at least one medicine before printing." | Passed |
+| 14 | Open visit detail for check 13's visit | "No medicines recorded." and no print link | Passed |
+| 15 | Visit history shows the printed visit; open it | "Printed on …" shown with the medicines | Passed |
 
-Browser for this run (PDR-28): ______ (record name and version). Result line: ______ of 15 checks passed.
+Browser for this run (PDR-28): Chrome 157.0.8103.51. Result line: 15 of 15 checks passed (Project Owner, 2026-11-11).
 
 Notes for the checks:
 - Check 8: some browsers block a print dialog that opens without a click. The dialog is opened after the page loads from the Print click. If it does not open, report the browser name and version; the Print button can be clicked again.
@@ -92,6 +92,7 @@ Notes for the checks:
 | D-M5-5 print flow | The view is read-only (GET). The Print button posts (marks printed once), shows the same view, and opens the print dialog. Reprint is allowed | Plan §4; `PrescriptionsController`; `PrescriptionPrintTests` |
 | D-M5-6 clinic header not complete | **Superseded by D-M5-9.** Was: printing allowed with a notice. The profile row is still created blank on first read, and the print notice still shows for a header never saved | Plan §4; `ClinicProfileService`; `PrescriptionPrintTests` |
 | D-M5-9 clinic header required (Project Owner, 2026-11-11) | All five header fields are required on save; a save with any blank field is refused with "<field> is required." Column lengths still apply. Restores the original PDR-15 rule | `ClinicProfileValidator`; `ClinicProfileServiceTests`; `ClinicProfilePagesTests` |
+| D-M5-10 HTTPS redirect in Development (Project Owner, 2026-11-11) | The HTTPS redirect is applied outside Development only. Plain HTTP on localhost in Development, as PDR-21 allows; removes the redirect warning | `src/PatientManagement.Web/Program.cs`; PDR-21 amendment in `17-` |
 | D-M5-7 logo | Static placeholder image (`wwwroot/img/clinic-logo-placeholder.svg`); no upload | Plan §4 |
 | D-M5-8 atomic save | Part 1 built: the medicine replace is one transaction. **Part 2 not built:** the visit text and vitals are still two saves | §6 item 1 |
 
@@ -106,7 +107,7 @@ Decisions made during the build, not in the plan:
 |---|---|---|---|
 | 1 | D-M5-8 part 2: the visit text and the vitals are saved in two writes | If the second write fails, the text is kept and the vitals are not. As in Module 4 item 1 | Fixed after code review (§10): the visit text, the vitals and the printed check are one save |
 | 2 | Edits to a finished visit are still allowed until print (Module 4 open decision 3) | D-M5-4 keeps Finish open to edits; only print locks | Project Owner to confirm D-M5-4 as the answer to Module 4 decision 3, and record it in `17-` |
-| 3 | HTTPS redirect warning in Development (Module 1 item) | Log noise on plain HTTP | Project Owner decision still pending |
+| 3 | HTTPS redirect warning in Development (Module 1 item) | Log noise on plain HTTP | **Fixed 2026-11-11** (D-M5-10): the redirect is applied outside Development only |
 | 4 | Archive restore for appointments (Module 3 item 7) | Not decided | Project Owner decision still pending |
 | 5 | Walk-ins: no limit on open walk-ins (D-M4-2) | A patient can have several open walk-in visits | BRD silent; accepted |
 | 6 | Print layout not previewed by the author | Page breaks may differ from the plan | Check 9 |

@@ -34,7 +34,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Plain HTTP is allowed on localhost in Development (PDR-21). Redirecting there only logs a warning,
+// because no HTTPS port is configured for the local profile. Other environments keep the redirect.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseRouting();
 
 app.UseAuthentication();
