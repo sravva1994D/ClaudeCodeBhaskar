@@ -11,7 +11,10 @@ namespace PatientManagement.Web.Controllers;
 
 // The consultation screen and its actions (SCR-11; Documentation/02-Planning/09-Controller-Design.md rows 19, 20, 21, 31).
 // The controller holds no rules. ConsultationService decides.
-public class ConsultationsController(IConsultationService consultations, TimeProvider timeProvider) : Controller
+public class ConsultationsController(
+    IConsultationService consultations,
+    IPrescriptionService prescriptions,
+    TimeProvider timeProvider) : Controller
 {
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -36,8 +39,15 @@ public class ConsultationsController(IConsultationService consultations, TimePro
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
     {
         var result = await consultations.GetAsync(id, cancellationToken);
+        if (!result.IsSuccess)
+        {
+            return NotFound();
+        }
 
-        return result.IsSuccess ? View(ToForm(result.Value!)) : NotFound();
+        var model = ConsultationForms.FromDto(result.Value!);
+        await ConsultationForms.ApplyPrescriptionAsync(model, id, prescriptions, cancellationToken);
+
+        return View(model);
     }
 
     [HttpPost]
@@ -93,43 +103,16 @@ public class ConsultationsController(IConsultationService consultations, TimePro
         return RedirectToAction(nameof(Edit), new { id });
     }
 
-    private static ConsultationFormViewModel ToForm(ConsultationDto visit) => new()
-    {
-        Id = visit.Id,
-        PatientId = visit.PatientId,
-        PatientName = visit.PatientName,
-        PatientCode = visit.PatientCode,
-        AppointmentId = visit.AppointmentId,
-        VisitDateTime = visit.VisitDateTime,
-        IsFinished = visit.IsFinished,
-        Complaints = visit.Complaints,
-        Diagnosis = visit.Diagnosis,
-        TemperatureC = visit.Vitals?.TemperatureC,
-        SystolicMmHg = visit.Vitals?.SystolicMmHg,
-        DiastolicMmHg = visit.Vitals?.DiastolicMmHg,
-        PulseBpm = visit.Vitals?.PulseBpm
-    };
-
     private static ConsultationSaveInput ToInput(ConsultationFormViewModel model) => new(
         model.Complaints,
         model.Diagnosis,
         new VitalsInput(model.TemperatureC, model.SystolicMmHg, model.DiastolicMmHg, model.PulseBpm));
 
-    // Re-reads the visit so the header is shown again after a refused save. The entered values stay as they were.
+    // Re-reads the header and the prescription state so the page is shown again after a refused save. The entered values stay as they were.
     private async Task<ConsultationFormViewModel> WithHeaderAsync(
         ConsultationFormViewModel model, int id, CancellationToken cancellationToken)
     {
-        var visit = await consultations.GetAsync(id, cancellationToken);
-        if (visit.IsSuccess)
-        {
-            var header = ToForm(visit.Value!);
-            model.PatientId = header.PatientId;
-            model.PatientName = header.PatientName;
-            model.PatientCode = header.PatientCode;
-            model.AppointmentId = header.AppointmentId;
-            model.VisitDateTime = header.VisitDateTime;
-            model.IsFinished = header.IsFinished;
-        }
+        await ConsultationForms.RefreshAsync(model, id, consultations, prescriptions, cancellationToken);
 
         return model;
     }

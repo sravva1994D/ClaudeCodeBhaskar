@@ -1,7 +1,10 @@
 @using System.Globalization
+@using PatientManagement.Web.ViewModels.Prescriptions
 @model PatientManagement.Web.ViewModels.Consultations.ConsultationFormViewModel
 @{
     ViewData["Title"] = "Consultation";
+    var locked = Model.PrescriptionIsPrinted;
+    var medicineRows = Model.Medicines.Count == 0 ? new List<MedicineLineFormModel> { new MedicineLineFormModel() } : Model.Medicines;
 }
 
 <h1 class="h3 mb-1">Consultation</h1>
@@ -35,51 +38,80 @@
     </div>
 }
 
+@if (locked)
+{
+    <div class="alert alert-info" role="status">This prescription has been printed. The visit and its medicines are read-only.</div>
+}
+
 <form method="post" asp-controller="Consultations" asp-action="Edit" asp-route-id="@Model.Id">
-    <fieldset class="mb-4">
-        <legend class="form-label fs-6">Vitals (all four, or none)</legend>
-        <div class="row g-3">
-            <div class="col-6 col-md-3">
-                <label asp-for="TemperatureC" class="form-label">Temperature (°C)</label>
-                <input asp-for="TemperatureC" type="number" step="0.1" min="0" class="form-control" />
-                <span asp-validation-for="TemperatureC" class="text-danger"></span>
+    <fieldset disabled="@locked" class="border-0 p-0 m-0">
+        <fieldset class="mb-4">
+            <legend class="form-label fs-6">Vitals (all four, or none)</legend>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <label asp-for="TemperatureC" class="form-label">Temperature (°C)</label>
+                    <input asp-for="TemperatureC" type="number" step="0.1" min="0" class="form-control" />
+                    <span asp-validation-for="TemperatureC" class="text-danger"></span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label asp-for="SystolicMmHg" class="form-label">Systolic (mmHg)</label>
+                    <input asp-for="SystolicMmHg" type="number" min="0" class="form-control" />
+                    <span asp-validation-for="SystolicMmHg" class="text-danger"></span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label asp-for="DiastolicMmHg" class="form-label">Diastolic (mmHg)</label>
+                    <input asp-for="DiastolicMmHg" type="number" min="0" class="form-control" />
+                    <span asp-validation-for="DiastolicMmHg" class="text-danger"></span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <label asp-for="PulseBpm" class="form-label">Pulse (bpm)</label>
+                    <input asp-for="PulseBpm" type="number" min="0" class="form-control" />
+                    <span asp-validation-for="PulseBpm" class="text-danger"></span>
+                </div>
             </div>
-            <div class="col-6 col-md-3">
-                <label asp-for="SystolicMmHg" class="form-label">Systolic (mmHg)</label>
-                <input asp-for="SystolicMmHg" type="number" min="0" class="form-control" />
-                <span asp-validation-for="SystolicMmHg" class="text-danger"></span>
-            </div>
-            <div class="col-6 col-md-3">
-                <label asp-for="DiastolicMmHg" class="form-label">Diastolic (mmHg)</label>
-                <input asp-for="DiastolicMmHg" type="number" min="0" class="form-control" />
-                <span asp-validation-for="DiastolicMmHg" class="text-danger"></span>
-            </div>
-            <div class="col-6 col-md-3">
-                <label asp-for="PulseBpm" class="form-label">Pulse (bpm)</label>
-                <input asp-for="PulseBpm" type="number" min="0" class="form-control" />
-                <span asp-validation-for="PulseBpm" class="text-danger"></span>
-            </div>
+        </fieldset>
+
+        <div class="mb-3">
+            <label asp-for="Complaints" class="form-label">Complaints</label>
+            <textarea asp-for="Complaints" class="form-control" rows="3"></textarea>
         </div>
+
+        <div class="mb-4">
+            <label asp-for="Diagnosis" class="form-label">Diagnosis</label>
+            <textarea asp-for="Diagnosis" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="d-flex flex-wrap gap-3 align-items-center mb-5">
+            <button type="submit" class="btn btn-primary">Save</button>
+            @if (Model.Warnings.Count > 0)
+            {
+                <button type="submit" name="ConfirmWarnings" value="true" class="btn btn-warning">Confirm and save</button>
+            }
+            <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">Back to patient</a>
+        </div>
+
+        <section aria-labelledby="medicines-heading" class="border-top pt-4">
+            <h2 id="medicines-heading" class="h5">Medicines</h2>
+            <p class="text-muted small">Only the medicine name is required. A prescription needs at least one medicine before it can be printed.</p>
+
+            <div id="medicine-rows">
+                @for (var index = 0; index < medicineRows.Count; index++)
+                {
+                    @await Html.PartialAsync("~/Views/Consultations/_MedicineRow.cshtml", new MedicineRowViewModel(index, medicineRows[index], locked))
+                }
+            </div>
+
+            <template id="medicine-row-template">
+                @await Html.PartialAsync("~/Views/Consultations/_MedicineRow.cshtml", new MedicineRowViewModel(0, new MedicineLineFormModel(), locked))
+            </template>
+
+            <div class="d-flex flex-wrap gap-3 align-items-center">
+                <button type="button" id="add-medicine" class="btn btn-outline-secondary">Add medicine</button>
+                <button type="submit" class="btn btn-primary"
+                        formaction="@Url.Action("SaveItems", "Prescriptions", new { consultationId = Model.Id })">Save medicines</button>
+            </div>
+        </section>
     </fieldset>
-
-    <div class="mb-3">
-        <label asp-for="Complaints" class="form-label">Complaints</label>
-        <textarea asp-for="Complaints" class="form-control" rows="3"></textarea>
-    </div>
-
-    <div class="mb-4">
-        <label asp-for="Diagnosis" class="form-label">Diagnosis</label>
-        <textarea asp-for="Diagnosis" class="form-control" rows="3"></textarea>
-    </div>
-
-    <div class="d-flex flex-wrap gap-3 align-items-center">
-        <button type="submit" class="btn btn-primary">Save</button>
-        @if (Model.Warnings.Count > 0)
-        {
-            <button type="submit" name="ConfirmWarnings" value="true" class="btn btn-warning">Confirm and save</button>
-        }
-        <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">Back to patient</a>
-    </div>
 </form>
 
 @if (!Model.IsFinished)
@@ -88,3 +120,37 @@
         <button type="submit" class="btn btn-outline-success">Finish visit</button>
     </form>
 }
+
+<script>
+    (function () {
+        var rows = document.getElementById('medicine-rows');
+        var template = document.getElementById('medicine-row-template');
+        var add = document.getElementById('add-medicine');
+        if (!rows || !template || !add) {
+            return;
+        }
+
+        // The server reads medicine rows by position, so the field names must run 0 to n-1 after every change.
+        function renumber() {
+            rows.querySelectorAll('.medicine-row').forEach(function (row, index) {
+                row.querySelectorAll('[name]').forEach(function (field) {
+                    field.name = field.name.replace(/^Medicines\[[^\]]*\]/, 'Medicines[' + index + ']');
+                });
+            });
+        }
+
+        add.addEventListener('click', function () {
+            rows.appendChild(template.content.firstElementChild.cloneNode(true));
+            renumber();
+            rows.lastElementChild.querySelector('input').focus();
+        });
+
+        rows.addEventListener('click', function (event) {
+            var button = event.target.closest('.remove-medicine');
+            if (button) {
+                button.closest('.medicine-row').remove();
+                renumber();
+            }
+        });
+    })();
+</script>

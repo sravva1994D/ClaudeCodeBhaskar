@@ -209,6 +209,22 @@ public class PrescriptionServiceTests
         Assert.False(result.Value!.Clinic.IsComplete);
     }
 
+    [Fact]
+    public async Task FR_RX_001_a_visit_with_no_prescription_has_none_to_show()
+    {
+        Assert.Null(await service.GetAsync(11));
+    }
+
+    [Fact]
+    public async Task FR_RX_001_the_saved_medicines_are_returned_in_order()
+    {
+        prescriptions.GetByConsultationAsync(11, Arg.Any<CancellationToken>()).Returns(Stored(false, "Test First", "Test Second"));
+
+        var result = await service.GetAsync(11);
+
+        Assert.Equal(["Test First", "Test Second"], result!.Lines.Select(line => line.Name));
+    }
+
     private static Consultation Visit() => new()
     {
         Id = 11,

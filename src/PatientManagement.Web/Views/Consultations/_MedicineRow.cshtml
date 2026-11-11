@@ -1,0 +1,43 @@
+@model PatientManagement.Web.ViewModels.Prescriptions.MedicineRowViewModel
+@{
+    var prefix = $"Medicines[{Model.Index}]";
+    var line = Model.Line;
+}
+
+<div class="medicine-row border rounded p-3 mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-12 col-md-4">
+            <label class="form-label" for="@($"{prefix}-name")">Medicine name (required)</label>
+            <input id="@($"{prefix}-name")" name="@($"{prefix}.Name")" value="@line.Name" class="form-control" />
+            @Html.ValidationMessage($"{prefix}.Name", null, new { @class = "text-danger" })
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label" for="@($"{prefix}-dosage")">Dosage</label>
+            <input id="@($"{prefix}-dosage")" name="@($"{prefix}.Dosage")" value="@line.Dosage" class="form-control" />
+            @Html.ValidationMessage($"{prefix}.Dosage", null, new { @class = "text-danger" })
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label" for="@($"{prefix}-frequency")">Frequency</label>
+            <input id="@($"{prefix}-frequency")" name="@($"{prefix}.Frequency")" value="@line.Frequency" class="form-control" />
+            @Html.ValidationMessage($"{prefix}.Frequency", null, new { @class = "text-danger" })
+        </div>
+        <div class="col-6 col-md-2">
+            <label class="form-label" for="@($"{prefix}-duration")">Duration</label>
+            <input id="@($"{prefix}-duration")" name="@($"{prefix}.Duration")" value="@line.Duration" class="form-control" />
+            @Html.ValidationMessage($"{prefix}.Duration", null, new { @class = "text-danger" })
+        </div>
+        <div class="col-6 col-md-2 text-md-end">
+            @if (!Model.Locked)
+            {
+                <button type="button" class="btn btn-outline-danger btn-sm remove-medicine">Remove</button>
+            }
+        </div>
+    </div>
+    <div class="row g-2 mt-1">
+        <div class="col-12">
+            <label class="form-label" for="@($"{prefix}-instructions")">Instructions</label>
+            <input id="@($"{prefix}-instructions")" name="@($"{prefix}.Instructions")" value="@line.Instructions" class="form-control" />
+            @Html.ValidationMessage($"{prefix}.Instructions", null, new { @class = "text-danger" })
+        </div>
+    </div>
+</div>

@@ -15,6 +15,9 @@ public interface IPrescriptionService
     // Printing again returns the printed state and changes nothing (PDR-14).
     Task<Result<PrescriptionPrintDto>> MarkPrintedAsync(int consultationId, CancellationToken cancellationToken = default);
 
+    // The visit's prescription with its lines, or null when none has been saved yet. Read-only.
+    Task<PrescriptionDto?> GetAsync(int consultationId, CancellationToken cancellationToken = default);
+
     // The print view for a visit. Read-only.
     Task<Result<PrescriptionPrintDto>> GetPrintModelAsync(int consultationId, CancellationToken cancellationToken = default);
 }

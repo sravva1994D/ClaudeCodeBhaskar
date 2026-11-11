@@ -1,3 +1,5 @@
+using PatientManagement.Web.ViewModels.Prescriptions;
+
 namespace PatientManagement.Web.ViewModels.Consultations;
 
 // The consultation screen (SCR-11). Form fields are nullable so the service's messages show, not MVC's required messages
@@ -34,4 +36,10 @@ public sealed class ConsultationFormViewModel
     public bool ConfirmWarnings { get; set; }
 
     public IReadOnlyList<string> Warnings { get; set; } = [];
+
+    // The medicine rows. They are posted with the visit, so a refused save shows what was typed (FR-RX-001).
+    public List<MedicineLineFormModel> Medicines { get; set; } = [];
+
+    // True once the prescription is printed. The page is then read-only (FR-RX-002 AC-4).
+    public bool PrescriptionIsPrinted { get; set; }
 }

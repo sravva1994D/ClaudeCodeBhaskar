@@ -86,6 +86,13 @@ public sealed class PrescriptionService(
             PrescriptionMapper.ToPrint(visit, patient, prescription, await ClinicAsync(cancellationToken)));
     }
 
+    public async Task<PrescriptionDto?> GetAsync(int consultationId, CancellationToken cancellationToken = default)
+    {
+        var prescription = await prescriptions.GetByConsultationAsync(consultationId, cancellationToken);
+
+        return prescription is null ? null : PrescriptionMapper.ToDto(prescription);
+    }
+
     public async Task<Result<PrescriptionPrintDto>> GetPrintModelAsync(int consultationId, CancellationToken cancellationToken = default)
     {
         var context = await LoadPrintContextAsync(consultationId, cancellationToken);
