@@ -11,6 +11,9 @@ public class Appointment
 
     public int PatientId { get; set; }
 
+    // Loaded for the daily list, which shows the patient's name and code (FR-APT-002).
+    public Patient Patient { get; set; } = null!;
+
     // Local clinic time, no UTC conversion (CLAUDE §6). Must sit on the slot grid (PDR-06), checked in the Business layer.
     public DateTime StartTime { get; set; }
 

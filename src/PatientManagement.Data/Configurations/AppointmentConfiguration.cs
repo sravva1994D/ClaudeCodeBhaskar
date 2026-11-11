@@ -19,7 +19,7 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
 
         builder.HasKey(appointment => appointment.Id);
 
-        builder.HasOne<Patient>()
+        builder.HasOne(appointment => appointment.Patient)
             .WithMany()
             .HasForeignKey(appointment => appointment.PatientId)
             .OnDelete(DeleteBehavior.Restrict);
