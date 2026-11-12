@@ -29,8 +29,8 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 | FR-SRC-001 | Must | Top bar; SCR-03; SCR-04 | Patients.Search (7) | PatientService.SearchAsync | IPatientRepository.SearchAsync | Patients | TC-FR-SRC-001-1 | WP-3.5, 4.5 | M2, M3 | 23 |
 | FR-SRC-002 | Should | SCR-03 | Home.Index (1) | PatientService.GetRecentAsync | IConsultationRepository.GetRecentPatientVisitsAsync; IPatientRepository.GetByIdsAsync | Consultations, Patients | TC-FR-SRC-002-1, -2 (implemented and approved, M6; browser Chrome 157.0.8103.51, see `13-` §4) | WP-7.2 | M6 | 11 |
 | FR-SRC-003 | Should | SCR-06, SCR-07, SCR-08 | Patients.Details (10); Visits.Index (13) | PatientService.GetAsync; ConsultationService.ListVisitsAsync | IPatientRepository, IConsultationRepository | Patients, Consultations | TC-FR-SRC-003-1 (implemented, M4) | WP-3.4, 5.5 | M2, M4 | — |
-| FR-EXP-001 | Must | SCR-13 | Export.PatientCsv (26) | ExportService.BuildCsvAsync | IConsultationRepository.ListForExportAsync | Patients, Consultations, VitalSigns, Prescriptions, PrescriptionItems | TC-FR-EXP-001-1, -2 | WP-8.1, 8.2 | M7 | 17 |
-| FR-EXP-002 | Must | SCR-13 | Export.PatientPrint (27) | ExportService.BuildPrintViewAsync | IConsultationRepository.ListForExportAsync | Patients, Consultations, VitalSigns, Prescriptions, PrescriptionItems | TC-FR-EXP-002-1, -2 | WP-8.1, 8.3 | M7 | 17, 18 |
+| FR-EXP-001 | Must | SCR-13 | Export.PatientCsv (26) | ExportService.BuildCsvAsync | IConsultationRepository.ListForExportAsync | Patients, Consultations, VitalSigns, Prescriptions, PrescriptionItems | TC-FR-EXP-001-1, -2, -3 (implemented, M7; browser checks pending, review package `15-`) | WP-8.1, 8.2 | M7 | 17 |
+| FR-EXP-002 | Must | SCR-13 | Export.PatientPrint (27) | ExportService.BuildPrintViewAsync | IConsultationRepository.ListForExportAsync | Patients, Consultations, VitalSigns, Prescriptions, PrescriptionItems | TC-FR-EXP-002-1, -2 (implemented, M7; browser checks pending, review package `15-`) | WP-8.1, 8.3 | M7 | 17, 18 |
 
 ## 2. Non-Functional Requirements
 
@@ -51,7 +51,7 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 | SC-001 | Must (verification) | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | Consultations, VitalSigns, Prescriptions | Timed rehearsal | WP-9.2 | M8 | — |
 | SC-002 | Must (verification) | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService, VisitService | Patients, Consultations | Timed search and history | WP-3.6, 9.1 | M2, M8 | 30 |
 | SC-004 | Must (verification) | SCR-12 | Prescriptions.Print (23, 24) | PrescriptionService.MarkPrintedAsync | Prescriptions | Browser checks 7 to 11 passed (Chrome 157.0.8103.51, A4 print and Save as PDF), review package §4; approved M5 | WP-6.4 | M5 | 16 |
-| SC-005 | Must (verification) | SCR-13 | Export.PatientCsv (26); Export.PatientPrint (27) | ExportService | — | File open check | WP-8.2, 8.3 | M7 | 17, 18 |
+| SC-005 | Must (verification) | SCR-13 | Export.PatientCsv (26); Export.PatientPrint (27) | ExportService | — | Automated content and refusal checks done (M7); file open and Save as PDF checks pending (review package `15-` §4, checks 3 to 9, 13 to 15) | WP-8.2, 8.3 | M7 | 17, 18 |
 
 ## 4. Deferred (not designed in Phase 1)
 
