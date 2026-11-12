@@ -66,6 +66,28 @@ ORDER BY COUNT(c.Id) DESC;
 - **Guideline:** page load about 2 s; search and history 2 to 5 s (BRD, localhost). Guidelines, not an SLA. A miss is recorded as it is, not hidden, and is decided by the Project Owner (D-M8-8).
 - **Close the other applications** that use the browser or the database during the run, and note any that could not be closed.
 
+## 3A. Security and volume checks (step 3, WP-9.4 and WP-9.5)
+
+**Automated run:** build 0 warnings, 0 errors. Unit tests 368 passed, 0 failed. Integration tests 299 passed, 0 failed. The run used the seed data in the development database (§2) to show that no test depends on it; the tests use `PatientManagement_Test`.
+
+| Requirement | Check | Where | Result |
+|---|---|---|---|
+| NFR-SEC-001 (TC-NFR-SEC-001-1) | Protected page redirects to sign-in with a return URL | `Security/AuthorizationTests` | Passed |
+| NFR-SEC-001 (TC-NFR-SEC-001-2) | Wrong password and unknown username give the same generic error | `Account/AccountControllerTests` | Passed |
+| NFR-SEC-001 (TC-NFR-SEC-001-3) | Seed output, logs and repository contain no password | `Setup/SeedUserRunnerTests` | Passed |
+| NFR-SEC-001 | Sign-in cookie: HttpOnly, SameSite Lax, 24-hour expiry, sliding | `Security/AuthorizationTests` (configuration check) | Passed |
+| NFR-SEC-001 | Every POST action checks the anti-forgery token (14 POST actions in 6 controllers) | `Security/AntiForgeryCoverageTests` (new in step 3) | Passed |
+| NFR-SEC-002 (TC-NFR-SEC-002-1) | Stored value is a hash that verifies with the original password and is not the password | `Security/AspNetPasswordHasherTests` | Passed |
+| NFR-SEC-002 | Transport configuration (HTTPS beyond localhost) | Text review, below | Reviewed |
+
+Limits of the security checks:
+- The 24-hour sliding timeout is checked as configuration, not by waiting 24 hours or moving the clock. The expiry itself is not run.
+- The transport review is a reading of `Program.cs`. It is not run beyond localhost (PDR-21). The HTTPS redirect warning in Development is Module 3 review item 5, still open.
+
+Transport review (`src/PatientManagement.Web/Program.cs`): outside Development the app uses the exception handler, HSTS and HTTPS redirection. In Development it serves plain HTTP on localhost (PDR-21), so the HTTPS redirect is not used there.
+
+Volume (NFR-SCL-001): no automated check was added. The check is every list screen with 1,000 patients in the browser. It is recorded with §4 by the Project Owner.
+
 ## 4. Timing results
 
 Record the browser version for each table: Chrome version ______ (from the browser's About page). Machine and OS: ______.
