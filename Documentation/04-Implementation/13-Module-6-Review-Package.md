@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M6 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/12-Module-6-Plan.md` (plan approved in chat 2026-11-12; decisions D-M6-1 to D-M6-7 accepted as recommended)
-**Status:** **Ready for the Project Owner's browser checks (§4).** Automated checks pass. Not yet approved.
+**Status:** Browser checks reported passed by the Project Owner (§4). Browser version and per-check notes not yet recorded. Approval pending: confirm D-M6-8.
 
 ---
 
@@ -58,6 +58,8 @@ Stop the app if it is running, then start it again. Module 6 adds no migration. 
 | 10 | Home page, with a patient who has never had a visit | That patient is not in Recent patients | |
 | 11 | Click a name in Recent patients | Opens that patient's profile | |
 | 12 | Home page with no visits in the database (or a new database) | "No recent patients yet." | |
+
+Owner report: all checks in this table passed (reported in chat). Per-check results and the browser version were not supplied.
 
 Browser used: ______________ (version ______________). Project Owner: ______________ Date: ______________
 
