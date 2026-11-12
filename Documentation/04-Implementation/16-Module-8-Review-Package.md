@@ -1,6 +1,6 @@
 # Module 8 Review Package: Non-Functional Verification
 
-**Status:** Page-load timings recorded (Chrome 157.0.8103.52). Search and history timing and the consultation rehearsal were skipped by Project Owner decision (2026-11-12). The walkthrough (§6), browser matrix (§7A) and volume check are pending. Approval is pending (§8).
+**Status:** Page-load timings recorded (Chrome 157.0.8103.52). Search and history timing and the consultation rehearsal were skipped by Project Owner decision (2026-11-12). The walkthrough (§6) and browser matrix (§7A) were skipped by Project Owner decision (2026-11-12). The volume check is pending. Approval is pending (§8).
 **Plan:** `16-Module-8-Plan.md` (decisions D-M8-1 to D-M8-8, approved 2026-11-12).
 **Requirements:** NFR-PRF-001, NFR-PRF-002, SC-001, SC-002, NFR-SCL-001, NFR-CMP-001, NFR-SEC-002, NFR-USB-001.
 
@@ -171,6 +171,8 @@ The rehearsal adds one visit to a seed patient. The remove script (step 1) delet
 
 ## 6. Usability walkthrough (NFR-USB-001, WP-9.6, TC-NFR-USB-001)
 
+**Status: not run. Skipped by the Project Owner on 2026-11-12.** NFR-USB-001 has no walkthrough result. This is recorded as an owner decision, not as a pass.
+
 Qualitative check. No pass or fail threshold is defined in the BRD (SC-006 is deferred). Record what is seen.
 
 | # | Check | Result | Notes |
@@ -196,6 +198,8 @@ Screen size used: ______ x ______ px. Browser and version: ______.
 Edge is not used for the timings in §4 (D-M8-7). Its checks are in step 4.
 
 ## 7A. Browser matrix checklist (step 4, WP-9.3, NFR-CMP-001)
+
+**Status: not run. Skipped by the Project Owner on 2026-11-12.** No Edge check has been run for Module 8, so NFR-CMP-001 (latest Chrome and Edge, desktop) is not verified in Edge. Chrome results are the earlier module browser checks only. This is recorded as an owner decision.
 
 Run the checks below in both Chrome and Edge (latest desktop versions, PDR-28). Mark each cell Pass, Fail or n/a and add a note for any Fail. The test IDs are the acceptance scenarios in `Documentation/02-Planning/14-Testing-Strategy.md` §4.
 
@@ -241,8 +245,8 @@ Notes on the run:
 | Page load in §4.1 (NFR-PRF-001) | Recorded: all ten page types under 2 s (median) |
 | Search and history in §4.2 (NFR-PRF-002, SC-002) | Not measured (owner decision, 2026-11-12) |
 | Rehearsal in §5 (SC-001) | Not measured (owner decision, 2026-11-12) |
-| Walkthrough in §6 (NFR-USB-001) | Not yet |
-| Browser matrix in §7A (NFR-CMP-001, Chrome and Edge) | Not yet |
+| Walkthrough in §6 (NFR-USB-001) | Not run (owner decision, 2026-11-12) |
+| Browser matrix in §7A (NFR-CMP-001, Chrome and Edge) | Not run (owner decision, 2026-11-12). Edge not verified |
 | Volume on list screens (NFR-SCL-001) | Not yet |
 | Remove seed data (`05-remove-performance-data.sql`) | Not run. Waits for the volume check and the owner's confirmation |
 | Project Owner approval | Pending |
