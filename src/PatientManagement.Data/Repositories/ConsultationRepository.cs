@@ -22,7 +22,73 @@ public sealed class ConsultationRepository(PatientManagementDbContext db) : ICon
         db.Consultations.SingleOrDefaultAsync(consultation => consultation.AppointmentId == appointmentId, cancellationToken);
 
     public async Task<IReadOnlyList<Consultation>> ListByPatientAsync(
+        int patientId, DateOnly? from = null, DateOnly? to = null, CancellationToken cancellationToken = default) =>
+        await VisitsInRange(patientId, from, to)
+            .AsNoTracking()
+            .OrderByDescending(consultation => consultation.VisitDateTime)
+            .ThenByDescending(consultation => consultation.Id)
+            .ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<ExportVisitRow>> ListForExportAsync(
         int patientId, DateOnly? from = null, DateOnly? to = null, CancellationToken cancellationToken = default)
+    {
+        var visits = VisitsInRange(patientId, from, to);
+
+        var rows = await visits
+            .AsNoTracking()
+            .OrderBy(consultation => consultation.VisitDateTime)
+            .ThenBy(consultation => consultation.Id)
+            .Select(consultation => new
+            {
+                consultation.Id,
+                consultation.VisitDateTime,
+                consultation.Complaints,
+                consultation.Diagnosis,
+                consultation.Vitals
+            })
+            .ToListAsync(cancellationToken);
+
+        // Medicines come from the prescriptions of these visits, in display order. Prescriptions have no navigation to
+        // the visit, so they are matched by ConsultationId in a subquery over the same visit filter.
+        var visitIds = visits.Select(consultation => consultation.Id);
+        var medicines = (await db.PrescriptionItems
+                .AsNoTracking()
+                .Where(item => visitIds.Contains(item.Prescription!.ConsultationId))
+                .OrderBy(item => item.Prescription!.ConsultationId)
+                .ThenBy(item => item.SortOrder)
+                .ThenBy(item => item.Id)
+                .Select(item => new
+                {
+                    ConsultationId = item.Prescription!.ConsultationId,
+                    item.Name,
+                    item.Dosage,
+                    item.Frequency,
+                    item.Duration,
+                    item.Instructions
+                })
+                .ToListAsync(cancellationToken))
+            .GroupBy(item => item.ConsultationId)
+            .ToDictionary(
+                group => group.Key,
+                group => (IReadOnlyList<ExportMedicine>)group
+                    .Select(item => new ExportMedicine(item.Name, item.Dosage, item.Frequency, item.Duration, item.Instructions))
+                    .ToList());
+
+        return rows.Select(row => new ExportVisitRow(
+                row.Id,
+                row.VisitDateTime,
+                row.Complaints,
+                row.Diagnosis,
+                row.Vitals?.TemperatureC,
+                row.Vitals?.SystolicMmHg,
+                row.Vitals?.DiastolicMmHg,
+                row.Vitals?.PulseBpm,
+                medicines.TryGetValue(row.Id, out var lines) ? lines : []))
+            .ToList();
+    }
+
+    // The patient's visits whose local day lies in [from, to], both inclusive (FR-HIS-003 AC-2). Null bounds are open.
+    private IQueryable<Consultation> VisitsInRange(int patientId, DateOnly? from, DateOnly? to)
     {
         // The upper bound is the start of the day after to, so the whole to day is included (FR-HIS-003 AC-2).
         // The last day the type can hold has no day after it, so it needs no upper bound (and AddDays would overflow).
@@ -31,14 +97,10 @@ public sealed class ConsultationRepository(PatientManagementDbContext db) : ICon
             ? last.AddDays(1).ToDateTime(TimeOnly.MinValue)
             : (DateTime?)null;
 
-        return await db.Consultations
-            .AsNoTracking()
+        return db.Consultations
             .Where(consultation => consultation.PatientId == patientId)
             .Where(consultation => start == null || consultation.VisitDateTime >= start)
-            .Where(consultation => endExclusive == null || consultation.VisitDateTime < endExclusive)
-            .OrderByDescending(consultation => consultation.VisitDateTime)
-            .ThenByDescending(consultation => consultation.Id)
-            .ToListAsync(cancellationToken);
+            .Where(consultation => endExclusive == null || consultation.VisitDateTime < endExclusive);
     }
 
     public Task<DateTime?> GetLatestVisitTimeAsync(int patientId, CancellationToken cancellationToken = default) =>

@@ -5,6 +5,21 @@ namespace PatientManagement.Data.Abstractions;
 // One patient with the time of their latest visit (FR-SRC-002).
 public sealed record PatientLastVisit(int PatientId, DateTime LastVisit);
 
+// One medicine line of a visit's prescription, in display order (FR-EXP-001, FR-RX-001).
+public sealed record ExportMedicine(string Name, string? Dosage, string? Frequency, string? Duration, string? Instructions);
+
+// One visit with its vitals and medicines, for export (FR-EXP-001, FR-EXP-002). Vitals fields are null when not recorded.
+public sealed record ExportVisitRow(
+    int VisitId,
+    DateTime VisitDateTime,
+    string? Complaints,
+    string? Diagnosis,
+    decimal? TemperatureC,
+    short? SystolicMmHg,
+    short? DiastolicMmHg,
+    short? PulseBpm,
+    IReadOnlyList<ExportMedicine> Medicines);
+
 // Thin access to visits (Documentation/02-Planning/11-Repository-Design.md §2.4).
 // Rules (start, finish, editing) live in the Business layer. Repositories save what they are given.
 public interface IConsultationRepository
@@ -25,6 +40,12 @@ public interface IConsultationRepository
     // The most recently visited patients, latest visit first, at most count (FR-SRC-002, PDR-11).
     // Patients with no visit are not returned.
     Task<IReadOnlyList<PatientLastVisit>> GetRecentPatientVisitsAsync(int count, CancellationToken cancellationToken = default);
+
+    // The visits of one patient for export, oldest first (D-M7-7), with vitals and medicines. The same day rules as
+    // ListByPatientAsync apply (FR-EXP-001 uses the filter of FR-HIS-003). Returns nothing when the patient has no visit
+    // in the range. The service adds the patient's own details.
+    Task<IReadOnlyList<ExportVisitRow>> ListForExportAsync(int patientId, DateOnly? from = null, DateOnly? to = null,
+        CancellationToken cancellationToken = default);
 
     // Adds the visit. When linkedAppointment is given, its status change is saved in the same save,
     // so Start either changes both or neither (Module 4 plan §7).

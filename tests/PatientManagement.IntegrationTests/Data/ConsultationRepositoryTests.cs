@@ -325,6 +325,94 @@ public class ConsultationRepositoryTests(TestDatabaseFixture fixture) : IAsyncLi
         Assert.Equal(120, saved.Vitals!.SystolicMmHg);
     }
 
+    [Fact]
+    public async Task FR_EXP_001_export_lists_visits_oldest_first_with_vitals_and_medicines_in_order()
+    {
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        var later = await SeedVisitAsync(anna, Morning.AddDays(2));
+        var earlier = await SeedVisitWithVitalsAsync(anna, Morning, "Test cough", "Test viral fever");
+        await AddPrescriptionAsync(earlier,
+            new PrescriptionItem { Name = "Test Medicine B", SortOrder = 2 },
+            new PrescriptionItem { Name = "Test Medicine A", Dosage = "500 mg", SortOrder = 1 });
+
+        var rows = await ExportAsync(anna);
+
+        Assert.Equal([earlier, later], rows.Select(r => r.VisitId));
+        Assert.Equal(["Test Medicine A", "Test Medicine B"], rows[0].Medicines.Select(m => m.Name));
+        Assert.Equal("500 mg", rows[0].Medicines[0].Dosage);
+        Assert.Equal((short)120, rows[0].SystolicMmHg);
+        Assert.Equal("Test cough", rows[0].Complaints);
+        Assert.Equal("Test viral fever", rows[0].Diagnosis);
+    }
+
+    [Fact]
+    public async Task FR_EXP_001_export_visit_without_vitals_or_prescription_has_blank_parts()
+    {
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        await SeedVisitAsync(anna, Morning);
+
+        var row = Assert.Single(await ExportAsync(anna));
+
+        Assert.Null(row.TemperatureC);
+        Assert.Null(row.SystolicMmHg);
+        Assert.Null(row.DiastolicMmHg);
+        Assert.Null(row.PulseBpm);
+        Assert.Empty(row.Medicines);
+    }
+
+    [Fact]
+    public async Task FR_EXP_001_export_range_uses_the_visit_day_rule_and_only_this_patient()
+    {
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        var ben = await AddPatientAsync("Test Ben Example", "5550102");
+        await SeedVisitAsync(anna, new DateTime(2026, 11, 30, 23, 59, 0));
+        var first = await SeedVisitAsync(anna, new DateTime(2026, 12, 1, 0, 0, 0));
+        var last = await SeedVisitAsync(anna, new DateTime(2026, 12, 3, 23, 59, 0));
+        await SeedVisitAsync(anna, new DateTime(2026, 12, 4, 0, 0, 0));
+        await SeedVisitAsync(ben, new DateTime(2026, 12, 2, 9, 0, 0));
+
+        var rows = await ExportAsync(anna, new DateOnly(2026, 12, 1), new DateOnly(2026, 12, 3));
+
+        Assert.Equal([first, last], rows.Select(r => r.VisitId));
+    }
+
+    [Fact]
+    public async Task FR_EXP_001_patient_with_no_visits_exports_no_rows()
+    {
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+
+        Assert.Empty(await ExportAsync(anna));
+    }
+
+    private async Task<int> SeedVisitWithVitalsAsync(int patientId, DateTime visitTime, string complaints, string diagnosis)
+    {
+        await using var context = fixture.CreateContext();
+        var visit = new Consultation
+        {
+            PatientId = patientId,
+            VisitDateTime = visitTime,
+            Complaints = complaints,
+            Diagnosis = diagnosis,
+            Vitals = new VitalSign { TemperatureC = 36.8m, SystolicMmHg = 120, DiastolicMmHg = 80, PulseBpm = 72 }
+        };
+        context.Consultations.Add(visit);
+        await context.SaveChangesAsync();
+        return visit.Id;
+    }
+
+    private async Task AddPrescriptionAsync(int visitId, params PrescriptionItem[] items)
+    {
+        await using var context = fixture.CreateContext();
+        context.Prescriptions.Add(new Prescription { ConsultationId = visitId, Items = items.ToList() });
+        await context.SaveChangesAsync();
+    }
+
+    private async Task<IReadOnlyList<ExportVisitRow>> ExportAsync(int patientId, DateOnly? from = null, DateOnly? to = null)
+    {
+        await using var context = fixture.CreateContext();
+        return await new ConsultationRepository(context).ListForExportAsync(patientId, from, to);
+    }
+
     private async Task<int> SeedVisitWithPrintedPrescriptionAsync(int patientId)
     {
         await using var context = fixture.CreateContext();
@@ -375,11 +463,13 @@ public class ConsultationRepositoryTests(TestDatabaseFixture fixture) : IAsyncLi
         return appointment.Id;
     }
 
-    private async Task SeedVisitAsync(int patientId, DateTime visitTime)
+    private async Task<int> SeedVisitAsync(int patientId, DateTime visitTime)
     {
         await using var context = fixture.CreateContext();
-        context.Consultations.Add(new Consultation { PatientId = patientId, VisitDateTime = visitTime });
+        var visit = new Consultation { PatientId = patientId, VisitDateTime = visitTime };
+        context.Consultations.Add(visit);
         await context.SaveChangesAsync();
+        return visit.Id;
     }
 
     private async Task<IReadOnlyList<Consultation>> ListAsync(int patientId)
