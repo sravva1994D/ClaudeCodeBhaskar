@@ -16,33 +16,35 @@
 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
 <form method="post" asp-controller="ClinicProfile" asp-action="Edit" class="row g-3" style="max-width: 40rem;">
+    <p class="form-text col-12 mb-0">Fields marked <span class="text-danger">*</span> are required.</p>
+
     <div class="col-12">
-        <label asp-for="ClinicName" class="form-label">Clinic name</label>
-        <input asp-for="ClinicName" class="form-control" />
+        <label asp-for="ClinicName" class="form-label">Clinic name</label> <span class="text-danger" aria-hidden="true">*</span>
+        <input asp-for="ClinicName" class="form-control" required aria-required="true" />
         <span asp-validation-for="ClinicName" class="text-danger"></span>
     </div>
 
     <div class="col-12">
-        <label asp-for="Address" class="form-label">Address</label>
-        <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+        <label asp-for="Address" class="form-label">Address</label> <span class="text-danger" aria-hidden="true">*</span>
+        <textarea asp-for="Address" class="form-control" rows="2" required aria-required="true"></textarea>
         <span asp-validation-for="Address" class="text-danger"></span>
     </div>
 
     <div class="col-12 col-md-6">
-        <label asp-for="Phone" class="form-label">Phone</label>
-        <input asp-for="Phone" class="form-control" />
+        <label asp-for="Phone" class="form-label">Phone</label> <span class="text-danger" aria-hidden="true">*</span>
+        <input asp-for="Phone" class="form-control" required aria-required="true" />
         <span asp-validation-for="Phone" class="text-danger"></span>
     </div>
 
     <div class="col-12 col-md-6">
-        <label asp-for="RegistrationNumber" class="form-label">Registration number</label>
-        <input asp-for="RegistrationNumber" class="form-control" />
+        <label asp-for="RegistrationNumber" class="form-label">Registration number</label> <span class="text-danger" aria-hidden="true">*</span>
+        <input asp-for="RegistrationNumber" class="form-control" required aria-required="true" />
         <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
     </div>
 
     <div class="col-12">
-        <label asp-for="DoctorName" class="form-label">Doctor name</label>
-        <input asp-for="DoctorName" class="form-control" />
+        <label asp-for="DoctorName" class="form-label">Doctor name</label> <span class="text-danger" aria-hidden="true">*</span>
+        <input asp-for="DoctorName" class="form-control" required aria-required="true" />
         <span asp-validation-for="DoctorName" class="text-danger"></span>
     </div>
 

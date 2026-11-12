@@ -60,8 +60,8 @@ else
                     <tr>
                         <td>@visit.VisitDateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)</td>
                         <td>@(visit.AppointmentId is null ? "Walk-in" : "Appointment")</td>
-                        <td>@(visit.IsFinished ? "Finished" : "In progress")</td>
-                        <td><a asp-controller="Visits" asp-action="Details" asp-route-id="@visit.Id">Open</a></td>
+                        <td><span class="badge @(visit.IsFinished ? "text-bg-success" : "text-bg-warning")">@(visit.IsFinished ? "Finished" : "In progress")</span></td>
+                        <td><a asp-controller="Visits" asp-action="Details" asp-route-id="@visit.Id">Open<span class="visually-hidden"> visit on @visit.VisitDateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)</span></a></td>
                     </tr>
                 }
             </tbody>

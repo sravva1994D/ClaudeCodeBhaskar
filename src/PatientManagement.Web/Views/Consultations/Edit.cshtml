@@ -116,7 +116,8 @@
 
 @if (!Model.IsFinished)
 {
-    <form method="post" asp-controller="Consultations" asp-action="Finish" asp-route-id="@Model.Id" class="mt-4">
+    <form method="post" asp-controller="Consultations" asp-action="Finish" asp-route-id="@Model.Id" class="mt-4"
+          data-confirm="Finish this visit? If it is linked to an appointment, the appointment will be marked Completed.">
         <button type="submit" class="btn btn-outline-success">Finish visit</button>
     </form>
 }

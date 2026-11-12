@@ -12,14 +12,16 @@
 
             <input type="hidden" asp-for="ReturnUrl" />
 
+            <p class="form-text mb-3">Fields marked <span class="text-danger">*</span> are required.</p>
+
             <div class="mb-3">
-                <label asp-for="Username" class="form-label"></label>
-                <input asp-for="Username" class="form-control" autocomplete="username" autofocus required />
+                <label asp-for="Username" class="form-label"></label> <span class="text-danger" aria-hidden="true">*</span>
+                <input asp-for="Username" class="form-control" autocomplete="username" autofocus required aria-required="true" />
             </div>
 
             <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" autocomplete="current-password" required />
+                <label asp-for="Password" class="form-label"></label> <span class="text-danger" aria-hidden="true">*</span>
+                <input asp-for="Password" class="form-control" autocomplete="current-password" required aria-required="true" />
             </div>
 
             <button type="submit" class="btn btn-primary">Sign in</button>

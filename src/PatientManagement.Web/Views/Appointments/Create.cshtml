@@ -14,8 +14,8 @@
 
     <div class="row g-2 align-items-end mb-4">
         <div class="col-auto">
-            <label for="day" class="form-label">Day</label>
-            <input id="day" name="Date" type="date" class="form-control" value="@Model.Date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" />
+            <label for="day" class="form-label">Day</label> <span class="text-danger" aria-hidden="true">*</span>
+            <input id="day" name="Date" type="date" class="form-control" required aria-required="true" value="@Model.Date?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" />
             <span asp-validation-for="Date" class="text-danger d-block"></span>
         </div>
         <div class="col-auto">
@@ -25,7 +25,7 @@
     </div>
 
     <fieldset class="mb-3">
-        <legend class="form-label fs-6">Time (30 minutes)</legend>
+        <legend class="form-label fs-6">Time (30 minutes) <span class="text-danger" aria-hidden="true">*</span></legend>
         <div class="row">
             @foreach (var slot in Model.Slots)
             {

@@ -42,7 +42,7 @@
                         <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@row.Id">@row.FullName</a></td>
                         <td>@row.DateOfBirth.ToString("yyyy-MM-dd")</td>
                         <td>@row.Phone</td>
-                        <td><a asp-controller="Appointments" asp-action="Create" asp-route-patientId="@row.Id">Schedule</a></td>
+                        <td><a asp-controller="Appointments" asp-action="Create" asp-route-patientId="@row.Id">Schedule<span class="visually-hidden"> for @row.FullName</span></a></td>
                     </tr>
                 }
             </tbody>

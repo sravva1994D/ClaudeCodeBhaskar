@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using PatientManagement.Web.Presentation
 @model PatientManagement.Web.ViewModels.Home.HomeViewModel
 @{
     ViewData["Title"] = "Home";
@@ -38,7 +39,7 @@ else
                         <td>@item.StartTime.ToString("HH:mm", CultureInfo.InvariantCulture)</td>
                         <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@item.PatientId">@item.PatientName</a></td>
                         <td>@item.PatientCode</td>
-                        <td>@item.Status</td>
+                        <td><span class="badge @StatusBadge.ClassFor(item.Status)">@item.Status</span></td>
                     </tr>
                 }
             </tbody>

@@ -4,12 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Patient Management</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PatientManagement.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
+    @{
+        // Marks the current section in the menu (aria-current for screen readers).
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    }
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -21,15 +24,15 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark@(currentController == "Home" ? " active fw-semibold" : "")" aria-current="@(currentController == "Home" ? "page" : null)" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Appointments" asp-action="Daily">Appointments</a>
+                                <a class="nav-link text-dark@(currentController == "Appointments" ? " active fw-semibold" : "")" aria-current="@(currentController == "Appointments" ? "page" : null)" asp-controller="Appointments" asp-action="Daily">Appointments</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="ClinicProfile" asp-action="Edit">Clinic details</a>
+                                <a class="nav-link text-dark@(currentController == "ClinicProfile" ? " active fw-semibold" : "")" aria-current="@(currentController == "ClinicProfile" ? "page" : null)" asp-controller="ClinicProfile" asp-action="Edit">Clinic details</a>
                             </li>
                         }
                     </ul>
@@ -58,9 +61,26 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; Patient Management System (Phase 1 skeleton)
+            &copy; Patient Management System
         </div>
     </footer>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="confirmModalTitle">Please confirm</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="confirmModalMessage"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-primary" id="confirmModalOk">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

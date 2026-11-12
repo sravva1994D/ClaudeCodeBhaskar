@@ -1,4 +1,122 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿// Shared screen behaviour: confirmation for changes that cannot be undone, and no double submits.
+// No business rules live here. The server still validates and decides everything.
+(function () {
+    'use strict';
 
-// Write your JavaScript code.
+    var modalElement = document.getElementById('confirmModal');
+    var modalMessage = document.getElementById('confirmModalMessage');
+    var modalConfirm = document.getElementById('confirmModalOk');
+    var modal = (modalElement && window.bootstrap) ? new bootstrap.Modal(modalElement) : null;
+    var pendingForm = null;
+    var pendingSubmitter = null;
+
+    // A form with data-confirm is sent only after the user chooses Confirm in the dialog.
+    // The original button is passed back, so its name and value still reach the server.
+    if (modalConfirm) {
+        modalConfirm.addEventListener('click', function () {
+            var form = pendingForm;
+            var submitter = pendingSubmitter;
+            pendingForm = null;
+            pendingSubmitter = null;
+            if (modal) {
+                modal.hide();
+            }
+            if (form) {
+                form.dataset.confirmed = 'true';
+                form.requestSubmit(submitter || undefined);
+            }
+        });
+    }
+
+    if (modalElement) {
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            pendingForm = null;
+            pendingSubmitter = null;
+        });
+    }
+
+    // Disables the form's buttons and shows a spinner on the clicked one, so a second click does nothing.
+    function markBusy(form, submitter) {
+        form.dataset.submitting = 'true';
+
+        // Wait one tick. A disabled button is left out of the form data, and the clicked button's value
+        // (for example ConfirmWarnings) must still be read by the browser before it is disabled.
+        window.setTimeout(function () {
+            if (form.dataset.submitting !== 'true') {
+                return;
+            }
+
+            Array.prototype.forEach.call(form.querySelectorAll('button'), function (button) {
+                if ((button.getAttribute('type') || 'submit') === 'submit') {
+                    button.disabled = true;
+                    button.setAttribute('aria-busy', 'true');
+                }
+            });
+
+            if (submitter && submitter.tagName === 'BUTTON') {
+                var spinner = document.createElement('span');
+                spinner.className = 'spinner-border spinner-border-sm me-2';
+                spinner.setAttribute('aria-hidden', 'true');
+                submitter.prepend(spinner);
+            }
+        }, 0);
+    }
+
+    document.addEventListener('submit', function (event) {
+        var form = event.target;
+        if (!(form instanceof HTMLFormElement) || event.defaultPrevented) {
+            return;
+        }
+
+        if (form.dataset.submitting === 'true') {
+            event.preventDefault();
+            return;
+        }
+
+        // The confirmation flag is used once and cleared on every submit, so a failed submit cannot leave it set.
+        var confirmed = form.dataset.confirmed === 'true';
+        form.dataset.confirmed = '';
+
+        // Invalid fields are handled by the browser and by jQuery validation. Nothing is disabled for them.
+        if (!form.checkValidity()) {
+            return;
+        }
+
+        var question = form.getAttribute('data-confirm');
+        if (question && !confirmed) {
+            if (modal && modalMessage) {
+                event.preventDefault();
+                pendingForm = form;
+                pendingSubmitter = event.submitter || null;
+                modalMessage.textContent = question;
+                modal.show();
+                return;
+            }
+            // Without Bootstrap's script, ask with the browser's own dialog and carry on with this same submit.
+            if (!window.confirm(question)) {
+                event.preventDefault();
+                return;
+            }
+        }
+
+        if (form.hasAttribute('data-no-busy')) {
+            return;
+        }
+
+        markBusy(form, event.submitter);
+    });
+
+    // Going back to a page can restore it with its buttons still disabled. Put them back.
+    window.addEventListener('pageshow', function () {
+        Array.prototype.forEach.call(document.querySelectorAll('form[data-submitting]'), function (form) {
+            delete form.dataset.submitting;
+            Array.prototype.forEach.call(form.querySelectorAll('button[aria-busy]'), function (button) {
+                button.disabled = false;
+                button.removeAttribute('aria-busy');
+            });
+            Array.prototype.forEach.call(form.querySelectorAll('.spinner-border'), function (spinner) {
+                spinner.remove();
+            });
+        });
+    });
+})();

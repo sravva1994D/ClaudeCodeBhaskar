@@ -1,4 +1,5 @@
 @using System.Globalization
+@using PatientManagement.Web.Presentation
 @model PatientManagement.Web.ViewModels.Appointments.DailyAppointmentsViewModel
 @{
     ViewData["Title"] = "Appointments";
@@ -54,12 +55,13 @@ else
                         <td>@item.StartTime.ToString("HH:mm", CultureInfo.InvariantCulture)</td>
                         <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@item.PatientId">@item.PatientName</a></td>
                         <td>@item.PatientCode</td>
-                        <td>@item.Status</td>
+                        <td><span class="badge @StatusBadge.ClassFor(item.Status)">@item.Status</span></td>
                         <td>
                             <div class="d-flex flex-wrap gap-2">
                                 @foreach (var next in item.NextStatuses)
                                 {
-                                    <form method="post" asp-controller="Appointments" asp-action="UpdateStatus" class="d-inline">
+                                    <form method="post" asp-controller="Appointments" asp-action="UpdateStatus" class="d-inline"
+                                          data-confirm="@(next == "Cancelled" ? "Cancel this appointment? The time slot will be released." : next == "No-show" ? "Mark this appointment as no-show? The time slot will be released." : null)">
                                         <input type="hidden" name="id" value="@item.Id" />
                                         <input type="hidden" name="status" value="@next" />
                                         <input type="hidden" name="date" value="@dayText" />
@@ -83,7 +85,8 @@ else
                                 }
                                 @if (item.CanArchive)
                                 {
-                                    <form method="post" asp-controller="Appointments" asp-action="Archive" class="d-inline">
+                                    <form method="post" asp-controller="Appointments" asp-action="Archive" class="d-inline"
+                                          data-confirm="Archive this appointment? It will be hidden from the daily list but kept for history.">
                                         <input type="hidden" name="id" value="@item.Id" />
                                         <input type="hidden" name="date" value="@dayText" />
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">Archive</button>
