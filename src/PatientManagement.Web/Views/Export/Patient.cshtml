@@ -26,6 +26,9 @@
     <div class="col-sm-auto">
         <button type="submit" class="btn btn-primary">Download CSV</button>
     </div>
+    <div class="col-sm-auto">
+        <button type="submit" class="btn btn-outline-primary" formaction="@Url.Action("PatientPrint", "Export", new { patientId = Model.PatientId })">Open printable view</button>
+    </div>
 </form>
 
 <p class="form-text mb-4">

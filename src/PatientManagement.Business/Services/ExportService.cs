@@ -74,6 +74,7 @@ public sealed class ExportService(
 
         // The printed view lists the newest visit first, like the visit history (D-M7-7).
         return Result<ExportPrintDto>.Ok(new ExportPrintDto(
+            patient.Id,
             clinic,
             patient.FullName,
             patient.PatientCode,

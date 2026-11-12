@@ -21,6 +21,7 @@ public sealed record ExportVisitDto(
 
 // Everything the printable export view shows (FR-EXP-002). Visits are newest first (D-M7-7).
 public sealed record ExportPrintDto(
+    int PatientId,
     ClinicProfileDto Clinic,
     string PatientName,
     string PatientCode,

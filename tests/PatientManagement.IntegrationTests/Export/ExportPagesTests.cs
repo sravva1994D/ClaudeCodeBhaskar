@@ -200,16 +200,123 @@ public class ExportPagesTests(TestDatabaseFixture database, TestWebApplicationFa
         Assert.Contains($"/Export/Patient/{patientId}", profile);
     }
 
+    [Fact]
+    public async Task FR_EXP_002_printable_view_shows_the_patient_visit_vitals_and_medicines()
+    {
+        var visit = await SeedVisitAsync(patientId, Later, complaints: "Test cough", diagnosis: "Test viral fever");
+        await AddPrescriptionAsync(visit, "Test Medicine");
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Export/Patient/{patientId}/Print");
+
+        Assert.Contains("Test Anna Example", html);
+        Assert.Contains(patientCode, html);
+        Assert.Contains("Visit on 2026-11-03 14:30", html);
+        Assert.Contains("Test cough", html);
+        Assert.Contains("Test viral fever", html);
+        Assert.Contains("Test Medicine", html);
+        Assert.Contains("Vitals: not recorded.", html);
+    }
+
+    [Fact]
+    public async Task FR_EXP_002_printable_view_lists_the_newest_visit_first()
+    {
+        await SeedVisitAsync(patientId, Earlier, complaints: "Test older visit");
+        await SeedVisitAsync(patientId, Later, complaints: "Test newer visit");
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Export/Patient/{patientId}/Print");
+
+        Assert.True(html.IndexOf("Test newer visit", StringComparison.Ordinal) < html.IndexOf("Test older visit", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task FR_EXP_002_printable_view_range_shows_only_visits_inside_it()
+    {
+        await SeedVisitAsync(patientId, Earlier, complaints: "Test early visit");
+        await SeedVisitAsync(patientId, Later, complaints: "Test late visit");
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Export/Patient/{patientId}/Print?from=2026-10-01&to=2026-10-02");
+
+        Assert.Contains("Test early visit", html);
+        Assert.DoesNotContain("Test late visit", html);
+        Assert.Contains("From 2026-10-01 to 2026-10-02", html);
+    }
+
+    [Fact]
+    public async Task FR_EXP_002_printable_view_has_a_print_button_and_the_save_as_pdf_hint()
+    {
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Export/Patient/{patientId}/Print");
+
+        Assert.Contains("window.print()", html);
+        Assert.Contains("Save as PDF", html);
+    }
+
+    [Fact]
+    public async Task FR_EXP_002_printable_view_with_no_visits_in_a_range_shows_the_message_on_the_form()
+    {
+        await SeedVisitAsync(patientId, Earlier);
+        using var client = await SignedInClientAsync();
+
+        var response = await client.GetAsync($"/Export/Patient/{patientId}/Print?from=2026-01-01&to=2026-01-31");
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("No visits in this date range.", html);
+        Assert.Contains("Open printable view", html);
+    }
+
+    [Fact]
+    public async Task FR_EXP_002_printing_the_view_does_not_mark_the_prescription_printed()
+    {
+        var visit = await SeedVisitAsync(patientId, Later);
+        await AddPrescriptionAsync(visit, "Test Medicine");
+        using var client = await SignedInClientAsync();
+
+        await client.GetAsync($"/Export/Patient/{patientId}/Print");
+
+        await using var context = database.CreateContext();
+        var prescription = await context.Prescriptions.SingleAsync(p => p.ConsultationId == visit);
+        Assert.False(prescription.IsPrinted);
+        Assert.Null(prescription.PrintedAt);
+    }
+
+    [Fact]
+    public async Task FR_EXP_002_printable_view_needs_sign_in_and_unknown_patient_is_not_found()
+    {
+        using var anonymous = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        using var client = await SignedInClientAsync();
+
+        var redirected = await anonymous.GetAsync($"/Export/Patient/{patientId}/Print");
+
+        Assert.Equal(HttpStatusCode.Redirect, redirected.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await client.GetAsync("/Export/Patient/999999/Print")).StatusCode);
+    }
+
+    private async Task AddPrescriptionAsync(int visitId, string medicineName)
+    {
+        await using var context = database.CreateContext();
+        context.Prescriptions.Add(new Prescription
+        {
+            ConsultationId = visitId,
+            Items = [new PrescriptionItem { Name = medicineName, Dosage = "500 mg", SortOrder = 1 }]
+        });
+        await context.SaveChangesAsync();
+    }
+
     private async Task<string> CsvTextAsync(HttpClient client, string url)
     {
         var bytes = await (await client.GetAsync(url)).Content.ReadAsByteArrayAsync();
         return Encoding.UTF8.GetString(bytes).TrimStart('﻿');
     }
 
-    private async Task<int> SeedVisitAsync(int patient, DateTime visitTime, string? complaints = null)
+    private async Task<int> SeedVisitAsync(int patient, DateTime visitTime, string? complaints = null, string? diagnosis = null)
     {
         await using var context = database.CreateContext();
-        var visit = new Consultation { PatientId = patient, VisitDateTime = visitTime, Complaints = complaints };
+        var visit = new Consultation { PatientId = patient, VisitDateTime = visitTime, Complaints = complaints, Diagnosis = diagnosis };
         context.Consultations.Add(visit);
         await context.SaveChangesAsync();
         return visit.Id;

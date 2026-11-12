@@ -227,6 +227,7 @@ public class ExportServiceTests
 
         var print = (await service.BuildPrintViewAsync(7)).Value!;
 
+        Assert.Equal(7, print.PatientId);
         Assert.Equal(["Test newer", "Test older"], print.Visits.Select(v => v.Complaints));
     }
 

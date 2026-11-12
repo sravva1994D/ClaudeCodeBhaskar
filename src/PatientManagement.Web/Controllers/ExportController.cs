@@ -50,6 +50,33 @@ public class ExportController(IExportService exports) : Controller
         return await FormAsync(patientId, fromDate, toDate, file.Errors[0].Message, cancellationToken);
     }
 
+    // The printable view (FR-EXP-002). Printing it in the browser, or saving it as PDF, changes nothing in the system (PDR-18).
+    [HttpGet("/Export/Patient/{patientId:int}/Print")]
+    public async Task<IActionResult> PatientPrint(
+        int patientId,
+        [FromQuery(Name = "from")] DateOnly? fromDate,
+        [FromQuery(Name = "to")] DateOnly? toDate,
+        CancellationToken cancellationToken)
+    {
+        if (HasMalformedDate())
+        {
+            return await FormAsync(patientId, null, null, MalformedDateMessage, cancellationToken);
+        }
+
+        var print = await exports.BuildPrintViewAsync(patientId, fromDate, toDate, cancellationToken);
+        if (print.IsSuccess)
+        {
+            return View("Print", print.Value);
+        }
+
+        if (print.Errors.Any(error => error.Code == ExportService.PatientNotFoundCode))
+        {
+            return NotFound();
+        }
+
+        return await FormAsync(patientId, fromDate, toDate, print.Errors[0].Message, cancellationToken);
+    }
+
     // The form, with the patient's name and code. An unknown patient is not found.
     private async Task<IActionResult> FormAsync(
         int patientId, DateOnly? fromDate, DateOnly? toDate, string? errorMessage, CancellationToken cancellationToken)
