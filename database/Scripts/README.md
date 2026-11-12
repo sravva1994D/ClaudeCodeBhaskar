@@ -5,6 +5,8 @@ Scripts for the local SQL Server database. Schema changes are made with EF Core 
 | Order | Script | Purpose | When to run |
 |---|---|---|---|
 | 1 | `01-create-database.sql` | Creates the `PatientManagement` database if missing | Once per machine, before the first migration |
+| – | `04-generate-performance-data.sql` | Adds 1,000 synthetic patients with visits, vitals, prescriptions and appointments to the development database for the Module 8 timing checks (synthetic data only; `Documentation/04-Implementation/16-Module-8-Plan.md`) | Before the Module 8 timing run only |
+| – | `05-remove-performance-data.sql` | Removes only the rows added by script 04 (patients named `Test Patient …` with an `@example.test` e-mail) | After the Module 8 timing run |
 
 Run a script with `sqlcmd` (installed with SQL Server tools):
 
