@@ -103,7 +103,7 @@ The plan (`14-`) recorded D-M7-1 to D-M7-8 with recommendations. They were appro
 
 | # | Item | Effect | Proposed handling |
 |---|---|---|---|
-| 1 | Phone rule (closed 2026-11-12) | A phone number with a leading `+` is exported unchanged. Other text starting with `+`, `-`, `=`, `@` is still guarded. A value with a leading `-` that is a negative number is also guarded; no such value exists in the patient data | Closed by the decision in §5 (D-M7-3, option b) |
+| 1 | Phone rule (closed 2026-11-12) | A phone number with a leading `+` is exported unchanged. Other text starting with `+`, `-`, `=`, `@` is still guarded, including a text value with a leading `-` | Closed by the decision in §5 (D-M7-3, option b) |
 | 2 | Date inputs look different in each browser | The date picker and its display are set by the browser. The page always sends yyyy-MM-dd | Check in Chrome (§4); Edge in M8 |
 | 3 | Print output depends on the printer and its margins | The A4 preview in Chrome is checked; a physical printer may differ | Owner checks a printed copy if a printer is available; M8 browser matrix |
 | 4 | Long histories span several printed pages | Each visit section is kept whole where possible; a page header or page numbers are not repeated | Accepted for Phase 1 |
