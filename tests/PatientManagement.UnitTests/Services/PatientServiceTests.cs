@@ -161,6 +161,9 @@ public class PatientServiceTests
         Assert.True(result.RequiresConfirmation);
         Assert.Equal(PatientService.DuplicateCode, result.Warnings.Single().Code);
         Assert.Contains("PT-000123", result.Warnings.Single().Message);
+        // DEC-026: dates shown on screen use dd-MMM-yyyy, including the duplicate warning.
+        Assert.Contains("born " + ExistingPatient().DateOfBirth.ToString("dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture),
+            result.Warnings.Single().Message);
         await patients.DidNotReceiveWithAnyArgs().AddAsync(default!, default);
     }
 

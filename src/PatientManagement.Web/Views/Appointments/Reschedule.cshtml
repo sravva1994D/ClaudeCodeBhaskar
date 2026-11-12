@@ -53,7 +53,7 @@
                         <input class="form-check-input" type="radio" name="StartTime"
                                id="slot-@slot.StartTime.ToString("HHmm", CultureInfo.InvariantCulture)"
                                value="@slot.StartTime.ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)"
-                               checked="@(Model.StartTime == slot.StartTime)"
+                               checked="@(!slot.IsTaken && Model.StartTime == slot.StartTime)"
                                disabled="@slot.IsTaken" />
                         <label class="form-check-label" for="slot-@slot.StartTime.ToString("HHmm", CultureInfo.InvariantCulture)">
                             @slot.Label @(slot.IsTaken ? "(booked)" : string.Empty)

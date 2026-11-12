@@ -30,7 +30,7 @@
         </div>
         <div class="col-auto">
             <!-- Reloads the slot list for the day in the box. Nothing is saved. -->
-            <button id="show-slots" type="submit" class="btn btn-outline-secondary" formaction="/Appointments/Create" formmethod="get">Show slots</button>
+            <button id="show-slots" type="submit" class="btn btn-outline-secondary" formaction="@Url.Action("Create", "Appointments")" formmethod="get">Show slots</button>
         </div>
     </div>
 
@@ -44,7 +44,7 @@
                         <input class="form-check-input" type="radio" name="StartTime"
                                id="slot-@slot.Label.Replace(":", "")"
                                value="@slot.StartTime.ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture)"
-                               checked="@(Model.StartTime == slot.StartTime)"
+                               checked="@(!slot.IsTaken && Model.StartTime == slot.StartTime)"
                                disabled="@slot.IsTaken" />
                         <label class="form-check-label" for="slot-@slot.Label.Replace(":", "")">
                             @slot.Label @(slot.IsTaken ? "(booked)" : string.Empty)

@@ -43,6 +43,7 @@ public class ReschedulePagesTests(TestDatabaseFixture database, TestWebApplicati
         await database.ClearTablesAsync("Users");
     }
 
+    // TC-FR-APT-004-1
     [Fact]
     public async Task FR_APT_004_the_reschedule_screen_opens_for_a_scheduled_appointment_and_marks_its_current_slot()
     {
@@ -57,6 +58,7 @@ public class ReschedulePagesTests(TestDatabaseFixture database, TestWebApplicati
         Assert.Single(System.Text.RegularExpressions.Regex.Matches(html, "\\(current\\)"));
     }
 
+    // TC-FR-APT-004-2
     [Fact]
     public async Task FR_APT_004_moving_saves_the_new_time_and_frees_the_old_slot()
     {
@@ -82,6 +84,7 @@ public class ReschedulePagesTests(TestDatabaseFixture database, TestWebApplicati
         Assert.Equal(patientId, moved.PatientId);
     }
 
+    // TC-FR-APT-004-3
     [Fact]
     public async Task FR_APT_004_a_move_onto_a_booked_slot_is_refused_and_nothing_changes()
     {
@@ -106,6 +109,7 @@ public class ReschedulePagesTests(TestDatabaseFixture database, TestWebApplicati
         Assert.Equal(Day.ToDateTime(new TimeOnly(9, 0)), stillThere.StartTime);
     }
 
+    // TC-FR-APT-004-4
     [Fact]
     public async Task FR_APT_004_a_checked_in_appointment_cannot_be_rescheduled_from_the_screen()
     {
@@ -118,6 +122,7 @@ public class ReschedulePagesTests(TestDatabaseFixture database, TestWebApplicati
         Assert.Contains("/Appointments/Daily", response.Headers.Location!.ToString());
     }
 
+    // TC-FR-APT-004-5
     [Fact]
     public async Task FR_APT_004_the_daily_list_offers_reschedule_only_for_scheduled_appointments()
     {

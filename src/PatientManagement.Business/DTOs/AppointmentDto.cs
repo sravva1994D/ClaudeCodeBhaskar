@@ -15,7 +15,8 @@ public sealed record AppointmentDto(
     bool CanStartConsultation);
 
 // The input to book an appointment (SCR-09).
-public sealed record AppointmentCreateDto(int PatientId, DateTime StartTime);
+// ShownDay is the day in the Day box when the slot was chosen. Null skips the same-day check (for example, in code that has no form).
+public sealed record AppointmentCreateDto(int PatientId, DateTime StartTime, DateOnly? ShownDay = null);
 
 // One grid slot for a day, and whether a live appointment holds it (SCR-09 slot picker; PDR-07).
 public sealed record SlotDto(DateTime StartTime, bool IsTaken);

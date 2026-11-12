@@ -24,5 +24,5 @@ public interface IAppointmentService
     Task<Result<AppointmentDto>> GetForRescheduleAsync(int id, CancellationToken cancellationToken = default);
 
     // Moves a Scheduled appointment to another free slot for the same patient (FR-APT-004, DEC-027).
-    Task<Result<AppointmentDto>> RescheduleAsync(int id, DateTime newStartTime, CancellationToken cancellationToken = default);
+    Task<Result<AppointmentDto>> RescheduleAsync(int id, DateTime newStartTime, DateOnly? shownDay = null, CancellationToken cancellationToken = default);
 }

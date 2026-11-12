@@ -28,7 +28,9 @@ public sealed class AppointmentService(
         AppointmentCreateDto input, CancellationToken cancellationToken = default)
     {
         // Cheap rules first: they need no database read.
-        var errors = AppointmentValidator.ValidateSchedule(input.StartTime, Today());
+        var errors = AppointmentValidator.ValidateSchedule(input.StartTime, Today())
+            .Concat(AppointmentValidator.ValidateSlotDay(input.StartTime, input.ShownDay))
+            .ToList();
         if (errors.Count > 0)
         {
             return Result<AppointmentDto>.Fail(errors.ToArray());
@@ -149,7 +151,7 @@ public sealed class AppointmentService(
     }
 
     public async Task<Result<AppointmentDto>> RescheduleAsync(
-        int id, DateTime newStartTime, CancellationToken cancellationToken = default)
+        int id, DateTime newStartTime, DateOnly? shownDay = null, CancellationToken cancellationToken = default)
     {
         var appointment = await appointments.GetByIdAsync(id, cancellationToken);
         if (appointment is null || appointment.IsArchived)
@@ -163,7 +165,9 @@ public sealed class AppointmentService(
             return NotScheduled();
         }
 
-        var errors = AppointmentValidator.ValidateSchedule(newStartTime, Today());
+        var errors = AppointmentValidator.ValidateSchedule(newStartTime, Today())
+            .Concat(AppointmentValidator.ValidateSlotDay(newStartTime, shownDay))
+            .ToList();
         if (errors.Count > 0)
         {
             return Result<AppointmentDto>.Fail(errors.ToArray());
