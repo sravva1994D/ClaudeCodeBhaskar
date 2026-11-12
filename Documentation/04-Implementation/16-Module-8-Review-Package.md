@@ -248,7 +248,7 @@ Notes on the run:
 | Walkthrough in §6 (NFR-USB-001) | Not run (owner decision, 2026-11-12) |
 | Browser matrix in §7A (NFR-CMP-001, Chrome and Edge) | Not run (owner decision, 2026-11-12). Edge not verified |
 | Volume on list screens (NFR-SCL-001) | Not run (owner decision, 2026-11-12) |
-| Remove seed data (`05-remove-performance-data.sql`) | Not run. Waits for the volume check and the owner's confirmation |
+| Remove seed data (`05-remove-performance-data.sql`) | Run on 2026-11-12 at the owner's request. Result: 0 synthetic patients left; 2 patients, 4 visits and 5 appointments remain (the real rows that were there before the seed) |
 | Project Owner approval | Pending |
 
 Approval of this package is given after §4 to §6 are recorded. Misses need an owner decision recorded here before approval.
