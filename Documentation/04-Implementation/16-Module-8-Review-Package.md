@@ -92,7 +92,7 @@ Volume (NFR-SCL-001): no automated check was added. The check is every list scre
 
 Record the browser version for each table: Chrome version 157.0.8103.52 (from the browser's About page, reported by the Project Owner). Machine and OS: ______.
 
-Units are seconds. Only the Home page row is recorded so far; the other nine page types are still to run. Page-load values are taken with "Disable cache" ticked in DevTools. Earlier single figures (15 ms page load, 2 ms search) were not taken to this method and are not recorded.
+Units are seconds. Rows 2 to 7 and row 10 are recorded (see the notes under the table for the open items). Page-load values are taken with "Disable cache" ticked in DevTools. Earlier single figures (15 ms page load, 2 ms search) were not taken to this method and are not recorded.
 
 ### 4.1 Page load (NFR-PRF-001, TC-NFR-PRF-001-1)
 
@@ -102,14 +102,24 @@ Ten page types. Use the seed patient from §2 for the profile page.
 |---|---|---|---|---|---|---|---|---|
 | 1 | Sign-in | | | | | | | |
 | 2 | Home | 0.033 | 0.014 | 0.030 | 0.013 | 0.004 | 0.014 | Yes |
-| 3 | Patient search results (SCR-04) | | | | | | | |
-| 4 | Patient profile (SCR-06) | | | | | | | |
-| 5 | Visit history (SCR-07) | | | | | | | |
-| 6 | Daily appointments list | | | | | | | |
-| 7 | New appointment | | | | | | | |
+| 3 | Patient search results (SCR-04) | 0.241 | 0.207 | 0.238 | 0.274 | 0.282 | 0.241 | Yes |
+| 4 | Patient profile (SCR-06) | 0.070 | 0.102 | 0.108 | 0.099 | 0.099 | 0.099 | Yes |
+| 5 | Visit history (SCR-07) | 0.190 | 0.061 | 0.120 | 0.130 | 0.108 | 0.120 | Yes |
+| 6 | Daily appointments list | 0.179 | 0.100 | 0.089 | 0.124 | 0.075 | 0.100 | Yes (mapping to confirm) |
+| 7 | New appointment | 0.135 | 0.084 | 0.088 | 0.101 | 0.099 | 0.099 | Yes (mapping to confirm) |
 | 8 | Consultation (SCR-11) | | | | | | | |
 | 9 | Prescription print view | | | | | | | |
-| 10 | Export form (SCR-13) | | | | | | | |
+| 10 | Export form (SCR-13) | 0.105 | 0.100 | 0.062 | 0.095 | 0.114 | 0.100 | Yes |
+
+Additional pages timed, not in the 10-page list (seconds; five runs; median):
+- Profile edit (SCR-05): 0.132, 0.091, 0.115, 0.113, 0.109; median 0.113.
+- Clinic details (SCR-14): 0.160, 0.112, 0.092, 0.092, 0.092; median 0.092.
+- Show slots (part of scheduling): 0.138, 0.144, 0.069, 0.070, 0.085; median 0.085.
+
+Not yet complete:
+- Row 8, consultation: only four runs were sent (0.071, 0.065, 0.135, 0.100). A fifth run is needed. "Start consultation" is taken as row 8.
+- Row 6 and row 7 are mapped from "appointments" and "appointment schedule". The Project Owner should confirm the mapping.
+- Row 1, sign-in, and row 9, prescription print view, have not been timed.
 
 ### 4.2 Search and history (NFR-PRF-002, SC-002, TC-NFR-PRF-002-1, TC-SC-002-1)
 
