@@ -180,6 +180,45 @@ Screen size used: ______ x ______ px. Browser and version: ______.
 
 Edge is not used for the timings in §4 (D-M8-7). Its checks are in step 4.
 
+## 7A. Browser matrix checklist (step 4, WP-9.3, NFR-CMP-001)
+
+Run the checks below in both Chrome and Edge (latest desktop versions, PDR-28). Mark each cell Pass, Fail or n/a and add a note for any Fail. The test IDs are the acceptance scenarios in `Documentation/02-Planning/14-Testing-Strategy.md` §4.
+
+Browser run record:
+
+| Item | Chrome | Edge |
+|---|---|---|
+| Version (from the About page) | | |
+| Operating system and build | | |
+| Date of run | | |
+| Screen size and zoom | | |
+
+| # | Screen | What to check | Test IDs | Chrome | Edge |
+|---|---|---|---|---|---|
+| 1 | SCR-01 Login | Correct sign-in opens home. Wrong password shows the generic message. Sign out returns to sign-in | TC-NFR-SEC-001-1, -2 | | |
+| 2 | SCR-02 Forgot password | Matching email and new password reset the password. No match shows the PDR-03 message | NFR-SEC-001 | | |
+| 3 | SCR-03 Home | Quick search, today's appointments link and recent patients (five, latest visit first) all work | FR-SRC-001, FR-SRC-002 | | |
+| 4 | SCR-04 Search results | Name part finds; phone part finds; no match shows the message | TC-FR-PAT-004-1, -2, -3 | | |
+| 5 | SCR-05 Register | Save with all fields. Missing field shows an error. Duplicate warning allows continue | TC-FR-PAT-001-1, -2, -4 | | |
+| 6 | SCR-05 Edit | Change a field, save, and see it on the profile | TC-FR-PAT-002-1 | | |
+| 7 | SCR-06 Profile | All details and age shown. Edit, Schedule, Start consultation, Visit history and Export buttons work | TC-FR-PAT-003-1, TC-FR-SRC-003-1 | | |
+| 8 | SCR-07 Visit history | Newest first. Single-date and range filters work with the date inputs (M6 deferred check, §7) | TC-FR-HIS-001-1, TC-FR-HIS-003-1, -2 | | |
+| 9 | SCR-08 Visit detail | Vitals, complaints, diagnosis and medicines shown. Print prescription opens | TC-FR-HIS-002-1, TC-FR-CMP-001-2 | | |
+| 10 | SCR-09 Schedule | Book a slot. Overlap is rejected. Unregistered patient is rejected | TC-FR-APT-001-1, -2, -3 | | |
+| 11 | SCR-10 Daily list | Change the date. Status change is inline. Archived rows are hidden | TC-FR-APT-002-1, -2; TC-FR-APT-003-4 | | |
+| 12 | SCR-11 Consultation | Enter vitals, complaints, diagnosis and two medicines. Out-of-range vitals show a warning and a confirm step. Save works | TC-FR-VIT-001-1 to -5; TC-FR-CMP-001-1; TC-FR-DIA-001-1; TC-FR-RX-001-1, -2 | | |
+| 13 | SCR-12 Prescription (print) | A4 preview shows header, patient, vitals, diagnosis, medicines and footer. Print opens the dialog. Save as PDF makes a file | TC-FR-RX-002-1; SC-004 | | |
+| 14 | SCR-12 After printing | Edit is blocked. Reprint works. A second prescription for the same visit is not created | TC-FR-RX-002-2, -3 | | |
+| 15 | SCR-13 Export form | Date inputs with a range (M7 deferred check, §7). Download CSV opens in a spreadsheet with ISO dates and the 16 columns | TC-FR-EXP-001-1, -2, -3 | | |
+| 16 | SCR-13 Printable view | A4 preview. Print opens the dialog. Save as PDF makes a file. Range shows only those visits | TC-FR-EXP-002-1, -2 | | |
+| 17 | SCR-14 Clinic profile | Save the header. The header appears on the prescription print view (SCR-12) | FR-RX-002 | | |
+| 18 | Layout (all screens) | No horizontal scroll at the run's screen size. Required markers and tab order as in §6 | NFR-USB-001, NFR-CMP-001 | | |
+
+Notes on the run:
+- Volume (NFR-SCL-001): run the list screens (SCR-04, SCR-07, SCR-10) on the seeded development data (§2) in each browser, and record the result in §3A. This is part of the owner's browser run.
+- Timing (§4) is in Chrome only (D-M8-7). Edge timings are not required by the plan.
+- A difference between browsers is not a Fail unless the check does not work. Describe the difference in the note. A Fail is reported to the Project Owner before approval.
+
 ## 8. Approval
 
 | Item | Status |
