@@ -122,6 +122,8 @@ Not yet complete:
 
 ### 4.2 Search and history (NFR-PRF-002, SC-002, TC-NFR-PRF-002-1, TC-SC-002-1)
 
+**Status: not measured. Skipped by the Project Owner on 2026-11-12 (learning project).** The ten search terms and the visit history timing are not recorded, so NFR-PRF-002 and SC-002 have no measured result. This is recorded as an owner decision, not as a pass. The typed-prefix values sent in chat (partial inputs such as "pa" to "test pa") are not the approved terms and are not recorded.
+
 Ten search terms (the Module 2 set, `06-Module-2-Review-Package.md` §3.1). Enter each in the top-bar search.
 
 | # | Term | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Median (s) | Within 2 to 5 s? | Result count |
