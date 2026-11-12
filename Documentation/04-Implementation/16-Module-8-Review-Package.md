@@ -1,6 +1,6 @@
 # Module 8 Review Package: Non-Functional Verification
 
-**Status:** Measurement record set up (Module 8 step 2). Measurements are not yet run. The Project Owner runs §4 to §6 in the browser and records the results. Approval is in §8.
+**Status:** Page-load timings recorded (Chrome 157.0.8103.52). Search and history timing and the consultation rehearsal were skipped by Project Owner decision (2026-11-12). The walkthrough (§6), browser matrix (§7A) and volume check are pending. Approval is pending (§8).
 **Plan:** `16-Module-8-Plan.md` (decisions D-M8-1 to D-M8-8, approved 2026-11-12).
 **Requirements:** NFR-PRF-001, NFR-PRF-002, SC-001, SC-002, NFR-SCL-001, NFR-CMP-001, NFR-SEC-002, NFR-USB-001.
 
@@ -238,9 +238,13 @@ Notes on the run:
 
 | Item | Status |
 |---|---|
-| Measurements in §4 recorded (with any misses) | Not yet |
-| Rehearsal in §5 recorded | Not yet |
-| Walkthrough in §6 recorded | Not yet |
+| Page load in §4.1 (NFR-PRF-001) | Recorded: all ten page types under 2 s (median) |
+| Search and history in §4.2 (NFR-PRF-002, SC-002) | Not measured (owner decision, 2026-11-12) |
+| Rehearsal in §5 (SC-001) | Not measured (owner decision, 2026-11-12) |
+| Walkthrough in §6 (NFR-USB-001) | Not yet |
+| Browser matrix in §7A (NFR-CMP-001, Chrome and Edge) | Not yet |
+| Volume on list screens (NFR-SCL-001) | Not yet |
+| Remove seed data (`05-remove-performance-data.sql`) | Not run. Waits for the volume check and the owner's confirmation |
 | Project Owner approval | Pending |
 
 Approval of this package is given after §4 to §6 are recorded. Misses need an owner decision recorded here before approval.
