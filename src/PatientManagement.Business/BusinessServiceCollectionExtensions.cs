@@ -22,6 +22,8 @@ public static class BusinessServiceCollectionExtensions
         services.AddScoped<IConsultationService, ConsultationService>();
         services.AddScoped<IPrescriptionService, PrescriptionService>();
         services.AddScoped<IClinicProfileService, ClinicProfileService>();
+        services.AddScoped<IExportService, ExportService>();
+        services.AddSingleton<ICsvWriter, CsvWriter>();
 
         return services;
     }
