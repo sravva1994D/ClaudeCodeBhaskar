@@ -24,6 +24,8 @@ public sealed class ConsultationService(
     public const string AppointmentAlreadyVisitedCode = "Consultation.Appointment.AlreadyVisited";
     public const string AlreadyFinishedCode = "Consultation.Finish.AlreadyFinished";
     public const string FinishStatusCode = "Consultation.Finish.Status";
+    public const string RangeOrderCode = "Visits.DateRange.Order";
+    public const string RangeFromMissingCode = "Visits.DateRange.FromMissing";
 
     public async Task<Result<ConsultationDto>> StartAsync(
         int patientId, int? appointmentId, CancellationToken cancellationToken = default)
@@ -213,11 +215,27 @@ public sealed class ConsultationService(
         return Result<ConsultationDto>.Ok(ConsultationMapper.ToDto(visit, patient));
     }
 
-    public async Task<IReadOnlyList<VisitSummaryDto>> ListVisitsAsync(int patientId, CancellationToken cancellationToken = default)
+    public async Task<Result<IReadOnlyList<VisitSummaryDto>>> ListVisitsAsync(
+        int patientId, DateOnly? from = null, DateOnly? to = null, CancellationToken cancellationToken = default)
     {
-        var visits = await consultations.ListByPatientAsync(patientId, cancellationToken: cancellationToken);
+        // A single day is entered as From only, so To defaults to From (D-M6-1). To without From is refused, not ignored.
+        if (from is null && to is not null)
+        {
+            return Result<IReadOnlyList<VisitSummaryDto>>.Fail(new ResultMessage(RangeFromMissingCode,
+                "Enter a From date to filter by a range.", "From"));
+        }
 
-        return visits.Select(ConsultationMapper.ToSummary).ToList();
+        var upper = to ?? from;
+        if (from is not null && upper is not null && from > upper)
+        {
+            return Result<IReadOnlyList<VisitSummaryDto>>.Fail(new ResultMessage(RangeOrderCode,
+                "From date must not be after To date.", "To"));
+        }
+
+        var visits = await consultations.ListByPatientAsync(patientId, from, upper, cancellationToken);
+        IReadOnlyList<VisitSummaryDto> summaries = visits.Select(ConsultationMapper.ToSummary).ToList();
+
+        return Result<IReadOnlyList<VisitSummaryDto>>.Ok(summaries);
     }
 
     private DateTime Now() => timeProvider.GetLocalNow().DateTime;

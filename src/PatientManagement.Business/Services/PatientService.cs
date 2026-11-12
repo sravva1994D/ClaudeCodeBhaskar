@@ -100,6 +100,28 @@ public sealed class PatientService(
         return Result<IReadOnlyList<PatientSummaryDto>>.Ok(summaries);
     }
 
+    public async Task<IReadOnlyList<RecentPatientDto>> GetRecentAsync(int count = 5, CancellationToken cancellationToken = default)
+    {
+        var recent = await consultations.GetRecentPatientVisitsAsync(count, cancellationToken);
+        if (recent.Count == 0)
+        {
+            return [];
+        }
+
+        var found = await patients.GetByIdsAsync(recent.Select(row => row.PatientId).ToList(), cancellationToken);
+        var byId = found.ToDictionary(patient => patient.Id);
+
+        // The visit order from the repository is kept. A row without its patient is skipped.
+        return recent
+            .Where(row => byId.ContainsKey(row.PatientId))
+            .Select(row =>
+            {
+                var patient = byId[row.PatientId];
+                return new RecentPatientDto(patient.Id, patient.PatientCode, patient.FullName, row.LastVisit);
+            })
+            .ToList();
+    }
+
     private DateOnly Today() => DateOnly.FromDateTime(timeProvider.GetLocalNow().DateTime);
 
     private PatientDto ToDto(Patient patient, DateTime? lastVisit = null) =>

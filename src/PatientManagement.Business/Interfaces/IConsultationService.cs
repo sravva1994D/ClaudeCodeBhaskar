@@ -20,6 +20,8 @@ public interface IConsultationService
     // Finishes a visit once (D-M4-3). For an appointment visit, the appointment must be In Consultation and becomes Completed.
     Task<Result<ConsultationDto>> FinishAsync(int consultationId, CancellationToken cancellationToken = default);
 
-    // All visits for a patient, newest first (FR-HIS-001).
-    Task<IReadOnlyList<VisitSummaryDto>> ListVisitsAsync(int patientId, CancellationToken cancellationToken = default);
+    // All visits for a patient, newest first (FR-HIS-001). From alone is a single day; From and To are both inclusive (FR-HIS-003).
+    // A To without a From, or a From after the To, is refused.
+    Task<Result<IReadOnlyList<VisitSummaryDto>>> ListVisitsAsync(
+        int patientId, DateOnly? from = null, DateOnly? to = null, CancellationToken cancellationToken = default);
 }

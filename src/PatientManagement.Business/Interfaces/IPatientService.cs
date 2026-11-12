@@ -14,4 +14,7 @@ public interface IPatientService
     Task<Result<PatientDto>> GetAsync(int id, CancellationToken cancellationToken = default);
 
     Task<Result<IReadOnlyList<PatientSummaryDto>>> SearchAsync(string? term, CancellationToken cancellationToken = default);
+
+    // The most recently visited patients, latest visit first, at most count (FR-SRC-002, PDR-11). Patients with no visit are not listed.
+    Task<IReadOnlyList<RecentPatientDto>> GetRecentAsync(int count = 5, CancellationToken cancellationToken = default);
 }

@@ -20,14 +20,15 @@ public class VisitsController(
             return NotFound();
         }
 
-        var visits = await consultations.ListVisitsAsync(patientId, cancellationToken);
+        // The date filter is wired to the screen in step 3 of Module 6; for now the list is unfiltered.
+        var visits = await consultations.ListVisitsAsync(patientId, cancellationToken: cancellationToken);
 
         return View(new VisitHistoryViewModel
         {
             PatientId = patient.Value!.Id,
             PatientName = patient.Value.FullName,
             PatientCode = patient.Value.PatientCode,
-            Visits = visits
+            Visits = visits.Value ?? []
         });
     }
 

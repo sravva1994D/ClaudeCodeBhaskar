@@ -410,9 +410,59 @@ public class ConsultationServiceTests
             new() { Id = 1, PatientId = 7, VisitDateTime = NowLocal }
         });
 
-        var list = await service.ListVisitsAsync(7);
+        var list = (await service.ListVisitsAsync(7)).Value!;
 
         Assert.Equal([2, 1], list.Select(v => v.Id));
         Assert.Equal([true, false], list.Select(v => v.IsFinished));
+    }
+
+    [Fact]
+    public async Task FR_HIS_003_a_single_day_filter_returns_only_that_day()
+    {
+        var day = new DateOnly(2026, 11, 11);
+        consultations.ListByPatientAsync(7, day, day, Arg.Any<CancellationToken>()).Returns(new List<Consultation>
+        {
+            new() { Id = 1, PatientId = 7, VisitDateTime = NowLocal }
+        });
+
+        var result = await service.ListVisitsAsync(7, day);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal([1], result.Value!.Select(v => v.Id));
+        await consultations.Received(1).ListByPatientAsync(7, day, day, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task FR_HIS_003_a_range_is_passed_to_the_repository_as_given()
+    {
+        var from = new DateOnly(2026, 11, 1);
+        var to = new DateOnly(2026, 11, 11);
+        consultations.ListByPatientAsync(7, from, to, Arg.Any<CancellationToken>()).Returns(new List<Consultation>());
+
+        var result = await service.ListVisitsAsync(7, from, to);
+
+        Assert.True(result.IsSuccess);
+        Assert.Empty(result.Value!);
+        await consultations.Received(1).ListByPatientAsync(7, from, to, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task FR_HIS_003_a_from_date_after_the_to_date_is_refused_and_nothing_is_read()
+    {
+        var result = await service.ListVisitsAsync(7, new DateOnly(2026, 11, 12), new DateOnly(2026, 11, 10));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal([ConsultationService.RangeOrderCode], result.Errors.Select(e => e.Code));
+        await consultations.DidNotReceiveWithAnyArgs().ListByPatientAsync(default, default, default, default);
+    }
+
+    [Fact]
+    public async Task FR_HIS_003_a_to_date_without_a_from_date_is_refused()
+    {
+        var result = await service.ListVisitsAsync(7, null, new DateOnly(2026, 11, 10));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal([ConsultationService.RangeFromMissingCode], result.Errors.Select(e => e.Code));
+        await consultations.DidNotReceiveWithAnyArgs().ListByPatientAsync(default, default, default, default);
     }
 }

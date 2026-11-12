@@ -35,6 +35,73 @@ public class PatientServiceTests
             .ReturnsForAnyArgs(new List<Patient>());
     }
 
+    private static DateTime Visit(int day) => new(2026, 11, day, 9, 0, 0);
+
+    private static Patient Named(int id, string fullName) => new()
+    {
+        Id = id,
+        PatientCode = $"PT-{id:D6}",
+        FullName = fullName,
+        DateOfBirth = new DateOnly(1990, 5, 1),
+        Gender = "Female",
+        Phone = "5550100",
+        Email = "patient@example.test",
+        Address = "Test address"
+    };
+
+    [Fact]
+    public async Task FR_SRC_002_recent_patients_keep_the_visit_order_with_their_last_visit()
+    {
+        consultations.GetRecentPatientVisitsAsync(5, Arg.Any<CancellationToken>()).Returns(new List<PatientLastVisit>
+        {
+            new(3, Visit(6)),
+            new(1, Visit(5)),
+            new(2, Visit(4))
+        });
+        patients.GetByIdsAsync(Arg.Any<IReadOnlyCollection<int>>(), Arg.Any<CancellationToken>()).Returns(new List<Patient>
+        {
+            Named(1, "Test One Example"),
+            Named(2, "Test Two Example"),
+            Named(3, "Test Three Example")
+        });
+
+        var recent = await service.GetRecentAsync();
+
+        Assert.Equal([3, 1, 2], recent.Select(r => r.Id));
+        Assert.Equal(Visit(6), recent[0].LastVisit);
+        Assert.Equal("PT-000003", recent[0].PatientCode);
+        await consultations.Received(1).GetRecentPatientVisitsAsync(5, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task FR_SRC_002_patients_with_no_visit_are_not_listed()
+    {
+        consultations.GetRecentPatientVisitsAsync(5, Arg.Any<CancellationToken>()).Returns(new List<PatientLastVisit>());
+
+        var recent = await service.GetRecentAsync();
+
+        Assert.Empty(recent);
+        await patients.DidNotReceiveWithAnyArgs().GetByIdsAsync(default!, default);
+    }
+
+    [Fact]
+    public async Task FR_SRC_002_a_patient_outside_the_visit_list_is_not_added_to_it()
+    {
+        consultations.GetRecentPatientVisitsAsync(5, Arg.Any<CancellationToken>()).Returns(new List<PatientLastVisit>
+        {
+            new(1, Visit(5))
+        });
+        patients.GetByIdsAsync(Arg.Any<IReadOnlyCollection<int>>(), Arg.Any<CancellationToken>()).Returns(new List<Patient>
+        {
+            Named(1, "Test One Example"),
+            Named(2, "Test Two Example")
+        });
+
+        var recent = await service.GetRecentAsync();
+
+        Assert.Equal([1], recent.Select(r => r.Id));
+    }
+
     private static PatientInput ValidInput(string fullName = "Test Anna Example") => new(
         FullName: fullName,
         DateOfBirth: new DateOnly(1990, 5, 1),
