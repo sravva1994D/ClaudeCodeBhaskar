@@ -1,6 +1,6 @@
 # Module 9 Acceptance Record: Phase 1 Acceptance
 
-**Status:** Manual pass complete (15 of 15 Pass, 2026-11-12). Known limits accepted by the Project Owner. Acceptance of the 26 IDs awaits the Project Owner's sign-off in §7.
+**Status:** Accepted (M9). The Project Owner approved the acceptance on 2026-11-12: manual pass 15 of 15 Pass, known limits L1 to L7 accepted, all 26 in-scope IDs Accepted.
 **Plan:** `18-Module-9-Plan.md`. Work packages WP-10.1 (acceptance script run) and WP-10.2 (acceptance record).
 **Scope:** the 26 in-scope requirement IDs after DEC-025 and DEC-027 (`../01-Brainstorming/12-Requirement-Traceability-Matrix.md`).
 
@@ -111,5 +111,5 @@ Note: `Performance/SearchPerformanceTests.cs` tests NFR-PRF-002, which is out of
 | Manual checklist complete (§3); every row has a result | Yes: 15 of 15 Pass, Chrome 157.0.8103.79 |
 | Defects dispositioned (§4) | None logged |
 | Known limits decided (§5) | Yes: all accepted (2026-11-12) |
-| Project Owner acceptance of the 26 IDs (D-M9-7) | Pending: owner to confirm |
+| Project Owner acceptance of the 26 IDs (D-M9-7) | Approved by the Project Owner, 2026-11-12 |
 | Date of manual pass | 2026-11-12 |

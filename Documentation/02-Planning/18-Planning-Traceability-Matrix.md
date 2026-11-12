@@ -102,7 +102,7 @@ These are needed to implement a requirement. Each is traced to the requirement i
 
 ## 8. Phase 1 Acceptance (M9)
 
-Manual pass on 2026-11-12, Chrome 157.0.8103.79, 15 of 15 checks passed. Automated evidence: unit 382 and integration 304 passed (`04-Implementation/19-Module-9-Acceptance-Record.md` §1 and §2). Owner sign-off is pending; the status moves to Accepted when the Project Owner signs.
+Manual pass on 2026-11-12, Chrome 157.0.8103.79, 15 of 15 checks passed. Automated evidence: unit 382 and integration 304 passed (`04-Implementation/19-Module-9-Acceptance-Record.md` §1 and §2). The Project Owner approved the acceptance on 2026-11-12. All 26 IDs are Accepted (M9).
 
 | Req ID | Manual step (`19-` §3) | Result |
 |---|---|---|
