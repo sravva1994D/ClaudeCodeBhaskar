@@ -179,6 +179,61 @@ public class VisitPagesTests(TestDatabaseFixture database, TestWebApplicationFac
         Assert.Equal("/Account/Login", new Uri(new Uri("http://localhost"), response.Headers.Location!).AbsolutePath);
     }
 
+    [Fact]
+    public async Task FR_HIS_003_a_single_date_shows_only_visits_on_that_day()
+    {
+        var older = await SeedVisitAsync(patientId, Earlier);
+        var newer = await SeedVisitAsync(patientId, Later);
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Patients/{patientId}/Visits?from=2026-11-03");
+
+        Assert.Contains($"/Visits/Details/{newer}", html);
+        Assert.DoesNotContain($"/Visits/Details/{older}", html);
+        Assert.Contains("Clear filter", html);
+    }
+
+    [Fact]
+    public async Task FR_HIS_003_a_range_shows_only_visits_inside_it_with_both_ends_inclusive()
+    {
+        var older = await SeedVisitAsync(patientId, Earlier);
+        var newer = await SeedVisitAsync(patientId, Later);
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Patients/{patientId}/Visits?from=2026-10-02&to=2026-10-02");
+        var wide = await client.GetStringAsync($"/Patients/{patientId}/Visits?from=2026-10-01&to=2026-11-03");
+
+        Assert.Contains($"/Visits/Details/{older}", html);
+        Assert.DoesNotContain($"/Visits/Details/{newer}", html);
+        Assert.Contains($"/Visits/Details/{newer}", wide);
+        Assert.Contains($"/Visits/Details/{older}", wide);
+    }
+
+    [Fact]
+    public async Task FR_HIS_003_a_from_date_after_the_to_date_shows_an_error_and_no_visits()
+    {
+        var older = await SeedVisitAsync(patientId, Earlier);
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Patients/{patientId}/Visits?from=2026-11-05&to=2026-11-01");
+
+        Assert.Contains("From date must not be after To date.", html);
+        Assert.DoesNotContain($"/Visits/Details/{older}", html);
+    }
+
+    [Fact]
+    public async Task FR_HIS_003_a_range_with_no_visits_says_so_and_offers_to_clear_it()
+    {
+        await SeedVisitAsync(patientId, Earlier);
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Patients/{patientId}/Visits?from=2026-01-01&to=2026-01-31");
+
+        Assert.Contains("No visits in this date range.", html);
+        Assert.DoesNotContain("No visits yet", html);
+        Assert.Contains("Clear filter", html);
+    }
+
     private static Patient NewPatient(string fullName, string phone) => new()
     {
         FullName = fullName,

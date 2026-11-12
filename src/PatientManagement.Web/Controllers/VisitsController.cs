@@ -11,8 +11,13 @@ public class VisitsController(
     IPrescriptionService prescriptions,
     IPatientService patients) : Controller
 {
+    // The range comes from the query string as yyyy-MM-dd. Both ends are optional (FR-HIS-003).
     [HttpGet("/Patients/{patientId:int}/Visits")]
-    public async Task<IActionResult> Index(int patientId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(
+        int patientId,
+        [FromQuery(Name = "from")] DateOnly? fromDate,
+        [FromQuery(Name = "to")] DateOnly? toDate,
+        CancellationToken cancellationToken)
     {
         var patient = await patients.GetAsync(patientId, cancellationToken);
         if (!patient.IsSuccess)
@@ -20,14 +25,16 @@ public class VisitsController(
             return NotFound();
         }
 
-        // The date filter is wired to the screen in step 3 of Module 6; for now the list is unfiltered.
-        var visits = await consultations.ListVisitsAsync(patientId, cancellationToken: cancellationToken);
+        var visits = await consultations.ListVisitsAsync(patientId, fromDate, toDate, cancellationToken);
 
         return View(new VisitHistoryViewModel
         {
             PatientId = patient.Value!.Id,
             PatientName = patient.Value.FullName,
             PatientCode = patient.Value.PatientCode,
+            FromDate = fromDate,
+            ToDate = toDate,
+            ErrorMessage = visits.Errors.FirstOrDefault()?.Message,
             Visits = visits.Value ?? []
         });
     }
