@@ -1,0 +1,170 @@
+# Module 8 Review Package: Non-Functional Verification
+
+**Status:** Measurement record set up (Module 8 step 2). Measurements are not yet run. The Project Owner runs §4 to §6 in the browser and records the results. Approval is in §8.
+**Plan:** `16-Module-8-Plan.md` (decisions D-M8-1 to D-M8-8, approved 2026-11-12).
+**Requirements:** NFR-PRF-001, NFR-PRF-002, SC-001, SC-002, NFR-SCL-001, NFR-CMP-001, NFR-SEC-002, NFR-USB-001.
+
+## 1. Scope of this record
+
+| In this package | Where |
+|---|---|
+| Seed data used for the timings and its row counts | §2 |
+| Timing method (page load, search, history) | §3 |
+| Page load timing, 10 page types (NFR-PRF-001) | §4.1 |
+| Search and history timing, 10 terms (NFR-PRF-002, SC-002) | §4.2 |
+| Consultation timed rehearsal (SC-001) | §5 |
+| Usability walkthrough (NFR-USB-001) | §6 |
+| Browser matrix checklist (NFR-CMP-001), security and volume checks | Later steps (4 and 3) |
+
+No patient data is recorded here. The synthetic names used in the search terms are the only names that appear.
+
+## 2. Seed data
+
+Loaded by `database/Scripts/04-generate-performance-data.sql` (commit `fc526e2`), into the development database `PatientManagement`.
+
+| Row set | Count | Check |
+|---|---|---|
+| Synthetic patients | 1,000 | Counted by the script after load |
+| Synthetic visits | 5,005 | Counted by the script after load |
+| Synthetic vitals | 4,004 | Counted by the script after load |
+| Synthetic prescriptions | 2,502 | Counted by the script after load |
+| Synthetic appointments | 2,000 | Counted by the script after load |
+
+Real rows that were already in the development database are not part of the timing data.
+
+Record the counts again before the run, to confirm nothing changed since the load:
+
+```sql
+SELECT (SELECT COUNT(*) FROM Patients WHERE Email LIKE N'%@example.test') AS SyntheticPatients,
+       (SELECT COUNT(*) FROM Consultations c JOIN Patients p ON p.Id = c.PatientId
+         WHERE p.Email LIKE N'%@example.test') AS SyntheticVisits;
+```
+
+Find the patient with the most visits, for the profile and history timings (returns an id and a count only):
+
+```sql
+SELECT TOP (1) p.Id, COUNT(c.Id) AS Visits
+FROM Patients p JOIN Consultations c ON c.PatientId = p.Id
+WHERE p.Email LIKE N'%@example.test'
+GROUP BY p.Id
+ORDER BY COUNT(c.Id) DESC;
+```
+
+| Field | Value |
+|---|---|
+| Counts before the run (synthetic patients, visits) | |
+| Patient id with most visits (for profile and history) | |
+| Date of the run | |
+
+## 3. Timing method (PDR-30, D-M8-6, D-M8-7)
+
+- **Browser:** Chrome, the primary target. The version is recorded on every run (PDR-28). Edge is used in §7 and in the matrix checks (step 4).
+- **Tool:** Chrome DevTools only. No automation script (PDR-29).
+- **Page load:** DevTools, Network tab, with "Disable cache" ticked. Reload the page with Ctrl+R. Record the `Load` time shown at the bottom of the Network panel, in seconds to two decimals.
+- **Search and history:** type the term, press Enter, and start a stopwatch. Stop it when the results list is fully shown. Record in seconds to two decimals. Repeat with the same term; the first run after page load is a warm-up and is not recorded.
+- **Median:** of the five recorded runs (the third value when sorted). Sort the five values before taking the median.
+- **Guideline:** page load about 2 s; search and history 2 to 5 s (BRD, localhost). Guidelines, not an SLA. A miss is recorded as it is, not hidden, and is decided by the Project Owner (D-M8-8).
+- **Close the other applications** that use the browser or the database during the run, and note any that could not be closed.
+
+## 4. Timing results
+
+Record the browser version for each table: Chrome version ______ (from the browser's About page). Machine and OS: ______.
+
+### 4.1 Page load (NFR-PRF-001, TC-NFR-PRF-001-1)
+
+Ten page types. Use the seed patient from §2 for the profile page.
+
+| # | Page | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Median (s) | Within about 2 s? |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Sign-in | | | | | | | |
+| 2 | Home | | | | | | | |
+| 3 | Patient search results (SCR-04) | | | | | | | |
+| 4 | Patient profile (SCR-06) | | | | | | | |
+| 5 | Visit history (SCR-07) | | | | | | | |
+| 6 | Daily appointments list | | | | | | | |
+| 7 | New appointment | | | | | | | |
+| 8 | Consultation (SCR-11) | | | | | | | |
+| 9 | Prescription print view | | | | | | | |
+| 10 | Export form (SCR-13) | | | | | | | |
+
+### 4.2 Search and history (NFR-PRF-002, SC-002, TC-NFR-PRF-002-1, TC-SC-002-1)
+
+Ten search terms (the Module 2 set, `06-Module-2-Review-Package.md` §3.1). Enter each in the top-bar search.
+
+| # | Term | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Median (s) | Within 2 to 5 s? | Result count |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | Patient 0500 | | | | | | | | |
+| 2 | Patient 0001 | | | | | | | | |
+| 3 | Brown | | | | | | | | |
+| 4 | Test | | | | | | | | |
+| 5 | 00000042 | | | | | | | | |
+| 6 | 00000999 | | | | | | | | |
+| 7 | Harris | | | | | | | | |
+| 8 | Example | | | | | | | | |
+| 9 | Clark | | | | | | | | |
+| 10 | zzzz | | | | | | | | |
+
+Visit history (SC-002, the patient from §2 with the most visits): time the load of the visit history page, five runs, same method.
+
+| Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Median (s) | Within 2 to 5 s? |
+|---|---|---|---|---|---|---|
+| | | | | | | |
+
+"Result count" is the number of rows shown, to compare with the seed counts in §2. Terms other than the seeded ones may return 0 rows; that is expected.
+
+## 5. Consultation timed rehearsal (SC-001, TC-SC-001-1, WP-9.2)
+
+Goal: a consultation record in 2 to 3 minutes (usability goal, localhost, test data).
+
+1. Sign in. Choose a seed patient from §2 (a different one from the profile patient, so the history timing is not disturbed).
+2. Start the timer. Open a new consultation for that patient (no appointment).
+3. Enter vitals: temperature, systolic and diastolic blood pressure, pulse.
+4. Enter complaints and diagnosis (any short text).
+5. Add two medicines, each with a name, dosage, frequency and duration.
+6. Save the consultation and save the medicines.
+7. Stop the timer when both saves are complete and confirmed on screen. Do not click Finish, and do not print.
+
+| Field | Value |
+|---|---|
+| Elapsed time (mm:ss) | |
+| Any warning or error shown | |
+| Browser and version | |
+
+The rehearsal adds one visit to a seed patient. The remove script (step 1) deletes it with the other synthetic rows.
+
+## 6. Usability walkthrough (NFR-USB-001, WP-9.6, TC-NFR-USB-001)
+
+Qualitative check. No pass or fail threshold is defined in the BRD (SC-006 is deferred). Record what is seen.
+
+| # | Check | Result | Notes |
+|---|---|---|---|
+| 1 | Tab order on the consultation screen goes vitals, complaints, diagnosis, medicines, in reading order | | |
+| 2 | Required fields are marked the same way on every data-entry screen | | |
+| 3 | The consultation screen fits one screen without scrolling at the owner's usual window size (CON-016) | | |
+| 4 | Enter moves to the next field on the patient search and the appointment form | | |
+| 5 | Error messages appear next to the field they concern | | |
+| 6 | The Save and Back actions are where a user expects them on each screen | | |
+| 7 | Nothing on a data-entry screen uses colour alone to show a warning | | |
+
+Screen size used: ______ x ______ px. Browser and version: ______.
+
+## 7. Browser notes (for the matrix in step 4)
+
+| Item | Chrome | Edge |
+|---|---|---|
+| Version used for §4 to §6 | | |
+| Date input display (M6 and M7 open item: pickers differ per browser; the page always sends yyyy-MM-dd) | | |
+| Print preview and Save as PDF on the prescription and export views | | |
+
+Edge is not used for the timings in §4 (D-M8-7). Its checks are in step 4.
+
+## 8. Approval
+
+| Item | Status |
+|---|---|
+| Measurements in §4 recorded (with any misses) | Not yet |
+| Rehearsal in §5 recorded | Not yet |
+| Walkthrough in §6 recorded | Not yet |
+| Project Owner approval | Pending |
+
+Approval of this package is given after §4 to §6 are recorded. Misses need an owner decision recorded here before approval.
