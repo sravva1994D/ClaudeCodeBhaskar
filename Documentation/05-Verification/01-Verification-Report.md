@@ -52,7 +52,7 @@ Priorities from `../01-Brainstorming/12-Requirement-Traceability-Matrix.md`. Tes
 
 | Req ID | Priority | Evidence | Verdict |
 |---|---|---|---|
-| NFR-SEC-001 | Must | Redirect to sign-in for protected pages; cookie settings test (HttpOnly, SameSite Lax, 24-hour sliding, login path); generic error for wrong password and unknown user; password policy (8 to 16 characters with upper, lower, digit and symbol); one account created by console seed, password typed at the prompt; global authorization fallback. Manual M1 | Verified (session expiry by configuration, see §7) |
+| NFR-SEC-001 | Must | Redirect to sign-in for protected pages; cookie settings test (HttpOnly, SameSite Lax, 24-hour sliding, login path); generic error for wrong password and unknown user; forgot-password tests (reset with a match, same message with no match, mismatched confirmation refused); password policy (8 to 16 characters with upper, lower, digit and symbol); one account created by console seed, password typed at the prompt; global authorization fallback. Manual M1 | Verified (session expiry by configuration, see §7) |
 | NFR-SEC-002 | Must | Hash tests (stored value is a hash; verifies with the original password; does not verify with another); HTTPS redirection and HSTS in the non-development pipeline (`Program.cs`). Encryption at rest out of scope (DEC-017) | Verified in tests. Transport by configuration review |
 | NFR-PRF-001 | Must | Browser timing, median of 5 runs, ten page types, all under 2 s (`../04-Implementation/16-Module-8-Review-Package.md`, Chrome 157.0.8103.52) | Verified by the M8 record. Not automated (PDR-29) |
 | NFR-USB-001 | Won't (DEC-025) | Removed from Phase 1 scope | Not verified, out of scope |

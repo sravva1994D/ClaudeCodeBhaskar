@@ -4,7 +4,9 @@ A web-based patient management application for one general physician. Phase 1 is
 
 ## Status
 
-Solution skeleton (Module 4, started 2026-11-10). No BRD feature is implemented yet.
+Phase 1 is implemented and accepted (Module 9, 2026-11-12). Scope and status: `Documentation/01-Brainstorming/12-Requirement-Traceability-Matrix.md`.
+
+Target versions (PDR-31): .NET 10 SDK (LTS, `10.0.401`) and SQL Server 2022 Express (`16.0.1210.3`) on the verification machine. Details: `Documentation/04-Implementation/01-Setup-Guide.md`.
 
 ## Quick Start
 

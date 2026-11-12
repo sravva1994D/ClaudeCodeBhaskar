@@ -69,11 +69,11 @@ No controller, service, repository, entity, migration, validation rule or query 
 
 ## 6. Not checked here
 
-- **Browser behaviour:** DataTables paging, sorting and search; the page-size menu; breadcrumb links; the header layout at desktop widths. These need a Chrome check. This environment cannot run a browser.
+- **Browser behaviour:** checked in Chrome 157.0.8103.79 (M15). Paging, sorting, search, page sizes, breadcrumb links and the header layout passed.
 - **Accessibility:** keyboard use of DataTables controls and the breadcrumb is expected from Bootstrap and DataTables, but not verified.
 
 ## 7. Open items
 
-1. Owner decision: whether to keep the date-input display as the browser's own format (current), or change the input to a text field with a calendar button (a larger change).
-2. The three missing list screens (all patients, consultations, medications and prescriptions) are not built. Decide whether they are needed; they would need a BRD requirement.
-3. Browser check of paging, sorting, search and breadcrumbs in Chrome.
+1. Owner decision: whether to keep the date-input display as the browser's own format (current), or change the input to a text field with a calendar button (a larger change). **Accepted** as L1 (Project Owner, 2026-11-12).
+2. The three missing list screens (all patients, consultations, medications and prescriptions) are not built. Decide whether they are needed; they would need a BRD requirement. **Accepted** as L2 (not built).
+3. **Done** (M15, Chrome 157.0.8103.79): paging, sorting, search and breadcrumbs passed.

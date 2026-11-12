@@ -1,11 +1,11 @@
 # 12 — Requirement Traceability Matrix (Module 1)
 
 **Purpose:** Trace each requirement ID to its BRD section, priority, business objective, success criterion, acceptance criteria, open questions, and decision/issue log entries.
-**Priority:** MoSCoW, proposed in `BRD/Doc_BRD.md` → Requirement Priorities (approved by the Project Owner 2026-11-10, A-006 / DEC-006).
+**Priority:** MoSCoW, set in `BRD/Doc_BRD.md` → Requirement Priorities (approved by the Project Owner 2026-11-10, A-006 / DEC-006).
 **Status legend:** `Traced` = BRD source confirmed; all linked open questions answered (2026-11-10). `Deferred` = in the BRD but not in Phase 1. `Excluded` = out of scope.
 **Downstream columns** (Planning, Implementation, Test, Code Review) are in `Documentation/02-Planning/18-Planning-Traceability-Matrix.md`.
 **Decision/Issue refs:** see `14-Decision-and-Issue-Log.md`.
-**Status:** Refreshed 2026-11-10
+**Status:** Refreshed 2026-11-12
 
 | Req ID | Priority | BRD Section | BRD Wording (short) | Business Objective | Success Criterion | Acceptance Ref | Open Questions (all answered) | Status |
 |---|---|---|---|---|---|---|---|---|
@@ -79,11 +79,11 @@
 | Every success criterion has an ID | Yes (SC-001 to SC-006) |
 | Every out-of-scope item has an OOS ID and a Won't Have priority | Yes (OOS-001 to OOS-015) |
 | Every business objective is served by at least one requirement | Yes (BO-001 to BO-007) |
-| Every requirement has a priority | Yes (proposed; pending approval) |
+| Every requirement has a priority | Yes (approved 2026-11-10; amended 2026-11-12 by DEC-025 and DEC-027) |
 | In-scope requirements with status `Traced` or implemented (no open question) | 26 of 26 in scope after DEC-025 and DEC-027 (31 before DEC-025; 6 removed; FR-APT-004 added) |
 
 ## Result
 
-The 26 in-scope requirement IDs after DEC-025 and DEC-027 are traced (FR-APT-004 is implemented and awaits approval). Their linked open questions are answered. The four deferred IDs (NFR-REL-001, NFR-REL-002, SC-003, SC-006) are recorded as deferred. Six IDs (NFR-USB-001, NFR-PRF-002, NFR-SCL-001, NFR-CMP-001, SC-001, SC-002) were removed from Phase 1 scope by Project Owner decision DEC-025 on 2026-11-12.
+The 26 in-scope requirement IDs after DEC-025 and DEC-027 are traced (FR-APT-004 is implemented and accepted in M9). Their linked open questions are answered. The four deferred IDs (NFR-REL-001, NFR-REL-002, SC-003, SC-006) are recorded as deferred. Six IDs (NFR-USB-001, NFR-PRF-002, NFR-SCL-001, NFR-CMP-001, SC-001, SC-002) were removed from Phase 1 scope by Project Owner decision DEC-025 on 2026-11-12.
 
 Priorities were approved by the Project Owner on 2026-11-10 (A-006). Changing any priority changes the Phase 1 scope boundary and needs Project Owner approval.
