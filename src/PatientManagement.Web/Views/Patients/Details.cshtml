@@ -42,6 +42,7 @@
     <a class="btn btn-outline-primary" asp-controller="Patients" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
     <a class="btn btn-outline-primary" asp-controller="Appointments" asp-action="Create" asp-route-patientId="@Model.Id">Schedule appointment</a>
     <a class="btn btn-outline-primary" asp-controller="Visits" asp-action="Index" asp-route-patientId="@Model.Id">Visit history</a>
+    <a class="btn btn-outline-primary" asp-controller="Export" asp-action="Patient" asp-route-patientId="@Model.Id">Export</a>
     <form method="post" asp-controller="Consultations" asp-action="Start" class="d-inline">
         <input type="hidden" name="patientId" value="@Model.Id" />
         <button type="submit" class="btn btn-outline-primary">Start consultation</button>
