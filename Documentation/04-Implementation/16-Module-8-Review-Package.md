@@ -90,7 +90,9 @@ Volume (NFR-SCL-001): no automated check was added. The check is every list scre
 
 ## 4. Timing results
 
-Record the browser version for each table: Chrome version ______ (from the browser's About page). Machine and OS: ______.
+Record the browser version for each table: Chrome version 157.0.8103.52 (from the browser's About page, reported by the Project Owner). Machine and OS: ______.
+
+Units are seconds. Only the Home page row is recorded so far; the other nine page types are still to run. Page-load values are taken with "Disable cache" ticked in DevTools. Earlier single figures (15 ms page load, 2 ms search) were not taken to this method and are not recorded.
 
 ### 4.1 Page load (NFR-PRF-001, TC-NFR-PRF-001-1)
 
@@ -99,7 +101,7 @@ Ten page types. Use the seed patient from §2 for the profile page.
 | # | Page | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Median (s) | Within about 2 s? |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Sign-in | | | | | | | |
-| 2 | Home | | | | | | | |
+| 2 | Home | 0.033 | 0.014 | 0.030 | 0.013 | 0.004 | 0.014 | Yes |
 | 3 | Patient search results (SCR-04) | | | | | | | |
 | 4 | Patient profile (SCR-06) | | | | | | | |
 | 5 | Visit history (SCR-07) | | | | | | | |
