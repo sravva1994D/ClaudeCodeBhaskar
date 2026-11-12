@@ -100,7 +100,7 @@ Ten page types. Use the seed patient from §2 for the profile page.
 
 | # | Page | Run 1 | Run 2 | Run 3 | Run 4 | Run 5 | Median (s) | Within about 2 s? |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Sign-in | | | | | | | |
+| 1 | Sign-in | 0.070 | 0.090 | 0.095 | 0.071 | 0.079 | 0.079 | Yes |
 | 2 | Home | 0.033 | 0.014 | 0.030 | 0.013 | 0.004 | 0.014 | Yes |
 | 3 | Patient search results (SCR-04) | 0.241 | 0.207 | 0.238 | 0.274 | 0.282 | 0.241 | Yes |
 | 4 | Patient profile (SCR-06) | 0.070 | 0.102 | 0.108 | 0.099 | 0.099 | 0.099 | Yes |
