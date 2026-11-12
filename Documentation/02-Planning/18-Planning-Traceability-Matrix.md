@@ -48,7 +48,7 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 
 | Ref | Priority | Screens | Controller.Action | Service / component | Tables | Tests | WBS | Milestone | PDR |
 |---|---|---|---|---|---|---|---|---|---|
-| SC-001 | Must (verification) | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | Consultations, VitalSigns, Prescriptions | Timed rehearsal (`16-` §5; run pending) | WP-9.2 | M8 | — |
+| SC-001 | Must (verification) | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | Consultations, VitalSigns, Prescriptions | Timed rehearsal (`16-` §5; not measured, skipped by Project Owner decision 2026-11-12) | WP-9.2 | M8 | — |
 | SC-002 | Must (verification) | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService, VisitService | Patients, Consultations | Timed search and history (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 30 |
 | SC-004 | Must (verification) | SCR-12 | Prescriptions.Print (23, 24) | PrescriptionService.MarkPrintedAsync | Prescriptions | Browser checks 7 to 11 passed (Chrome 157.0.8103.51, A4 print and Save as PDF), review package §4; approved M5 | WP-6.4 | M5 | 16 |
 | SC-005 | Must (verification) | SCR-13 | Export.PatientCsv (26); Export.PatientPrint (27) | ExportService | — | Implemented and approved (M7); file open, print and Save as PDF checked in Chrome 157.0.8103.51 (review package `15-` §4) | WP-8.2, 8.3 | M7 | 17, 18 |

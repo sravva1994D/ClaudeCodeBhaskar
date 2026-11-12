@@ -149,6 +149,8 @@ Visit history (SC-002, the patient from §2 with the most visits): time the load
 
 ## 5. Consultation timed rehearsal (SC-001, TC-SC-001-1, WP-9.2)
 
+**Status: not measured. Skipped by the Project Owner on 2026-11-12 (not required for this learning project).** SC-001 has no timed result. This is recorded as an owner decision, not as a pass.
+
 Goal: a consultation record in 2 to 3 minutes (usability goal, localhost, test data).
 
 1. Sign in. Choose a seed patient from §2 (a different one from the profile patient, so the history timing is not disturbed).
