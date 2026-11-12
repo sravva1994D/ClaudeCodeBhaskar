@@ -9,41 +9,41 @@
 
 | Req ID | Priority | BRD Section | BRD Wording (short) | Business Objective | Success Criterion | Acceptance Ref | Open Questions (all answered) | Status |
 |---|---|---|---|---|---|---|---|---|
-| FR-PAT-001 | Must Have | FR > Patient Management | Add, edit, view; capture Name, DOB, Gender, Contact | BO-001, BO-004 | — | 10 §1 | OQ-001, OQ-002, OQ-003 | Traced |
-| FR-PAT-002 | Must Have | FR > Patient Management | Edit patient details | BO-004 | — | 10 §1 | OQ-024 | Traced |
-| FR-PAT-003 | Must Have | FR > Patient Management | View patient details | BO-003 | — | 10 §1 | — | Traced |
-| FR-PAT-004 | Must Have | FR > Patient Management | Search by name or phone | BO-003 | SC-002 | 10 §1 | OQ-001, OQ-003 | Traced |
-| FR-APT-001 | Must Have | FR > Appointment Management | Schedule appointments | BO-004 | — | 10 §1 | OQ-004, OQ-005 | Traced |
-| FR-APT-002 | Must Have | FR > Appointment Management | View daily list | BO-004 | — | 10 §1 | OQ-004 | Traced |
-| FR-APT-003 | Must Have | FR > Appointment Management | Lifecycle: Scheduled, Checked-In, In Consultation, Completed, Cancelled, No-show (no reversal; Completed only after In Consultation) | BO-004 | — | 10 §1 | OQ-006, OQ-024 | Traced |
-| FR-APT-004 | Should Have | FR > Appointment Management | Reschedule a scheduled appointment to another free slot (added 2026-11-12, DEC-027) | BO-004 | — | 10 §1 | — | Implemented (M-extra, DEC-027); awaiting owner approval |
-| FR-VIT-001 | Must Have | FR > Consultation > Vitals (Mandatory) | Record temp, BP, pulse for every consultation | BO-002 | SC-001 | 10 §1 | OQ-007, OQ-028 | Traced |
-| FR-CMP-001 | Must Have | FR > Consultation > Complaints | Enter symptoms (free text) | BO-002 | SC-001 | 10 §1 | OQ-006, OQ-008 | Traced |
-| FR-DIA-001 | Must Have | FR > Consultation > Diagnosis | Record diagnosis notes | BO-002 | SC-001 | 10 §1 | OQ-008 | Traced |
-| FR-RX-001 | Must Have | FR > Consultation > Medication | Name, dosage, frequency, duration, instructions | BO-002 | SC-001 | 10 §1 | OQ-009 | Traced |
-| FR-RX-002 | Must Have | FR > Consultation > Medication | Printable A4 prescription with header, patient, vitals, diagnosis, medicines, footer | BO-001, BO-005 | SC-004 | 10 §1 | OQ-010, OQ-011 | Traced |
-| FR-HIS-001 | Must Have | FR > Patient History | View previous visits | BO-003 | SC-002 | 10 §1 | OQ-006 | Traced |
-| FR-HIS-002 | Must Have | FR > Patient History | Access vitals, complaints, diagnosis, prescriptions | BO-003 | — | 10 §1 | OQ-011 | Traced |
-| FR-HIS-003 | Should Have | FR > Patient History | Filter by single date or range | BO-003 | — | 10 §1 | OQ-012 | Implemented and approved (M6) |
-| FR-SRC-001 | Must Have | FR > Search & Navigation | Quick patient search | BO-003 | SC-002 | 10 §1 | OQ-003 | Traced |
-| FR-SRC-002 | Should Have | FR > Search & Navigation | View 5 recent patients by last visit | BO-003 | — | 10 §1 | OQ-013 | Implemented and approved (M6) |
-| FR-SRC-003 | Should Have | FR > Search & Navigation | Navigate profile and visits | BO-002 | — | 10 §1 | OQ-006 | Traced |
-| FR-EXP-001 | Must Have | FR > Data Export | Export patient data with visits as CSV | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Implemented and approved (M7) |
-| FR-EXP-002 | Must Have | FR > Data Export | Export as PDF (printable view; browser Save as PDF) | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Implemented and approved (M7) |
+| FR-PAT-001 | Must Have | FR > Patient Management | Add, edit, view; capture Name, DOB, Gender, Contact | BO-001, BO-004 | — | 10 §1 | OQ-001, OQ-002, OQ-003 | Traced; Verified (M9) |
+| FR-PAT-002 | Must Have | FR > Patient Management | Edit patient details | BO-004 | — | 10 §1 | OQ-024 | Traced; Verified (M9) |
+| FR-PAT-003 | Must Have | FR > Patient Management | View patient details | BO-003 | — | 10 §1 | — | Traced; Verified (M9) |
+| FR-PAT-004 | Must Have | FR > Patient Management | Search by name or phone | BO-003 | SC-002 | 10 §1 | OQ-001, OQ-003 | Traced; Verified (M9) |
+| FR-APT-001 | Must Have | FR > Appointment Management | Schedule appointments | BO-004 | — | 10 §1 | OQ-004, OQ-005 | Traced; Verified (M9) |
+| FR-APT-002 | Must Have | FR > Appointment Management | View daily list | BO-004 | — | 10 §1 | OQ-004 | Traced; Verified (M9) |
+| FR-APT-003 | Must Have | FR > Appointment Management | Lifecycle: Scheduled, Checked-In, In Consultation, Completed, Cancelled, No-show (no reversal; Completed only after In Consultation) | BO-004 | — | 10 §1 | OQ-006, OQ-024 | Traced; Verified (M9) |
+| FR-APT-004 | Should Have | FR > Appointment Management | Reschedule a scheduled appointment to another free slot (added 2026-11-12, DEC-027) | BO-004 | — | 10 §1 | — | Implemented (M-extra, DEC-027); awaiting owner approval; Verified (M9) |
+| FR-VIT-001 | Must Have | FR > Consultation > Vitals (Mandatory) | Record temp, BP, pulse for every consultation | BO-002 | SC-001 | 10 §1 | OQ-007, OQ-028 | Traced; Verified (M9) |
+| FR-CMP-001 | Must Have | FR > Consultation > Complaints | Enter symptoms (free text) | BO-002 | SC-001 | 10 §1 | OQ-006, OQ-008 | Traced; Verified (M9) |
+| FR-DIA-001 | Must Have | FR > Consultation > Diagnosis | Record diagnosis notes | BO-002 | SC-001 | 10 §1 | OQ-008 | Traced; Verified (M9) |
+| FR-RX-001 | Must Have | FR > Consultation > Medication | Name, dosage, frequency, duration, instructions | BO-002 | SC-001 | 10 §1 | OQ-009 | Traced; Verified (M9) |
+| FR-RX-002 | Must Have | FR > Consultation > Medication | Printable A4 prescription with header, patient, vitals, diagnosis, medicines, footer | BO-001, BO-005 | SC-004 | 10 §1 | OQ-010, OQ-011 | Traced; Verified (M9) |
+| FR-HIS-001 | Must Have | FR > Patient History | View previous visits | BO-003 | SC-002 | 10 §1 | OQ-006 | Traced; Verified (M9) |
+| FR-HIS-002 | Must Have | FR > Patient History | Access vitals, complaints, diagnosis, prescriptions | BO-003 | — | 10 §1 | OQ-011 | Traced; Verified (M9) |
+| FR-HIS-003 | Should Have | FR > Patient History | Filter by single date or range | BO-003 | — | 10 §1 | OQ-012 | Implemented and approved (M6); Verified (M9) |
+| FR-SRC-001 | Must Have | FR > Search & Navigation | Quick patient search | BO-003 | SC-002 | 10 §1 | OQ-003 | Traced; Verified (M9) |
+| FR-SRC-002 | Should Have | FR > Search & Navigation | View 5 recent patients by last visit | BO-003 | — | 10 §1 | OQ-013 | Implemented and approved (M6); Verified (M9) |
+| FR-SRC-003 | Should Have | FR > Search & Navigation | Navigate profile and visits | BO-002 | — | 10 §1 | OQ-006 | Traced; Verified (M9) |
+| FR-EXP-001 | Must Have | FR > Data Export | Export patient data with visits as CSV | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Implemented and approved (M7); Verified (M9) |
+| FR-EXP-002 | Must Have | FR > Data Export | Export as PDF (printable view; browser Save as PDF) | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Implemented and approved (M7); Verified (M9) |
 | NFR-USB-001 | Won't Have (Phase 1) | NFR > Usability | Simple, minimal UI for fast entry | BO-002, BO-007 | — | 10 §2 | OQ-021 | Removed from Phase 1 scope (DEC-025, 2026-11-12) |
-| NFR-PRF-001 | Must Have | NFR > Performance | Page load approximately 2 s (localhost) | BO-003 | SC-002 | 10 §2 | OQ-020 | Measured and approved (M8): all ten page types under 2 s |
+| NFR-PRF-001 | Must Have | NFR > Performance | Page load approximately 2 s (localhost) | BO-003 | SC-002 | 10 §2 | OQ-020 | Measured and approved (M8): all ten page types under 2 s; Verified (M9) |
 | NFR-PRF-002 | Won't Have (Phase 1) | NFR > Performance | Search results within 2–5 s (localhost) | BO-003 | SC-002 | 10 §2 | OQ-020 | Removed from Phase 1 scope (DEC-025, 2026-11-12) |
 | NFR-REL-001 | Won't Have (Phase 1) | NFR > Reliability | No data loss | BO-003 | — | 10 §2 | OQ-019 | Deferred |
 | NFR-REL-002 | Won't Have (Phase 1) | NFR > Reliability | Automated backups | BO-003 | — | 10 §2 | OQ-018 | Deferred |
-| NFR-SEC-001 | Must Have | NFR > Security | Secure login, single user | — | — | 10 §2 | OQ-015 | Verified in automated tests (M8 step 3) |
-| NFR-SEC-002 | Must Have | NFR > Security | Data in transit (TLS beyond localhost); password hashing (at-rest encryption out of Phase 1, DEC-017) | — | — | 10 §2 | OQ-016, OQ-017 | Hashing verified in automated tests (M8 step 3); transport configuration reviewed |
+| NFR-SEC-001 | Must Have | NFR > Security | Secure login, single user | — | — | 10 §2 | OQ-015 | Verified in automated tests (M8 step 3); Verified (M9) |
+| NFR-SEC-002 | Must Have | NFR > Security | Data in transit (TLS beyond localhost); password hashing (at-rest encryption out of Phase 1, DEC-017) | — | — | 10 §2 | OQ-016, OQ-017 | Hashing verified in automated tests (M8 step 3); transport configuration reviewed; Verified (M9) |
 | NFR-SCL-001 | Won't Have (Phase 1) | NFR > Scalability | Single clinic, up to 1,000 records | — | — | 10 §2 | OQ-023 | Removed from Phase 1 scope (DEC-025, 2026-11-12) |
 | NFR-CMP-001 | Won't Have (Phase 1) | NFR > Compatibility | Latest Chrome and Edge (desktop); Safari not required (DEC-019) | — | — | 10 §2 | OQ-022 | Removed from Phase 1 scope (DEC-025, 2026-11-12) |
 | SC-001 | Won't Have (Phase 1) | Success Criteria | Consultation record in 2–3 min | BO-002 | SC-001 | 10 §3 | OQ-021 | Removed from Phase 1 scope (DEC-025, 2026-11-12) |
 | SC-002 | Won't Have (Phase 1) | Success Criteria | Search/history in 2–5 s | BO-003 | SC-002 | 10 §3 | OQ-020 | Removed from Phase 1 scope (DEC-025, 2026-11-12) |
 | SC-003 | Won't Have (Phase 1) | Success Criteria | ≥80% paper reduction | BO-001, BO-004 | SC-003 | 10 §3 | OQ-021 | Deferred |
-| SC-004 | Must Have (verification of Must Have requirements) | Success Criteria | Smooth prescription generation and printing | BO-005 | SC-004 | 10 §3 | OQ-010 | Traced |
-| SC-005 | Must Have (verification of Must Have requirements) | Success Criteria | CSV and PDF export succeeds | BO-006 | SC-005 | 10 §3 | OQ-014 | Traced |
+| SC-004 | Must Have (verification of Must Have requirements) | Success Criteria | Smooth prescription generation and printing | BO-005 | SC-004 | 10 §3 | OQ-010 | Traced; Verified (M9) |
+| SC-005 | Must Have (verification of Must Have requirements) | Success Criteria | CSV and PDF export succeeds | BO-006 | SC-005 | 10 §3 | OQ-014 | Traced; Verified (M9) |
 | SC-006 | Won't Have (Phase 1) | Success Criteria | High usability, minimal training | BO-007 | SC-006 | 10 §3 | OQ-021 | Deferred |
 | OOS-001 | Won't Have (Phase 1) | Out of Scope | Receptionist or multi-user access | — | — | 11 §4 | — | Excluded |
 | OOS-002 | Won't Have (Phase 1) | Out of Scope | Billing and invoicing | — | — | 11 §4 | — | Excluded |

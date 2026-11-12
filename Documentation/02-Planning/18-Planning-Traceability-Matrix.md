@@ -99,3 +99,36 @@ These are needed to implement a requirement. Each is traced to the requirement i
 | Blocked status | Most rows "Blocked" | Not used. Open items are listed as PDR in `17-` | Open questions are answered; all planning decisions are closed (2026-11-10) |
 | FR-SRC-001 | Must | Must | Unchanged |
 | Downstream columns | "Added in later modules" | Added here | Module 2 scope |
+
+## 8. Phase 1 Acceptance (M9)
+
+Manual pass on 2026-11-12, Chrome 157.0.8103.79, 15 of 15 checks passed. Automated evidence: unit 382 and integration 304 passed (`04-Implementation/19-Module-9-Acceptance-Record.md` §1 and §2). Owner sign-off is pending; the status moves to Accepted when the Project Owner signs.
+
+| Req ID | Manual step (`19-` §3) | Result |
+|---|---|---|
+| FR-PAT-001 | M2 | Pass |
+| FR-PAT-002 | M3 | Pass |
+| FR-PAT-003 | M3 | Pass |
+| FR-PAT-004 | M3 | Pass |
+| FR-APT-001 | M5 | Pass |
+| FR-APT-002 | M7 | Pass |
+| FR-APT-003 | M7 | Pass |
+| FR-APT-004 | M6 | Pass |
+| FR-VIT-001 | M8 | Pass |
+| FR-CMP-001 | M8, M10 | Pass |
+| FR-DIA-001 | M8, M10 | Pass |
+| FR-RX-001 | M8 | Pass |
+| FR-RX-002 | M11, M14 | Pass |
+| FR-HIS-001 | M8, M9 | Pass |
+| FR-HIS-002 | M10 | Pass |
+| FR-HIS-003 | M9 | Pass |
+| FR-SRC-001 | M3 | Pass |
+| FR-SRC-002 | M4 | Pass |
+| FR-SRC-003 | M9 | Pass |
+| FR-EXP-001 | M12 | Pass |
+| FR-EXP-002 | M13 | Pass |
+| NFR-SEC-001 | M1 | Pass |
+| NFR-SEC-002 | Automated hash tests; transport reviewed as configuration (known limit L3) | Pass |
+| NFR-PRF-001 | M8 timing record (`16-Module-8-Review-Package.md`) | Pass |
+| SC-004 | M11 | Pass |
+| SC-005 | M12, M13 | Pass |
