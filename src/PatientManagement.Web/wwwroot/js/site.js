@@ -10,6 +10,10 @@
     var pendingForm = null;
     var pendingSubmitter = null;
 
+    // If a submit has not left the page after this long (for example a download, or a cancelled navigation),
+    // the buttons are given back so the user is not stuck on a disabled form.
+    var BUSY_RESET_MS = 15000;
+
     // A form with data-confirm is sent only after the user chooses Confirm in the dialog.
     // The original button is passed back, so its name and value still reach the server.
     if (modalConfirm) {
@@ -37,12 +41,14 @@
 
     // Disables the form's buttons and shows a spinner on the clicked one, so a second click does nothing.
     function markBusy(form, submitter) {
-        form.dataset.submitting = 'true';
+        // Each submit has its own token, so a timer from an earlier submit cannot reset a later one.
+        var token = String(Date.now());
+        form.dataset.submitting = token;
 
         // Wait one tick. A disabled button is left out of the form data, and the clicked button's value
         // (for example ConfirmWarnings) must still be read by the browser before it is disabled.
         window.setTimeout(function () {
-            if (form.dataset.submitting !== 'true') {
+            if (form.dataset.submitting !== token) {
                 return;
             }
 
@@ -59,7 +65,25 @@
                 spinner.setAttribute('aria-hidden', 'true');
                 submitter.prepend(spinner);
             }
+
+            window.setTimeout(function () {
+                if (form.dataset.submitting === token) {
+                    restoreForm(form);
+                }
+            }, BUSY_RESET_MS);
         }, 0);
+    }
+
+    // Puts a form's buttons back and removes the spinner.
+    function restoreForm(form) {
+        delete form.dataset.submitting;
+        Array.prototype.forEach.call(form.querySelectorAll('button[aria-busy]'), function (button) {
+            button.disabled = false;
+            button.removeAttribute('aria-busy');
+        });
+        Array.prototype.forEach.call(form.querySelectorAll('.spinner-border'), function (spinner) {
+            spinner.remove();
+        });
     }
 
     document.addEventListener('submit', function (event) {
@@ -68,7 +92,7 @@
             return;
         }
 
-        if (form.dataset.submitting === 'true') {
+        if (form.dataset.submitting) {
             event.preventDefault();
             return;
         }
@@ -122,15 +146,6 @@
 
     // Going back to a page can restore it with its buttons still disabled. Put them back.
     window.addEventListener('pageshow', function () {
-        Array.prototype.forEach.call(document.querySelectorAll('form[data-submitting]'), function (form) {
-            delete form.dataset.submitting;
-            Array.prototype.forEach.call(form.querySelectorAll('button[aria-busy]'), function (button) {
-                button.disabled = false;
-                button.removeAttribute('aria-busy');
-            });
-            Array.prototype.forEach.call(form.querySelectorAll('.spinner-border'), function (spinner) {
-                spinner.remove();
-            });
-        });
+        Array.prototype.forEach.call(document.querySelectorAll('form[data-submitting]'), restoreForm);
     });
 })();

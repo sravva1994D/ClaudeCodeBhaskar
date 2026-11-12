@@ -125,19 +125,12 @@ public class AppointmentsController(
     [HttpGet]
     public async Task<IActionResult> Reschedule(int id, DateOnly? date, CancellationToken cancellationToken)
     {
-        var result = await appointments.GetForRescheduleAsync(id, cancellationToken);
-        if (result.Errors.Any(error => error.Code == AppointmentService.NotFoundCode))
+        var (appointment, response) = await LoadForRescheduleAsync(id, cancellationToken);
+        if (appointment is null)
         {
-            return NotFound();
+            return response!;
         }
 
-        if (!result.IsSuccess)
-        {
-            TempData["Error"] = string.Join(" ", result.Errors.Select(error => error.Message));
-            return RedirectToAction(nameof(Daily), new { date = Today() });
-        }
-
-        var appointment = result.Value!;
         var day = date ?? DateOnly.FromDateTime(appointment.StartTime);
 
         return View(await BuildRescheduleFormAsync(appointment, day, startTime: null, cancellationToken));
@@ -147,19 +140,12 @@ public class AppointmentsController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Reschedule(AppointmentFormViewModel model, CancellationToken cancellationToken)
     {
-        var current = await appointments.GetForRescheduleAsync(model.AppointmentId ?? 0, cancellationToken);
-        if (current.Errors.Any(error => error.Code == AppointmentService.NotFoundCode))
+        var (appointment, response) = await LoadForRescheduleAsync(model.AppointmentId ?? 0, cancellationToken);
+        if (appointment is null)
         {
-            return NotFound();
+            return response!;
         }
 
-        if (!current.IsSuccess)
-        {
-            TempData["Error"] = string.Join(" ", current.Errors.Select(error => error.Message));
-            return RedirectToAction(nameof(Daily), new { date = Today() });
-        }
-
-        var appointment = current.Value!;
         var day = model.Date ?? DateOnly.FromDateTime(appointment.StartTime);
 
         if (model.StartTime is null)
@@ -179,6 +165,26 @@ public class AppointmentsController(
             $"Appointment moved to {model.StartTime.Value:dd-MMM-yyyy} at {model.StartTime.Value:HH:mm}.";
 
         return RedirectToAction(nameof(Daily), new { date = DateOnly.FromDateTime(model.StartTime.Value) });
+    }
+
+    // Shared by the reschedule screen and its save, so both treat a missing or unschedulable appointment the same.
+    // Returns the appointment, or the response to send back (not found, or a redirect to the daily list with the reason).
+    private async Task<(AppointmentDto? Appointment, IActionResult? Response)> LoadForRescheduleAsync(
+        int id, CancellationToken cancellationToken)
+    {
+        var result = await appointments.GetForRescheduleAsync(id, cancellationToken);
+        if (result.Errors.Any(error => error.Code == AppointmentService.NotFoundCode))
+        {
+            return (null, NotFound());
+        }
+
+        if (!result.IsSuccess)
+        {
+            TempData["Error"] = string.Join(" ", result.Errors.Select(error => error.Message));
+            return (null, RedirectToAction(nameof(Daily), new { date = Today() }));
+        }
+
+        return (result.Value!, null);
     }
 
     private async Task<AppointmentFormViewModel> BuildRescheduleFormAsync(
