@@ -1,7 +1,7 @@
 # 06 — Gap Analysis
 
 **Date:** 2026-11-12
-**Status:** For Project Owner review. No fixes implemented.
+**Status:** Closed for documentation (2026-11-12). Every gap is either corrected in the documents or accepted by the Project Owner (section 4). No code change was made.
 **Compared:** BRD (`BRD/Doc_BRD.md`, amended 2026-11-12), RTM (`01-Brainstorming/12-Requirement-Traceability-Matrix.md`), planning matrix (`02-Planning/18-Planning-Traceability-Matrix.md`), current code on `pms-Implementation` at `6f52ec1`, review packages `04-Implementation/16-` and `17-`, acceptance record `04-Implementation/19-`, and verification report `05-Verification/01-`.
 **Not assessed:** Won't Have items (DEC-025) and OOS-001 to OOS-015. Excluded checks G1 to G4 (owner decision, 2026-11-12) are not gaps here.
 
@@ -60,14 +60,15 @@ None. Each of the 26 in-scope IDs has code, and each has an automated test or a 
 
 ## 3. Recommended Actions
 
-Ordered by what the owner needs to decide first. No code change is needed for items 1 to 3.
+Status of each action after the owner's decisions:
 
-1. **Owner decisions on section 2.4.** Four behaviours need a record: the day guard, DEC-028 past slots, the clinic details screen, and the three unbuilt DEC-026 lists. For each, the owner records a decision or asks for removal.
-2. **Re-time NFR-PRF-001** on the current code, or accept the M8 timing as final (section 2.2).
-3. **Documentation corrections** in section 2.5 and the forgot-password and spreadsheet evidence in section 2.3. These are one `docs(docs)` commit on `pms-Implementation` after the owner's approval. BRD changes wait for the owner (CLAUDE.md §3).
-4. **Optional:** add the culture test for the date display (section 2.3, L7).
+1. **Section 2.4 behaviours:** done. Day guard (DEC-029), DEC-028 and Clinic Details (DEC-030) are in the BRD decision log, and the DEC-026 row matches the build. Kept, not removed.
+2. **NFR-PRF-001 timing:** accepted as final (M8 timing, owner decision, section 4). No re-timing.
+3. **Documentation corrections (section 2.5):** done. RTM, UI review package, README and BRD decision log are corrected.
+4. **Evidence (section 2.3):** done. Forgot-password tests cited in `19-` and `05-`. M12 CSV tool recorded as Microsoft 365 apps for enterprise, Excel version 2610 build 16.0.20527.20150.
+5. **L7 culture test:** accepted as a known limit in M9 (`19-` §5). No test added.
 
-No gap blocks the release PR on the evidence in this review. Items 1 and 3 need the owner's decision or approval before any change.
+Nothing is open in this analysis. Future work is listed in the M9 known limits (`19-` §5).
 
 ## 4. Owner Decisions (2026-11-12)
 

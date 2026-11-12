@@ -29,7 +29,9 @@ Then open `http://localhost:5092`.
 | `Documentation/01-Brainstorming/` | Requirements analysis (Module 1) |
 | `Documentation/02-Planning/` | Architecture, design and planning (Module 2) |
 | `Documentation/03-Worktree/` | Git workflow, branching, commit, review, release and rollback standards (Module 3) |
-| `Documentation/04-Implementation/` | Setup guide and developer guide (Module 4) |
+| `Documentation/04-Implementation/` | Setup guide, developer guide and module records (Modules 4 to 9) |
+| `Documentation/05-Verification/` | Phase 1 verification report |
+| `Documentation/06-GapAnalysis/` | Gap analysis and the owner decisions on it |
 | `Reference/` | Training plan |
 
 Setup: `Documentation/04-Implementation/01-Setup-Guide.md`.
@@ -37,4 +39,4 @@ Development rules: `Documentation/04-Implementation/02-Developer-Guide.md`.
 
 ## Branch
 
-All work is on `development` (CLAUDE.md §5). `main` receives the final release.
+Implementation work is committed to `pms-Implementation`. `development` is the integration branch and receives `pms-Implementation` through one PR. `main` receives releases only, from `development` (CLAUDE.md §5 and §5.4).

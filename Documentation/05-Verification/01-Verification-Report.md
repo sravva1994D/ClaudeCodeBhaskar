@@ -149,6 +149,7 @@ Known limits L1 to L7 from the acceptance record remain accepted (`19-Module-9-A
 | `Documentation/02-Planning/18-Planning-Traceability-Matrix.md` | FR-APT-004 tests cell: "accepted in M9" (was "awaiting owner approval") |
 | `Documentation/04-Implementation/17-UI-Modernization-Review-Package.md` | Status line: "Implemented and committed (cb4f917, 11f5fe4). Browser checks and the Module 9 acceptance passed (M15)." (was "not yet committed") |
 | `Documentation/05-Verification/01-Verification-Report.md` | This report (new) |
+| Later corrections (same day, after the report) | RTM lines 4, 8, 82 and 87; UI review package §6 and §7; README status, versions and branch note; forgot-password tests cited in §3; BRD decision log DEC-028 to DEC-030; DEC-026 row. Gap analysis in `06-GapAnalysis/01-Gap-Analysis.md` |
 
 No code changed in this verification.
 
