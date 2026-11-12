@@ -229,7 +229,7 @@ A consultation and a visit are the same record. A consultation can be started di
 ## Requirement Priorities
 
 Framework: **MoSCoW** (Must Have, Should Have, Could Have, Won't Have).
-Status: **Approved by the Project Owner, 2026-11-10** (sole approver). Priorities do not change any requirement wording above. Requirement IDs follow the project ID scheme (see `Documentation/01-Brainstorming/11-Requirement-Catalog.md`).
+Status: **Approved by the Project Owner, 2026-11-10** (sole approver); amended 2026-11-12 by DEC-025 (six requirements moved to Won't Have (Phase 1)). Priorities do not change any requirement wording above. Requirement IDs follow the project ID scheme (see `Documentation/01-Brainstorming/11-Requirement-Catalog.md`).
 
 | Req ID | Requirement (short) | Priority | Rationale |
 |---|---|---|---|
@@ -253,15 +253,17 @@ Status: **Approved by the Project Owner, 2026-11-10** (sole approver). Prioritie
 | FR-SRC-003 | Navigate profile and visits | Should Have | Navigation aid; core access exists via FR-PAT-003 and FR-HIS-001 |
 | FR-EXP-001 | Export as CSV | Must Have | In scope; SC-005 |
 | FR-EXP-002 | Export as PDF (printable view; browser Save as PDF) | Must Have | In scope; SC-005 |
-| NFR-USB-001 | Simple, fast-entry UI | Must Have | Usability for single user |
+| NFR-USB-001 | Simple, fast-entry UI | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12) |
 | NFR-PRF-001 | Page load approximately 2 s (localhost) | Must Have | Stated target, localhost conditions |
-| NFR-PRF-002 | Search results within 2–5 s (localhost) | Must Have | SC-002 |
+| NFR-PRF-002 | Search results within 2–5 s (localhost) | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12); SC-002 |
 | NFR-REL-001 | No data loss | Won't Have (Phase 1) | Deferred; OOS-011 |
 | NFR-REL-002 | Automated backups | Won't Have (Phase 1) | Deferred; OOS-011 |
 | NFR-SEC-001 | Secure single-user login | Must Have | Stated requirement |
 | NFR-SEC-002 | Data in transit (TLS beyond localhost); password hashing | Must Have | Amended 2026-11-10 (DEC-017): encryption at rest is out of Phase 1 scope |
-| NFR-SCL-001 | Single clinic; sample of up to 1,000 records | Must Have | Defines Phase 1 scale |
-| NFR-CMP-001 | Latest Chrome and Edge (desktop) | Must Have | Amended 2026-11-10 (DEC-019): Safari not required in Phase 1 |
+| NFR-SCL-001 | Single clinic; sample of up to 1,000 records | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12) |
+| NFR-CMP-001 | Latest Chrome and Edge (desktop) | Won't Have (Phase 1) | Amended 2026-11-10 (DEC-019): Safari not required in Phase 1. Removed from Phase 1 scope by DEC-025 (2026-11-12) |
+| SC-001 | Consultation record in 2–3 minutes | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12) |
+| SC-002 | Patient search and history retrieval in 2–5 seconds | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12) |
 | SC-003 | 80% paper reduction | Won't Have (Phase 1) | Deferred; OOS-014 |
 | SC-006 | High usability | Won't Have (Phase 1) | Deferred; OOS-014 |
 | OOS-001 to OOS-015 | Items listed under Out of Scope | Won't Have (Phase 1) | Excluded from Phase 1 by the Out of Scope section |
@@ -306,6 +308,7 @@ Decisions recorded from stakeholder answers. Full detail: `Documentation/01-Brai
 | DEC-020: CSV dates in ISO format (yyyy-MM-dd); user-relevant columns only; column set in `Documentation/02-Planning/10-Service-Design.md` §2.7 (PDR-17 resolved) | Project Owner decision, 2026-11-10 |
 | DEC-021: header logo is a placeholder image in Phase 1; no logo upload (PDR-15 amended) | Project Owner decision, 2026-11-10 |
 | DEC-022: the Archive action (hides an appointment, keeps it) and the Finish action (sets Completed after In Consultation) are both in Phase 1 | Project Owner decision, 2026-11-10 |
+| DEC-025: NFR-USB-001, NFR-PRF-002, NFR-SCL-001, NFR-CMP-001, SC-001 and SC-002 are removed from Phase 1 scope (priority changed to Won't Have (Phase 1); requirement wording unchanged). Phase 1 in-scope IDs: 31 to 25. NFR-PRF-001 (page load) remains Must Have and was measured in Module 8 | Project Owner decision, 2026-11-12 (BRD amendment, CLAUDE.md §3) |
 
 ## Still Open
 

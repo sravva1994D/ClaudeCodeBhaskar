@@ -36,20 +36,20 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 
 | Req ID | Priority | Screens / scope | Controller.Action (route #) | Service / component | Repository / config | Tables / store | Tests | WBS | Milestone | PDR |
 |---|---|---|---|---|---|---|---|---|---|---|
-| NFR-USB-001 | Must | All data-entry screens | Layout (all controllers) | Layout, CSS, tab order | — | — | Qualitative (TC-NFR-USB-001; `16-` §6; not run, skipped by Project Owner decision 2026-11-12) | WP-2.5, 9.6 | M1, M8 | — |
+| NFR-USB-001 | Won't (Phase 1; DEC-025) | All data-entry screens | Layout (all controllers) | Layout, CSS, tab order | — | — | Qualitative (TC-NFR-USB-001; `16-` §6; not run, skipped by Project Owner decision 2026-11-12) | WP-2.5, 9.6 | M1, M8 | — |
 | NFR-PRF-001 | Must | All pages | — | — | — | — | Timed page load, 10 pages (`04-Implementation/16-` §4.1; run pending) | WP-9.1 | M8 | 30 |
-| NFR-PRF-002 | Must | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService.SearchAsync; VisitService.ListAsync | Index strategy (07 §4) | Patients, Consultations | Timed search, 10 terms (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 23, 30 |
+| NFR-PRF-002 | Won't (Phase 1; DEC-025) | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService.SearchAsync; VisitService.ListAsync | Index strategy (07 §4) | Patients, Consultations | Timed search, 10 terms (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 23, 30 |
 | NFR-SEC-001 | Must | SCR-01, SCR-02 | Account.* (2 to 6); global Authorize | AuthService.SignInAsync, ResetPasswordAsync | IUserRepository | Users | TC-NFR-SEC-001-1, -2 | WP-2.3, 2.4, 9.4 | M1, M8 | 02, 03, 04, 05, 20 |
 | NFR-SEC-002 | Must | All (transport) | — | Password hash; HTTPS config | None at rest (DEC-017) | Users (hash) | Hash check (TC-NFR-SEC-002-1, automated, M8 step 3); transport configuration review (`16-` §3A) | WP-9.4 | M1, M8 | 21, DEC-017 |
-| NFR-SCL-001 | Must | All list screens | — | — | — | Patients (1,000 records) | Volume check (`16-` §3A, §7A note; not run, skipped by Project Owner decision 2026-11-12) | WP-9.5 | M8 | — |
-| NFR-CMP-001 | Must | All screens | — | — | — | — | Browser matrix (Chrome, Edge; DEC-019) (`16-` §7A; not run, skipped by Project Owner decision 2026-11-12; Edge not verified) | WP-2.5, 9.3 | M1, M8 | 28, DEC-019 |
+| NFR-SCL-001 | Won't (Phase 1; DEC-025) | All list screens | — | — | — | Patients (1,000 records) | Volume check (`16-` §3A, §7A note; not run, skipped by Project Owner decision 2026-11-12) | WP-9.5 | M8 | — |
+| NFR-CMP-001 | Won't (Phase 1; DEC-025) | All screens | — | — | — | — | Browser matrix (Chrome, Edge; DEC-019) (`16-` §7A; not run, skipped by Project Owner decision 2026-11-12; Edge not verified) | WP-2.5, 9.3 | M1, M8 | 28, DEC-019 |
 
 ## 3. Success Criteria
 
 | Ref | Priority | Screens | Controller.Action | Service / component | Tables | Tests | WBS | Milestone | PDR |
 |---|---|---|---|---|---|---|---|---|---|
-| SC-001 | Must (verification) | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | Consultations, VitalSigns, Prescriptions | Timed rehearsal (`16-` §5; not measured, skipped by Project Owner decision 2026-11-12) | WP-9.2 | M8 | — |
-| SC-002 | Must (verification) | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService, VisitService | Patients, Consultations | Timed search and history (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 30 |
+| SC-001 | Won't (Phase 1; DEC-025) | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | Consultations, VitalSigns, Prescriptions | Timed rehearsal (`16-` §5; not measured, skipped by Project Owner decision 2026-11-12) | WP-9.2 | M8 | — |
+| SC-002 | Won't (Phase 1; DEC-025) | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService, VisitService | Patients, Consultations | Timed search and history (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 30 |
 | SC-004 | Must (verification) | SCR-12 | Prescriptions.Print (23, 24) | PrescriptionService.MarkPrintedAsync | Prescriptions | Browser checks 7 to 11 passed (Chrome 157.0.8103.51, A4 print and Save as PDF), review package §4; approved M5 | WP-6.4 | M5 | 16 |
 | SC-005 | Must (verification) | SCR-13 | Export.PatientCsv (26); Export.PatientPrint (27) | ExportService | — | Implemented and approved (M7); file open, print and Save as PDF checked in Chrome 157.0.8103.51 (review package `15-` §4) | WP-8.2, 8.3 | M7 | 17, 18 |
 
