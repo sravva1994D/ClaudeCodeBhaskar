@@ -11,7 +11,8 @@
 
 | Plan step | Work | Commit |
 |---|---|---|
-| Review fix | Phone number with a leading `+` exported unchanged; other text starting with `+` still guarded (D-M7-3, option b) | this commit |
+| Review fix | Phone number with a leading `+` exported unchanged; other text starting with `+` still guarded (D-M7-3, option b) | `57b1544` |
+| Review fix | A malformed date is refused and cleared; a valid date in the other field stays in the form (D-M7-2) | this commit |
 | Plan step | Work | Commit |
 |---|---|---|
 | Plan | Module 7 plan (`14-`) | `37a809f` |
@@ -46,7 +47,7 @@ Run after the phone-rule review fix, on the code of this commit.
 |---|---|
 | Build (`dotnet build PatientManagement.sln --no-incremental`) | 0 errors, 0 warnings |
 | Unit tests | 368 passed, 0 failed (Module 6 end: 345; Module 7 added 23, including 4 for the phone rule) |
-| Integration tests | 297 passed, 0 failed (Module 6 end: 274; Module 7 added 23: 4 data, 12 CSV and form, 7 printable view) |
+| Integration tests | 298 passed, 0 failed (Module 6 end: 274; Module 7 added 24: 4 data, 13 CSV and form, 7 printable view) |
 
 ## 4. Browser Checks (for the Project Owner)
 
@@ -91,7 +92,7 @@ The plan (`14-`) recorded D-M7-1 to D-M7-8 with recommendations. They were appro
 | # | Point | Decision |
 |---|---|---|
 | D-M7-1 | Date range rule | Same as the visit filter (From alone is one day; both ends inclusive; To alone and From after To refused). Shared in `VisitDateRange` |
-| D-M7-2 | Malformed dates | Refused with a message, never dropped |
+| D-M7-2 | Malformed dates | Refused with a message, never dropped. The malformed field is cleared; a valid date in the other field stays in the form (review fix, 2026-11-12) |
 | D-M7-3 | CSV formula guard | A text cell starting with `=`, `+`, `-`, `@`, tab or carriage return gets a leading `'`. Decided 2026-11-12 (Project Owner, option b): a value that starts with `+` followed only by digits, spaces, brackets and hyphens is a phone number and is not guarded. Other `+` text stays guarded (for example `+1+1`) |
 | D-M7-4 | File name | Patient code only |
 | D-M7-5 | Printable view layout | Clinic header, patient block, one section per visit, newest first; printing marks nothing as printed |

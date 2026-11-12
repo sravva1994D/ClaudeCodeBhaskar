@@ -18,10 +18,11 @@ public class ExportController(IExportService exports) : Controller
         [FromQuery(Name = "to")] DateOnly? toDate,
         CancellationToken cancellationToken)
     {
-        // A date that is not a real date is refused, not dropped (D-M7-2).
+        // A date that is not a real date is refused, not dropped (D-M7-2). The malformed field binds to null and is cleared;
+        // a valid date in the other field stays in the form.
         var error = HasMalformedDate() ? MalformedDateMessage : null;
 
-        return FormAsync(patientId, error is null ? fromDate : null, error is null ? toDate : null, error, cancellationToken);
+        return FormAsync(patientId, fromDate, toDate, error, cancellationToken);
     }
 
     [HttpGet("/Export/Patient/{patientId:int}/Csv")]
@@ -33,7 +34,7 @@ public class ExportController(IExportService exports) : Controller
     {
         if (HasMalformedDate())
         {
-            return await FormAsync(patientId, null, null, MalformedDateMessage, cancellationToken);
+            return await FormAsync(patientId, fromDate, toDate, MalformedDateMessage, cancellationToken);
         }
 
         var file = await exports.BuildCsvAsync(patientId, fromDate, toDate, cancellationToken);
@@ -60,10 +61,10 @@ public class ExportController(IExportService exports) : Controller
     {
         if (HasMalformedDate())
         {
-            return await FormAsync(patientId, null, null, MalformedDateMessage, cancellationToken);
+            return await FormAsync(patientId, fromDate, toDate, MalformedDateMessage, cancellationToken);
         }
 
-        var print = await exports.BuildPrintViewAsync(patientId, fromDate, toDate, cancellationToken);
+        var print =await exports.BuildPrintViewAsync(patientId, fromDate, toDate, cancellationToken);
         if (print.IsSuccess)
         {
             return View("Print", print.Value);

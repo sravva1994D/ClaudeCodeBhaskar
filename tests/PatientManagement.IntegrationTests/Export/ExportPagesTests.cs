@@ -178,6 +178,17 @@ public class ExportPagesTests(TestDatabaseFixture database, TestWebApplicationFa
     }
 
     [Fact]
+    public async Task FR_EXP_001_a_malformed_from_date_keeps_a_valid_to_date_in_the_form()
+    {
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Export/Patient/{patientId}/Csv?from=2026-02-30&to=2026-11-03");
+
+        Assert.Contains("Enter each date as a real date", html);
+        Assert.Contains("value=\"2026-11-03\"", html);
+    }
+
+    [Fact]
     public async Task FR_EXP_001_the_form_is_shown_with_the_patient_and_the_download_link()
     {
         using var client = await SignedInClientAsync();

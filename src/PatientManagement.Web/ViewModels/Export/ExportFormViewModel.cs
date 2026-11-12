@@ -13,6 +13,6 @@ public sealed class ExportFormViewModel
 
     public DateOnly? ToDate { get; set; }
 
-    // Set when the range is refused. Nothing is downloaded, and the typed dates stay in the form (D-M7-2, D-M7-6).
+    // Set when the range is refused. Nothing is downloaded. A valid date stays in the form; a malformed one is cleared (D-M7-2, D-M7-6).
     public string? ErrorMessage { get; set; }
 }
