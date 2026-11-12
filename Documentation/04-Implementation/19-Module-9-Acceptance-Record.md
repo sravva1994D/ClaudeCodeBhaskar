@@ -65,7 +65,7 @@ Test data: synthetic only, entered through the UI (D-M9-5). Browser: Chrome 157.
 | M9 | Visit history lists visits newest first. Single-date and range filters work with both ends included. Profile and history links go back and forth | FR-HIS-001, FR-HIS-003, FR-SRC-003 | 157.0.8103.79 | Pass | |
 | M10 | Visit detail shows vitals, complaints, diagnosis and medicines. A visit with no vitals says so | FR-HIS-002, FR-CMP-001, FR-DIA-001 | 157.0.8103.79 | Pass | |
 | M11 | Prescription print view shows clinic details, patient, vitals, diagnosis, medicines and footer. Print, then Save as PDF in the print dialog. The file opens | FR-RX-002, SC-004 | 157.0.8103.79 | Pass | |
-| M12 | Export form: CSV downloads with the date range applied. It opens in a spreadsheet tool: one row per visit, ISO dates (yyyy-MM-dd), the free text with a comma, quote or line break intact, the guarded `=` cell shown as text | FR-EXP-001, SC-005 | 157.0.8103.79 | Pass | Spreadsheet tool not recorded |
+| M12 | Export form: CSV downloads with the date range applied. It opens in a spreadsheet tool: one row per visit, ISO dates (yyyy-MM-dd), the free text with a comma, quote or line break intact, the guarded `=` cell shown as text | FR-EXP-001, SC-005 | 157.0.8103.79 | Pass | CSV opened in Microsoft 365 (Excel). Version not recorded |
 | M13 | Export printable view: range applied; Print then Save as PDF; the PDF opens | FR-EXP-002, SC-005 | 157.0.8103.79 | Pass | |
 | M14 | Clinic details page saves; the print view then shows them | FR-RX-002 | 157.0.8103.79 | Pass | |
 | M15 | DataTables on the four list screens (search, sort, page size, paging) and breadcrumbs work. Supporting check for DEC-026, not a requirement ID | DEC-026 | 157.0.8103.79 | Pass | |
