@@ -1,3 +1,26 @@
+/* Approved palette (2026-11-12). These are the Bootstrap 5 default colours, written out in one place. */
+:root {
+  --app-primary: #0D6EFD;
+  --app-success: #198754;
+  --app-warning: #FFC107;
+  --app-danger: #DC3545;
+  --app-light: #F8F9FA;
+}
+
+body {
+  background-color: var(--app-light);
+}
+
+/* Page header standard: title and short description on the left, actions on the right. */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
 html {
   font-size: 14px;
 }

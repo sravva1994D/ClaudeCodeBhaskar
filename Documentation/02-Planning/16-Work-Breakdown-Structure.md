@@ -74,7 +74,7 @@
 | WP-9.5 | Volume check | Full screens at 1,000 patients | Test | NFR-SCL-001 | M7 | S | M8 |
 | WP-9.6 | Usability walkthrough (qualitative) | Tab order, required markers, one-screen flow | Test | NFR-USB-001 | M5 | S | M8 |
 | **10 Phase 1 acceptance** | | | | | | | |
-| WP-10.1 | Acceptance script run | All 31 in-scope IDs | Test | All in-scope | M8 | M | M9 |
+| WP-10.1 | Acceptance script run | All 26 in-scope IDs (after DEC-025 and DEC-027) | Test | All in-scope | M8 | M | M9 |
 | WP-10.2 | Acceptance record | Results and sign-off | Process | All in-scope | WP-10.1 | S | M9 |
 
 ## 3. Totals

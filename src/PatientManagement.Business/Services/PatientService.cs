@@ -136,7 +136,7 @@ public sealed class PatientService(
         duplicates
             .Select(patient => new ResultMessage(
                 DuplicateCode,
-                $"Possible duplicate: {patient.PatientCode} {patient.FullName}, born {patient.DateOfBirth:yyyy-MM-dd}, phone {patient.Phone}.",
+                $"Possible duplicate: {patient.PatientCode} {patient.FullName}, born {patient.DateOfBirth.ToString("dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture)}, phone {patient.Phone}.",
                 "Duplicate"))
             .ToList();
 

@@ -1,13 +1,14 @@
 ﻿@using System.Globalization
+@using PatientManagement.Web.Presentation
 @model PatientManagement.Web.ViewModels.Home.HomeViewModel
 @{
     ViewData["Title"] = "Home";
 }
 
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+<div class="page-header">
     <div>
         <h1 class="h3 mb-1">Today's appointments</h1>
-        <p class="text-muted mb-0">@Model.Today.ToString("dddd, yyyy-MM-dd", CultureInfo.InvariantCulture)</p>
+        <p class="text-muted mb-0">@Model.Today.ToString("dddd, dd-MMM-yyyy", CultureInfo.InvariantCulture)</p>
     </div>
     <div class="d-flex gap-2">
         <a class="btn btn-primary" asp-controller="Patients" asp-action="Create">New patient</a>
@@ -22,7 +23,7 @@
 else
 {
     <div class="table-responsive">
-        <table class="table table-striped align-middle">
+        <table class="table table-striped align-middle w-100 data-table">
             <thead>
                 <tr>
                     <th scope="col">Time</th>
@@ -38,7 +39,7 @@ else
                         <td>@item.StartTime.ToString("HH:mm", CultureInfo.InvariantCulture)</td>
                         <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@item.PatientId">@item.PatientName</a></td>
                         <td>@item.PatientCode</td>
-                        <td>@item.Status</td>
+                        <td><span class="badge @StatusBadge.ClassFor(item.Status)">@item.Status</span></td>
                     </tr>
                 }
             </tbody>
@@ -68,7 +69,7 @@ else
                     <tr>
                         <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@patient.Id">@patient.FullName</a></td>
                         <td>@patient.PatientCode</td>
-                        <td>@patient.LastVisit.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)</td>
+                        <td>@patient.LastVisit.ToString("dd-MMM-yyyy HH:mm", CultureInfo.InvariantCulture)</td>
                     </tr>
                 }
             </tbody>

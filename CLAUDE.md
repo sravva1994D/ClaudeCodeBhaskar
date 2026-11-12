@@ -78,15 +78,16 @@ When a change affects a requirement, update both matrices in the same change.
 
 ---
 
-## 5. Git Workflow (user instruction, 2026-11-10)
+## 5. Git Workflow (user instructions, 2026-11-10; updated 2026-11-12)
 
-- **`development` is the only working branch.** All project work is committed directly to it: BRD, requirements, planning, traceability, architecture, CLAUDE.md, analysis, supporting documentation and implementation. Commits are made regularly and pushed to `origin/development` under the workflow in §5.4. Each commit is reported in chat with its files and message.
-- **No other working branches.** No feature, module, milestone, documentation, fix, chore or hotfix branches.
+- **`pms-Implementation` is the primary implementation branch** for the rest of the project. Implementation work is committed to it: application code, Entity Framework Core changes, migrations, UI and UX changes, documentation updates, bug fixes, refactoring, tests and browser verification. Commits are made incrementally and pushed to `origin/pms-Implementation` under the workflow in §5.4. Each commit is reported in chat with its files and message.
+- **`development` is the integration branch.** Work reaches it only through the one PR in §5.4 step 7, and it reaches `main` only through the release process. Commits are not made to `development` for implementation work.
+- **No other working branches.** No feature, module, hotfix, release, documentation, milestone or worktree branches.
 - **`main` receives releases only**: one PR from `development` to `main`, after the final review and the Project Owner's approval. Nothing is committed to `main` directly.
 - Urgent fixes are committed to `development` and released in the next release (no hotfix branch).
 - No force-push to shared branches.
 - No `--no-verify`, no skipped hooks, no bypassed signing, unless the user asks for it.
-- Tags and deletions need the user's approval. The release PR and its merge follow §5.4 (D-11). Commits and pushes to `development` follow §5.4.
+- Tags and deletions need the user's approval. The PRs and their merges follow §5.4. Commits and pushes to `pms-Implementation` follow §5.4.
 
 ### 5.1 Approval gate
 
@@ -98,11 +99,11 @@ Before a tag, a deletion, or any change outside the workflow in §5.4, Claude pr
 4. **Proposed commit message** (§5.2).
 5. **Git commands** that will run.
 
-Claude stops and waits for approval before those steps. Routine commits to `development` follow §5.4.
+Claude stops and waits for approval before those steps. Routine commits to `pms-Implementation` follow §5.4.
 
 ### 5.2 Branch and commit format
 
-Branch: `development` only. No other working branches are created.
+Branch: `pms-Implementation` for implementation work. No other working branches are created.
 
 Commit message (Conventional Commits):
 
@@ -121,26 +122,31 @@ Requirements: FR-PAT-001, FR-PAT-002
 
 ### 5.3 Release PR description
 
-Used only for releases to `main`. Work on `development` has no pull request.
+Used for two pull requests only, and neither is opened during implementation:
 
-- Title: `release: vX.Y.Z`. Base branch: `main`. Head: `development`.
+- Implementation PR (§5.4 step 7): base `development`, head `pms-Implementation`. One PR, after the full build, tests, browser verification and final review.
+- Release PR (§5.4 step 8): title `release: vX.Y.Z`. Base `main`. Head `development`.
 - Sections: Summary, Requirements (with status), Traceability (matrices updated yes or no; BRD changed yes or no), Changes, Testing (unit, integration, manual), Risks, Checklist.
 - Ends with: `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
 
 ---
 
-### 5.4 Development workflow (approved 2026-11-10; simplified by D-9 to D-11)
+### 5.4 Implementation workflow (user instruction, 2026-11-12)
 
-1. Work directly in `development`.
-2. Commit and push documentation and code changes regularly, using the format in §5.2.
-3. Complete all project features.
-4. Test the full application. Fix defects in `development`.
-5. Create one PR: `development` → `main`, once the whole application is complete and tested.
-6. Merge using a merge commit (no squash, no rebase).
+1. Work on `pms-Implementation`. Do not commit implementation work to `development`.
+2. Commit incrementally as work progresses, using the format in §5.2. Push regularly to `origin/pms-Implementation`.
+3. Complete all remaining modules.
+4. Run a full build and all unit and integration tests. Fix defects on `pms-Implementation`.
+5. Complete browser verification.
+6. Run `/code-review` and resolve the approved findings.
+7. Create one PR: `pms-Implementation` → `development`, after steps 3 to 6.
+8. After `development` is validated and the Project Owner approves, merge `development` → `main` through the release process (§5.3 release PR, merge commit, no squash, no rebase).
 
-Each commit builds (implementation commits) and passes its checks before it is pushed. Each commit is listed in chat with its files and message.
+During implementation, do not create pull requests and do not merge into `development` or `main`.
 
-No feature, hotfix, documentation or milestone branches are used. No detached worktrees or parallel verification environments are used. All development, testing and validation happen in `development`.
+Each commit builds and passes its checks before it is pushed. Each commit is listed in chat with its files and message.
+
+No feature, module, hotfix, release, documentation, milestone or worktree branches are used. No detached worktrees or parallel verification environments are used. All development, testing and validation happen on `pms-Implementation`.
 
 ---
 

@@ -4,15 +4,29 @@
     ViewData["Title"] = "Visit detail";
     var visit = Model.Visit;
     var prescription = Model.Prescription;
+    ViewData["Breadcrumbs"] = new List<(string Text, string? Url)>
+    {
+        ("Patient search", Url.Action("Search", "Patients")),
+        (visit.PatientName, Url.Action("Details", "Patients", new { id = visit.PatientId })),
+        ("Visit history", Url.Action("Index", "Visits", new { patientId = visit.PatientId })),
+        ("Visit", null)
+    };
 }
 
-<h1 class="h3 mb-1">Visit</h1>
-<p class="text-muted mb-4">
-    <a asp-controller="Patients" asp-action="Details" asp-route-id="@visit.PatientId">@visit.PatientName</a> (@visit.PatientCode) ·
-    @visit.VisitDateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) ·
-    @(visit.IsFinished ? "Finished" : "In progress") ·
-    @(visit.AppointmentId is null ? "Walk-in" : "Appointment")
-</p>
+<div class="page-header">
+    <div>
+        <h1 class="h3 mb-1">Visit</h1>
+        <p class="text-muted mb-0">
+            <a asp-controller="Patients" asp-action="Details" asp-route-id="@visit.PatientId">@visit.PatientName</a> (@visit.PatientCode) ·
+            @visit.VisitDateTime.ToString("dd-MMM-yyyy HH:mm", CultureInfo.InvariantCulture) ·
+            @(visit.IsFinished ? "Finished" : "In progress") ·
+            @(visit.AppointmentId is null ? "Walk-in" : "Appointment")
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-outline-primary" asp-controller="Consultations" asp-action="Edit" asp-route-id="@visit.Id">Edit visit</a>
+    </div>
+</div>
 
 <dl class="row mb-4">
     <dt class="col-sm-3">Temperature</dt>
@@ -66,7 +80,7 @@
         </div>
         <p class="text-muted small mb-2">
             @(prescription.IsPrinted
-                ? $"Printed on {prescription.PrintedAt!.Value.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}."
+                ? $"Printed on {prescription.PrintedAt!.Value.ToString("dd-MMM-yyyy HH:mm", CultureInfo.InvariantCulture)}."
                 : "Not printed yet.")
         </p>
         <a class="btn btn-outline-primary" asp-controller="Prescriptions" asp-action="Print" asp-route-consultationId="@visit.Id">Print prescription</a>
@@ -74,7 +88,6 @@
 </section>
 
 <div class="d-flex flex-wrap gap-3">
-    <a class="btn btn-outline-primary" asp-controller="Consultations" asp-action="Edit" asp-route-id="@visit.Id">Edit visit</a>
     <a asp-controller="Visits" asp-action="Index" asp-route-patientId="@visit.PatientId">Back to visit history</a>
     <a asp-controller="Patients" asp-action="Details" asp-route-id="@visit.PatientId">Back to patient</a>
 </div>

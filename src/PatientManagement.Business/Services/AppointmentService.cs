@@ -19,12 +19,18 @@ public sealed class AppointmentService(
     public const string PatientNotFoundMessage = "Choose a registered patient.";
     public const string SlotTakenCode = "Appointment.Slot.Taken";
     public const string SlotTakenMessage = "That slot is already booked. Choose another slot.";
+    public const string NotScheduledCode = "Appointment.Reschedule.NotScheduled";
+    public const string NotScheduledMessage = "Only a scheduled appointment can be rescheduled.";
+    public const string SameSlotCode = "Appointment.Reschedule.SameSlot";
+    public const string SameSlotMessage = "Choose a different slot. The appointment is already at this time.";
 
     public async Task<Result<AppointmentDto>> ScheduleAsync(
         AppointmentCreateDto input, CancellationToken cancellationToken = default)
     {
         // Cheap rules first: they need no database read.
-        var errors = AppointmentValidator.ValidateSchedule(input.StartTime, Today());
+        var errors = AppointmentValidator.ValidateSchedule(input.StartTime, Today())
+            .Concat(AppointmentValidator.ValidateSlotDay(input.StartTime, input.ShownDay))
+            .ToList();
         if (errors.Count > 0)
         {
             return Result<AppointmentDto>.Fail(errors.ToArray());
@@ -127,6 +133,74 @@ public sealed class AppointmentService(
 
         return Result<AppointmentDto>.Ok(AppointmentMapper.ToDto(appointment, appointment.Patient));
     }
+
+    public async Task<Result<AppointmentDto>> GetForRescheduleAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var appointment = await appointments.GetByIdAsync(id, cancellationToken);
+        if (appointment is null || appointment.IsArchived)
+        {
+            return NotFound();
+        }
+
+        if (appointment.Status != AppointmentStatus.Scheduled)
+        {
+            return NotScheduled();
+        }
+
+        return Result<AppointmentDto>.Ok(AppointmentMapper.ToDto(appointment, appointment.Patient));
+    }
+
+    public async Task<Result<AppointmentDto>> RescheduleAsync(
+        int id, DateTime newStartTime, DateOnly? shownDay = null, CancellationToken cancellationToken = default)
+    {
+        var appointment = await appointments.GetByIdAsync(id, cancellationToken);
+        if (appointment is null || appointment.IsArchived)
+        {
+            return NotFound();
+        }
+
+        // Only a Scheduled appointment moves. Once checked in, the appointment is fixed (FR-APT-004).
+        if (appointment.Status != AppointmentStatus.Scheduled)
+        {
+            return NotScheduled();
+        }
+
+        var errors = AppointmentValidator.ValidateSchedule(newStartTime, Today())
+            .Concat(AppointmentValidator.ValidateSlotDay(newStartTime, shownDay))
+            .ToList();
+        if (errors.Count > 0)
+        {
+            return Result<AppointmentDto>.Fail(errors.ToArray());
+        }
+
+        if (newStartTime == appointment.StartTime)
+        {
+            return Result<AppointmentDto>.Fail(new ResultMessage(SameSlotCode, SameSlotMessage, "StartTime"));
+        }
+
+        // The appointment's own current slot does not count as taken (excludeId).
+        if (await appointments.HasOverlapAsync(newStartTime, excludeId: appointment.Id, cancellationToken))
+        {
+            return SlotTaken();
+        }
+
+        appointment.StartTime = newStartTime;
+
+        try
+        {
+            await appointments.UpdateAsync(appointment, cancellationToken);
+        }
+        catch (SlotTakenException)
+        {
+            // Another booking took the slot after the check above. The database index refused the move (PDR-07).
+            return SlotTaken();
+        }
+
+        return Result<AppointmentDto>.Ok(AppointmentMapper.ToDto(appointment, appointment.Patient));
+    }
+
+    private static Result<AppointmentDto> NotScheduled() =>
+        Result<AppointmentDto>.Fail(new ResultMessage(NotScheduledCode, NotScheduledMessage));
 
     private DateOnly Today() => DateOnly.FromDateTime(timeProvider.GetLocalNow().DateTime);
 

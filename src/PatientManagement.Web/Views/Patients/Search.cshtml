@@ -1,9 +1,18 @@
 @model PatientManagement.Web.ViewModels.Patients.PatientSearchViewModel
 @{
     ViewData["Title"] = "Patient search";
+    ViewData["Breadcrumbs"] = new List<(string Text, string? Url)> { ("Patient search", null) };
 }
 
-<h1 class="h3 mb-4">Patient search</h1>
+<div class="page-header">
+    <div>
+        <h1 class="h3 mb-1">Patient search</h1>
+        <p class="text-muted mb-0">Find a patient by name or phone number.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary" asp-controller="Patients" asp-action="Create">New patient</a>
+    </div>
+</div>
 
 <form asp-controller="Patients" asp-action="Search" method="get" class="row g-2 mb-4" role="search">
     <div class="col-sm-8 col-md-6">
@@ -24,14 +33,14 @@
     }
     else
     {
-        <table class="table table-striped">
+        <table class="table table-striped w-100 data-table">
             <thead>
                 <tr>
                     <th scope="col">Code</th>
                     <th scope="col">Name</th>
                     <th scope="col">Date of birth</th>
                     <th scope="col">Phone</th>
-                    <th scope="col"><span class="visually-hidden">Actions</span></th>
+                    <th scope="col" class="no-sort"><span class="visually-hidden">Actions</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -40,9 +49,9 @@
                     <tr>
                         <td>@row.PatientCode</td>
                         <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@row.Id">@row.FullName</a></td>
-                        <td>@row.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                        <td data-order="@row.DateOfBirth.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)">@row.DateOfBirth.ToString("dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture)</td>
                         <td>@row.Phone</td>
-                        <td><a asp-controller="Appointments" asp-action="Create" asp-route-patientId="@row.Id">Schedule</a></td>
+                        <td><a asp-controller="Appointments" asp-action="Create" asp-route-patientId="@row.Id">Schedule<span class="visually-hidden"> for @row.FullName</span></a></td>
                     </tr>
                 }
             </tbody>

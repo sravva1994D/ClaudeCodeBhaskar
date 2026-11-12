@@ -27,6 +27,22 @@ public static class AppointmentValidator
         return errors;
     }
 
+    // The chosen slot must be on the day shown in the Day box. Otherwise the save would book a slot the user
+    // did not see for that day. Null means the caller has no form day to check against.
+    public static IReadOnlyList<ResultMessage> ValidateSlotDay(DateTime startTime, DateOnly? shownDay)
+    {
+        if (shownDay is null || DateOnly.FromDateTime(startTime) == shownDay.Value)
+        {
+            return [];
+        }
+
+        return
+        [
+            new ResultMessage("Appointment.Slot.DifferentDay",
+                "The chosen slot is on a different day. Choose the day, select Show slots, then pick a slot.", "Date")
+        ];
+    }
+
     public static IReadOnlyList<ResultMessage> ValidateStatusChange(string current, string requested)
     {
         if (!AppointmentStatus.IsKnown(requested))

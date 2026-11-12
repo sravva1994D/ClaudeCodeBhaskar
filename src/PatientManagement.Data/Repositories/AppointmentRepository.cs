@@ -60,6 +60,15 @@ public sealed class AppointmentRepository(PatientManagementDbContext db) : IAppo
     public async Task UpdateAsync(Appointment appointment, CancellationToken cancellationToken = default)
     {
         db.Appointments.Update(appointment);
-        await db.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            await db.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException exception) when (UniqueViolation.IsUniqueViolation(exception))
+        {
+            // A reschedule can move an appointment onto a slot taken after the overlap check (PDR-07).
+            throw new SlotTakenException(exception);
+        }
     }
 }

@@ -17,39 +17,41 @@
 
 <div class="row">
     <div class="col-md-8 col-lg-6">
+        <p class="form-text mb-3">Fields marked <span class="text-danger">*</span> are required.</p>
+
         <div class="mb-3">
-            <label asp-for="FullName" class="form-label"></label>
-            <input asp-for="FullName" class="form-control" autofocus />
+            <label asp-for="FullName" class="form-label"></label> <span class="text-danger" aria-hidden="true">*</span>
+            <input asp-for="FullName" class="form-control" required aria-required="true" autofocus />
             <span asp-validation-for="FullName" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="DateOfBirth" class="form-label"></label>
-            <input asp-for="DateOfBirth" type="date" class="form-control" />
+            <label asp-for="DateOfBirth" class="form-label"></label> <span class="text-danger" aria-hidden="true">*</span>
+            <input asp-for="DateOfBirth" type="date" class="form-control" required aria-required="true" />
             <span asp-validation-for="DateOfBirth" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Gender" class="form-label"></label>
-            <select asp-for="Gender" class="form-select" asp-items="Model.GenderItems"></select>
+            <label asp-for="Gender" class="form-label"></label> <span class="text-danger" aria-hidden="true">*</span>
+            <select asp-for="Gender" class="form-select" required aria-required="true" asp-items="Model.GenderItems"></select>
             <span asp-validation-for="Gender" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Phone" class="form-label"></label>
-            <input asp-for="Phone" class="form-control" autocomplete="tel" />
+            <label asp-for="Phone" class="form-label"></label> <span class="text-danger" aria-hidden="true">*</span>
+            <input asp-for="Phone" class="form-control" autocomplete="tel" required aria-required="true" />
             <span asp-validation-for="Phone" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Email" class="form-label"></label>
-            <input asp-for="Email" class="form-control" autocomplete="email" />
+            <label asp-for="Email" class="form-label"></label> <span class="text-danger" aria-hidden="true">*</span>
+            <input asp-for="Email" class="form-control" autocomplete="email" required aria-required="true" />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label asp-for="Address" class="form-label"></label>
-            <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+            <label asp-for="Address" class="form-label"></label> <span class="text-danger" aria-hidden="true">*</span>
+            <textarea asp-for="Address" class="form-control" rows="2" required aria-required="true"></textarea>
             <span asp-validation-for="Address" class="text-danger"></span>
         </div>
     </div>

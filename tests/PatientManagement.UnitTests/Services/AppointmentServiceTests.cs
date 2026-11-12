@@ -241,4 +241,178 @@ public class AppointmentServiceTests
 
         Assert.Equal([AppointmentService.NotFoundCode], result.Errors.Select(error => error.Code));
     }
+
+    [Fact]
+    public async Task FR_APT_001_a_slot_on_another_day_than_the_day_shown_is_refused_and_nothing_is_saved()
+    {
+        var result = await service.ScheduleAsync(new AppointmentCreateDto(7, FutureSlot, DateOnly.FromDateTime(FutureSlot).AddDays(1)));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal("Appointment.Slot.DifferentDay", result.Errors.Single().Code);
+        Assert.Equal("Date", result.Errors.Single().Field);
+        await appointments.DidNotReceiveWithAnyArgs().AddAsync(default!, default);
+    }
+
+    [Fact]
+    public async Task FR_APT_001_a_slot_on_the_day_shown_is_accepted()
+    {
+        var result = await service.ScheduleAsync(new AppointmentCreateDto(7, FutureSlot, DateOnly.FromDateTime(FutureSlot)));
+
+        Assert.True(result.IsSuccess);
+    }
+
+    // FR-APT-004 (DEC-027): reschedule. Only a Scheduled appointment moves, to a free slot, for the same patient.
+    // TC-FR-APT-004-6
+    [Fact]
+    public async Task FR_APT_004_a_move_to_a_slot_on_another_day_than_the_day_shown_is_refused()
+    {
+        var newSlot = new DateTime(2026, 11, 12, 10, 0, 0);
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.Scheduled));
+
+        var result = await service.RescheduleAsync(1, newSlot, DateOnly.FromDateTime(newSlot).AddDays(1));
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal("Appointment.Slot.DifferentDay", result.Errors.Single().Code);
+        await appointments.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
+    }
+
+    // TC-FR-APT-004-7
+    [Fact]
+    public async Task FR_APT_004_a_scheduled_appointment_moves_to_a_free_slot()
+    {
+        var newSlot = new DateTime(2026, 11, 12, 10, 0, 0);
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.Scheduled));
+
+        var result = await service.RescheduleAsync(1, newSlot);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(newSlot, result.Value!.StartTime);
+        Assert.Equal(AppointmentStatus.Scheduled, result.Value.Status);
+        await appointments.Received(1).UpdateAsync(
+            Arg.Is<Appointment>(a => a.Id == 1 && a.StartTime == newSlot && a.PatientId == 7),
+            Arg.Any<CancellationToken>());
+    }
+
+    // TC-FR-APT-004-8
+    [Fact]
+    public async Task FR_APT_004_the_overlap_check_ignores_the_appointment_being_moved()
+    {
+        var newSlot = new DateTime(2026, 11, 12, 10, 0, 0);
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.Scheduled));
+
+        await service.RescheduleAsync(1, newSlot);
+
+        await appointments.Received(1).HasOverlapAsync(newSlot, 1, Arg.Any<CancellationToken>());
+    }
+
+    // TC-FR-APT-004-9
+    [Theory]
+    [InlineData(AppointmentStatus.CheckedIn)]
+    [InlineData(AppointmentStatus.InConsultation)]
+    [InlineData(AppointmentStatus.Completed)]
+    [InlineData(AppointmentStatus.Cancelled)]
+    [InlineData(AppointmentStatus.NoShow)]
+    public async Task FR_APT_004_only_a_scheduled_appointment_can_be_rescheduled(string status)
+    {
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>()).Returns(Booked(FutureSlot, status));
+
+        var result = await service.RescheduleAsync(1, new DateTime(2026, 11, 12, 10, 0, 0));
+
+        Assert.Equal([AppointmentService.NotScheduledCode], result.Errors.Select(error => error.Code));
+        await appointments.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
+    }
+
+    // TC-FR-APT-004-10
+    [Fact]
+    public async Task FR_APT_004_a_move_onto_a_taken_slot_is_refused_and_nothing_is_saved()
+    {
+        var newSlot = new DateTime(2026, 11, 12, 10, 0, 0);
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.Scheduled));
+        appointments.HasOverlapAsync(newSlot, 1, Arg.Any<CancellationToken>()).Returns(true);
+
+        var result = await service.RescheduleAsync(1, newSlot);
+
+        Assert.Equal([AppointmentService.SlotTakenCode], result.Errors.Select(error => error.Code));
+        await appointments.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
+    }
+
+    // TC-FR-APT-004-11
+    [Fact]
+    public async Task FR_APT_004_a_slot_taken_during_the_save_is_reported_as_taken()
+    {
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.Scheduled));
+        appointments.UpdateAsync(Arg.Any<Appointment>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromException(new SlotTakenException(new InvalidOperationException("index"))));
+
+        var result = await service.RescheduleAsync(1, new DateTime(2026, 11, 12, 10, 0, 0));
+
+        Assert.Equal([AppointmentService.SlotTakenCode], result.Errors.Select(error => error.Code));
+    }
+
+    // TC-FR-APT-004-12
+    [Fact]
+    public async Task FR_APT_004_a_move_to_the_same_time_is_refused()
+    {
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.Scheduled));
+
+        var result = await service.RescheduleAsync(1, FutureSlot);
+
+        Assert.Equal([AppointmentService.SameSlotCode], result.Errors.Select(error => error.Code));
+        await appointments.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
+    }
+
+    // TC-FR-APT-004-13
+    [Fact]
+    public async Task FR_APT_004_a_move_to_an_off_grid_time_is_refused()
+    {
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.Scheduled));
+
+        var result = await service.RescheduleAsync(1, new DateTime(2026, 11, 12, 9, 15, 0));
+
+        Assert.Equal(["Appointment.StartTime.NotOnGrid"], result.Errors.Select(error => error.Code));
+        await appointments.DidNotReceiveWithAnyArgs().UpdateAsync(default!, default);
+    }
+
+    // TC-FR-APT-004-14
+    [Fact]
+    public async Task FR_APT_004_a_move_to_a_past_date_is_refused()
+    {
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.Scheduled));
+
+        var result = await service.RescheduleAsync(1, new DateTime(2026, 11, 10, 9, 0, 0));
+
+        Assert.Equal(["Appointment.Date.InPast"], result.Errors.Select(error => error.Code));
+    }
+
+    // TC-FR-APT-004-15
+    [Fact]
+    public async Task FR_APT_004_an_archived_appointment_cannot_be_rescheduled()
+    {
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.Scheduled, archived: true));
+
+        var result = await service.RescheduleAsync(1, new DateTime(2026, 11, 12, 10, 0, 0));
+
+        Assert.Equal([AppointmentService.NotFoundCode], result.Errors.Select(error => error.Code));
+    }
+
+    // TC-FR-APT-004-16
+    [Fact]
+    public async Task FR_APT_004_the_reschedule_form_opens_only_for_a_scheduled_appointment()
+    {
+        appointments.GetByIdAsync(1, Arg.Any<CancellationToken>())
+            .Returns(Booked(FutureSlot, AppointmentStatus.CheckedIn));
+
+        var result = await service.GetForRescheduleAsync(1);
+
+        Assert.Equal([AppointmentService.NotScheduledCode], result.Errors.Select(error => error.Code));
+    }
 }

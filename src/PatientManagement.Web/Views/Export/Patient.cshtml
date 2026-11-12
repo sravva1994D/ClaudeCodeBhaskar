@@ -2,19 +2,29 @@
 @model PatientManagement.Web.ViewModels.Export.ExportFormViewModel
 @{
     ViewData["Title"] = "Export patient data";
+    ViewData["Breadcrumbs"] = new List<(string Text, string? Url)>
+    {
+        ("Patient search", Url.Action("Search", "Patients")),
+        (Model.PatientName, Url.Action("Details", "Patients", new { id = Model.PatientId })),
+        ("Export", null)
+    };
 }
 
-<h1 class="h3 mb-1">Export patient data</h1>
-<p class="text-muted mb-4">
-    <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">@Model.PatientName</a> (@Model.PatientCode)
-</p>
+<div class="page-header">
+    <div>
+        <h1 class="h3 mb-1">Export patient data</h1>
+        <p class="text-muted mb-0">
+            <a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">@Model.PatientName</a> (@Model.PatientCode)
+        </p>
+    </div>
+</div>
 
 @if (Model.ErrorMessage is not null)
 {
     <div class="alert alert-danger" role="alert">@Model.ErrorMessage</div>
 }
 
-<form method="get" action="@Url.Action("PatientCsv", "Export", new { patientId = Model.PatientId })" class="row g-2 align-items-end mb-3">
+<form method="get" action="@Url.Action("PatientCsv", "Export", new { patientId = Model.PatientId })" class="row g-2 align-items-end mb-3" data-no-busy>
     <div class="col-sm-auto">
         <label for="from" class="form-label">From</label>
         <input type="date" id="from" name="from" class="form-control" value="@Model.FromDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)" />
@@ -33,7 +43,7 @@
 
 <p class="form-text mb-4">
     Leave both dates empty to export every visit. A From date alone exports that day. When both are entered, both days are included.
-    The CSV lists visits oldest first, one row per visit, with the patient details on every row. Dates are yyyy-MM-dd.
+    The CSV lists visits oldest first, one row per visit, with the patient details on every row. CSV dates are yyyy-MM-dd (ISO) so spreadsheets read them as dates.
 </p>
 
 <p class="mt-4"><a asp-controller="Patients" asp-action="Details" asp-route-id="@Model.PatientId">Back to the patient profile</a></p>

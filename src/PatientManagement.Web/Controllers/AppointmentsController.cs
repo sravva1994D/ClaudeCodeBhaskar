@@ -48,17 +48,8 @@ public class AppointmentsController(
             return View(await BuildFormAsync(patient.Value!, day, startTime: null, cancellationToken));
         }
 
-        // The slot must be on the day shown in the Day box. Otherwise the user changed the day without
-        // reloading the slots, and the save would book a slot the user did not see for that day.
-        if (DateOnly.FromDateTime(model.StartTime.Value) != day)
-        {
-            ModelState.AddModelError(nameof(model.Date),
-                "The chosen slot is on a different day. Choose the day, select Show slots, then pick a slot.");
-            return View(await BuildFormAsync(patient.Value!, day, model.StartTime, cancellationToken));
-        }
-
         var result = await appointments.ScheduleAsync(
-            new AppointmentCreateDto(model.PatientId, model.StartTime.Value), cancellationToken);
+            new AppointmentCreateDto(model.PatientId, model.StartTime.Value, day), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -67,7 +58,7 @@ public class AppointmentsController(
         }
 
         TempData["Message"] =
-            $"Appointment booked for {model.StartTime.Value:yyyy-MM-dd} at {model.StartTime.Value:HH:mm}.";
+            $"Appointment booked for {model.StartTime.Value:dd-MMM-yyyy} at {model.StartTime.Value:HH:mm}.";
 
         return RedirectToAction("Details", "Patients", new { id = model.PatientId });
     }
@@ -128,6 +119,98 @@ public class AppointmentsController(
         }
 
         return RedirectToAction(nameof(Daily), new { date = date ?? Today() });
+    }
+
+    // Reschedule (FR-APT-004, DEC-027). Opens on the appointment's own day, or on the day in the Day box.
+    [HttpGet]
+    public async Task<IActionResult> Reschedule(int id, DateOnly? date, CancellationToken cancellationToken)
+    {
+        var (appointment, response) = await LoadForRescheduleAsync(id, cancellationToken);
+        if (appointment is null)
+        {
+            return response!;
+        }
+
+        var day = date ?? DateOnly.FromDateTime(appointment.StartTime);
+
+        return View(await BuildRescheduleFormAsync(appointment, day, startTime: null, cancellationToken));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Reschedule(AppointmentFormViewModel model, CancellationToken cancellationToken)
+    {
+        var (appointment, response) = await LoadForRescheduleAsync(model.AppointmentId ?? 0, cancellationToken);
+        if (appointment is null)
+        {
+            return response!;
+        }
+
+        var day = model.Date ?? DateOnly.FromDateTime(appointment.StartTime);
+
+        if (model.StartTime is null)
+        {
+            ModelState.AddModelError(nameof(model.StartTime), "Choose a slot.");
+            return View(await BuildRescheduleFormAsync(appointment, day, startTime: null, cancellationToken));
+        }
+
+        var result = await appointments.RescheduleAsync(appointment.Id, model.StartTime.Value, day, cancellationToken);
+        if (!result.IsSuccess)
+        {
+            AddErrors(result);
+            return View(await BuildRescheduleFormAsync(appointment, day, model.StartTime, cancellationToken));
+        }
+
+        TempData["Message"] =
+            $"Appointment moved to {model.StartTime.Value:dd-MMM-yyyy} at {model.StartTime.Value:HH:mm}.";
+
+        return RedirectToAction(nameof(Daily), new { date = DateOnly.FromDateTime(model.StartTime.Value) });
+    }
+
+    // Shared by the reschedule screen and its save, so both treat a missing or unschedulable appointment the same.
+    // Returns the appointment, or the response to send back (not found, or a redirect to the daily list with the reason).
+    private async Task<(AppointmentDto? Appointment, IActionResult? Response)> LoadForRescheduleAsync(
+        int id, CancellationToken cancellationToken)
+    {
+        var result = await appointments.GetForRescheduleAsync(id, cancellationToken);
+        if (result.Errors.Any(error => error.Code == AppointmentService.NotFoundCode))
+        {
+            return (null, NotFound());
+        }
+
+        if (!result.IsSuccess)
+        {
+            TempData["Error"] = string.Join(" ", result.Errors.Select(error => error.Message));
+            return (null, RedirectToAction(nameof(Daily), new { date = Today() }));
+        }
+
+        return (result.Value!, null);
+    }
+
+    private async Task<AppointmentFormViewModel> BuildRescheduleFormAsync(
+        AppointmentDto appointment, DateOnly day, DateTime? startTime, CancellationToken cancellationToken)
+    {
+        var slots = await appointments.GetSlotsAsync(day, cancellationToken);
+
+        return new AppointmentFormViewModel
+        {
+            AppointmentId = appointment.Id,
+            PatientId = appointment.PatientId,
+            PatientName = appointment.PatientName,
+            PatientCode = appointment.PatientCode,
+            CurrentStartTime = appointment.StartTime,
+            Date = day,
+            StartTime = startTime,
+            Slots = slots
+                .Select(slot =>
+                {
+                    // The appointment's own slot is shown free, marked as the current time.
+                    var isCurrent = slot.StartTime == appointment.StartTime;
+                    var label = slot.StartTime.ToString("HH:mm", CultureInfo.InvariantCulture) + (isCurrent ? " (current)" : string.Empty);
+                    return new SlotViewModel(slot.StartTime, label, slot.IsTaken && !isCurrent);
+                })
+                .ToList()
+        };
     }
 
     private async Task<AppointmentFormViewModel> BuildFormAsync(

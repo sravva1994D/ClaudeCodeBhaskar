@@ -118,6 +118,11 @@ The following will NOT be included in Phase 1:
   - No other moves. An appointment cannot be marked Completed from Scheduled or Checked-In; it reaches Completed only after In Consultation. No status is changed back to an earlier status in Phase 1
   - "Completed" means the business process for the appointment is finished. The consultation's Finish action sets it (DEC-022)
 - Appointments are archived (hidden but kept), not hard-deleted. Archiving is a manual action. Archived appointments are hidden everywhere in the application
+- Reschedule a scheduled appointment (added 2026-11-12, DEC-027)
+  - Only a Scheduled appointment can be rescheduled. Checked-In and later statuses cannot
+  - The new slot follows the slot rules above and must not overlap another appointment that holds its slot. The old slot is released when the move is saved
+  - The patient and the status stay the same. The move does not keep a history of the old time (audit trail is out of Phase 1, OOS-013)
+  - Cancelling and booking a new appointment remains available
 
 ---
 
@@ -229,7 +234,7 @@ A consultation and a visit are the same record. A consultation can be started di
 ## Requirement Priorities
 
 Framework: **MoSCoW** (Must Have, Should Have, Could Have, Won't Have).
-Status: **Approved by the Project Owner, 2026-11-10** (sole approver). Priorities do not change any requirement wording above. Requirement IDs follow the project ID scheme (see `Documentation/01-Brainstorming/11-Requirement-Catalog.md`).
+Status: **Approved by the Project Owner, 2026-11-10** (sole approver); amended 2026-11-12 by DEC-025 (six requirements moved to Won't Have (Phase 1)). Priorities do not change any requirement wording above. Requirement IDs follow the project ID scheme (see `Documentation/01-Brainstorming/11-Requirement-Catalog.md`).
 
 | Req ID | Requirement (short) | Priority | Rationale |
 |---|---|---|---|
@@ -240,6 +245,7 @@ Status: **Approved by the Project Owner, 2026-11-10** (sole approver). Prioritie
 | FR-APT-001 | Schedule appointments | Must Have | Appointment scheduling in scope |
 | FR-APT-002 | Daily appointment list | Must Have | Named functional requirement |
 | FR-APT-003 | Update appointment status | Must Have | "Tracking" in scope |
+| FR-APT-004 | Reschedule a scheduled appointment | Should Have | Added 2026-11-12 (DEC-027). Only Scheduled appointments; no overlap |
 | FR-VIT-001 | Mandatory vitals | Must Have | Stated as mandatory |
 | FR-CMP-001 | Record complaints | Must Have | Consultation workflow in scope |
 | FR-DIA-001 | Record diagnosis | Must Have | Diagnosis documentation in scope |
@@ -253,15 +259,17 @@ Status: **Approved by the Project Owner, 2026-11-10** (sole approver). Prioritie
 | FR-SRC-003 | Navigate profile and visits | Should Have | Navigation aid; core access exists via FR-PAT-003 and FR-HIS-001 |
 | FR-EXP-001 | Export as CSV | Must Have | In scope; SC-005 |
 | FR-EXP-002 | Export as PDF (printable view; browser Save as PDF) | Must Have | In scope; SC-005 |
-| NFR-USB-001 | Simple, fast-entry UI | Must Have | Usability for single user |
+| NFR-USB-001 | Simple, fast-entry UI | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12) |
 | NFR-PRF-001 | Page load approximately 2 s (localhost) | Must Have | Stated target, localhost conditions |
-| NFR-PRF-002 | Search results within 2–5 s (localhost) | Must Have | SC-002 |
+| NFR-PRF-002 | Search results within 2–5 s (localhost) | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12); SC-002 |
 | NFR-REL-001 | No data loss | Won't Have (Phase 1) | Deferred; OOS-011 |
 | NFR-REL-002 | Automated backups | Won't Have (Phase 1) | Deferred; OOS-011 |
 | NFR-SEC-001 | Secure single-user login | Must Have | Stated requirement |
 | NFR-SEC-002 | Data in transit (TLS beyond localhost); password hashing | Must Have | Amended 2026-11-10 (DEC-017): encryption at rest is out of Phase 1 scope |
-| NFR-SCL-001 | Single clinic; sample of up to 1,000 records | Must Have | Defines Phase 1 scale |
-| NFR-CMP-001 | Latest Chrome and Edge (desktop) | Must Have | Amended 2026-11-10 (DEC-019): Safari not required in Phase 1 |
+| NFR-SCL-001 | Single clinic; sample of up to 1,000 records | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12) |
+| NFR-CMP-001 | Latest Chrome and Edge (desktop) | Won't Have (Phase 1) | Amended 2026-11-10 (DEC-019): Safari not required in Phase 1. Removed from Phase 1 scope by DEC-025 (2026-11-12) |
+| SC-001 | Consultation record in 2–3 minutes | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12) |
+| SC-002 | Patient search and history retrieval in 2–5 seconds | Won't Have (Phase 1) | Removed from Phase 1 scope by DEC-025 (2026-11-12) |
 | SC-003 | 80% paper reduction | Won't Have (Phase 1) | Deferred; OOS-014 |
 | SC-006 | High usability | Won't Have (Phase 1) | Deferred; OOS-014 |
 | OOS-001 to OOS-015 | Items listed under Out of Scope | Won't Have (Phase 1) | Excluded from Phase 1 by the Out of Scope section |
@@ -306,6 +314,9 @@ Decisions recorded from stakeholder answers. Full detail: `Documentation/01-Brai
 | DEC-020: CSV dates in ISO format (yyyy-MM-dd); user-relevant columns only; column set in `Documentation/02-Planning/10-Service-Design.md` §2.7 (PDR-17 resolved) | Project Owner decision, 2026-11-10 |
 | DEC-021: header logo is a placeholder image in Phase 1; no logo upload (PDR-15 amended) | Project Owner decision, 2026-11-10 |
 | DEC-022: the Archive action (hides an appointment, keeps it) and the Finish action (sets Completed after In Consultation) are both in Phase 1 | Project Owner decision, 2026-11-10 |
+| DEC-025: NFR-USB-001, NFR-PRF-002, NFR-SCL-001, NFR-CMP-001, SC-001 and SC-002 are removed from Phase 1 scope (priority changed to Won't Have (Phase 1); requirement wording unchanged). Phase 1 in-scope IDs: 31 to 25. NFR-PRF-001 (page load) remains Must Have and was measured in Module 8 | Project Owner decision, 2026-11-12 (BRD amendment, CLAUDE.md §3) |
+| DEC-027: FR-APT-004 Reschedule added to the BRD (Should Have). Only Scheduled appointments can be moved; the new slot follows the slot rules and must be free; no history kept. Owner choices: Scheduled only; Should Have | Project Owner decision, 2026-11-12 (BRD amendment, CLAUDE.md §3) |
+| DEC-026: UI standards approved 2026-11-12. (1) jQuery DataTables (2.1.8, Bootstrap 5 build) on list screens: paging, search, sorting, page sizes 10/25/50/100 (default 10), total count. (2) Palette: Bootstrap 5 defaults (primary #0D6EFD, success #198754, warning #FFC107, danger #DC3545, light #F8F9FA), written as design tokens in `site.css`; one page-header standard. (3) Breadcrumbs on all major screens. (4) Dates shown as dd-MMM-yyyy on screen and in print views. CSV keeps ISO yyyy-MM-dd (DEC-020). No requirement wording changed | Project Owner decision, 2026-11-12. Record: `Documentation/04-Implementation/17-UI-Modernization-Review-Package.md` |
 
 ## Still Open
 

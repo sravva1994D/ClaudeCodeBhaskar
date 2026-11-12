@@ -157,7 +157,7 @@ public class PatientPagesTests(TestDatabaseFixture database, TestWebApplicationF
         var html = await client.GetStringAsync($"/Patients/Details/{existingId}");
 
         Assert.Contains(ExistingName, html);
-        Assert.Contains("1990-05-01", html);
+        Assert.Contains("01-May-1990", html);
         Assert.Contains("Female", html);
         Assert.Contains(ExistingPhone, html);
         Assert.Contains("anna@example.test", html);

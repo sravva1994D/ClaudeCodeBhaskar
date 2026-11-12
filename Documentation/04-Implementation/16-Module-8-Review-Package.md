@@ -1,6 +1,6 @@
 # Module 8 Review Package: Non-Functional Verification
 
-**Status:** Page-load timings recorded (Chrome 157.0.8103.52). Search and history timing and the consultation rehearsal were skipped by Project Owner decision (2026-11-12). The walkthrough (§6) and browser matrix (§7A) were skipped by Project Owner decision (2026-11-12). The volume check was skipped by Project Owner decision (2026-11-12). **Approved by the Project Owner on 2026-11-12** on the basis recorded in §8.
+**Status:** Page-load timings recorded (Chrome 157.0.8103.52). Search and history timing and the consultation rehearsal were skipped by Project Owner decision (2026-11-12). The walkthrough (§6) and browser matrix (§7A) were skipped by Project Owner decision (2026-11-12). The volume check was skipped by Project Owner decision (2026-11-12). **Approved by the Project Owner on 2026-11-12** on the basis recorded in §8. On the same day, the Project Owner removed NFR-USB-001, NFR-PRF-002, NFR-SCL-001, NFR-CMP-001, SC-001 and SC-002 from Phase 1 scope (DEC-025, BRD amendment). The skipped checks in §3A to §7A therefore no longer count toward Phase 1 acceptance.
 **Plan:** `16-Module-8-Plan.md` (decisions D-M8-1 to D-M8-8, approved 2026-11-12).
 **Requirements:** NFR-PRF-001, NFR-PRF-002, SC-001, SC-002, NFR-SCL-001, NFR-CMP-001, NFR-SEC-002, NFR-USB-001.
 

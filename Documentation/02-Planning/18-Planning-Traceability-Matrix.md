@@ -18,6 +18,7 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 | FR-APT-001 | Must | SCR-09 | Appointments.Create (15, 16) | AppointmentService.ScheduleAsync, GetSlotsAsync | IAppointmentRepository.HasOverlapAsync, AddAsync | Appointments | TC-FR-APT-001-1 to -3 (implemented, M3; test names in `04-Implementation/08-Module-3-Review-Package.md` §2) | WP-4.1, 4.2 | M3 | 06, 07, 26 |
 | FR-APT-002 | Must | SCR-03, SCR-10 | Home.Index (1); Appointments.Daily (17) | AppointmentService.GetDailyAsync | IAppointmentRepository.GetDailyAsync | Appointments | TC-FR-APT-002-1, -2 (implemented, M3) | WP-4.3, 4.5 | M3 | 09 |
 | FR-APT-003 | Must | SCR-10 | Appointments.UpdateStatus (18); Consultations.Start (19); Consultations.Finish (31); Appointments.Archive (30); lifecycle in `19-` | AppointmentService.UpdateStatusAsync, ArchiveAsync; ConsultationService.FinishAsync | IAppointmentRepository.GetByIdAsync | Appointments | TC-FR-APT-003-1, -2, -4 (implemented, M3); -3, -5 (implemented, M4) | WP-4.4, 5.3 | M3 | 07, 08, 09, 27 |
+| FR-APT-004 | Should | SCR-09, SCR-10 | Appointments.Reschedule (GET and POST) | AppointmentService.GetForRescheduleAsync, RescheduleAsync | IAppointmentRepository.HasOverlapAsync, UpdateAsync | Appointments (StartTime moved) | FR_APT_004_* in AppointmentServiceTests and ReschedulePagesTests (implemented 2026-11-12, DEC-027; awaiting owner approval) | — | 2026-11-12 (DEC-027) | BRD amendment |
 | FR-VIT-001 | Must | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync; vitals validator | IVitalSignRepository.UpsertAsync | VitalSigns | TC-FR-VIT-001-1 to -5, boundary set (implemented, M4) | WP-5.1, 5.2, 5.4 | M4 | 19 |
 | FR-CMP-001 | Must | SCR-11, SCR-08 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | IConsultationRepository.GetByIdAsync | Consultations | TC-FR-CMP-001-1, -2 (implemented, M4) | WP-5.4 | M4 | 12 |
 | FR-DIA-001 | Must | SCR-11, SCR-08 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | IConsultationRepository.GetByIdAsync | Consultations | TC-FR-DIA-001-1, -2 (implemented, M4) | WP-5.4 | M4 | — |
@@ -36,20 +37,20 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 
 | Req ID | Priority | Screens / scope | Controller.Action (route #) | Service / component | Repository / config | Tables / store | Tests | WBS | Milestone | PDR |
 |---|---|---|---|---|---|---|---|---|---|---|
-| NFR-USB-001 | Must | All data-entry screens | Layout (all controllers) | Layout, CSS, tab order | — | — | Qualitative (TC-NFR-USB-001; `16-` §6; not run, skipped by Project Owner decision 2026-11-12) | WP-2.5, 9.6 | M1, M8 | — |
+| NFR-USB-001 | Won't (Phase 1; DEC-025) | All data-entry screens | Layout (all controllers) | Layout, CSS, tab order | — | — | Qualitative (TC-NFR-USB-001; `16-` §6; not run, skipped by Project Owner decision 2026-11-12) | WP-2.5, 9.6 | M1, M8 | — |
 | NFR-PRF-001 | Must | All pages | — | — | — | — | Timed page load, 10 pages (`04-Implementation/16-` §4.1; run pending) | WP-9.1 | M8 | 30 |
-| NFR-PRF-002 | Must | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService.SearchAsync; VisitService.ListAsync | Index strategy (07 §4) | Patients, Consultations | Timed search, 10 terms (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 23, 30 |
+| NFR-PRF-002 | Won't (Phase 1; DEC-025) | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService.SearchAsync; VisitService.ListAsync | Index strategy (07 §4) | Patients, Consultations | Timed search, 10 terms (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 23, 30 |
 | NFR-SEC-001 | Must | SCR-01, SCR-02 | Account.* (2 to 6); global Authorize | AuthService.SignInAsync, ResetPasswordAsync | IUserRepository | Users | TC-NFR-SEC-001-1, -2 | WP-2.3, 2.4, 9.4 | M1, M8 | 02, 03, 04, 05, 20 |
 | NFR-SEC-002 | Must | All (transport) | — | Password hash; HTTPS config | None at rest (DEC-017) | Users (hash) | Hash check (TC-NFR-SEC-002-1, automated, M8 step 3); transport configuration review (`16-` §3A) | WP-9.4 | M1, M8 | 21, DEC-017 |
-| NFR-SCL-001 | Must | All list screens | — | — | — | Patients (1,000 records) | Volume check (`16-` §3A, §7A note; not run, skipped by Project Owner decision 2026-11-12) | WP-9.5 | M8 | — |
-| NFR-CMP-001 | Must | All screens | — | — | — | — | Browser matrix (Chrome, Edge; DEC-019) (`16-` §7A; not run, skipped by Project Owner decision 2026-11-12; Edge not verified) | WP-2.5, 9.3 | M1, M8 | 28, DEC-019 |
+| NFR-SCL-001 | Won't (Phase 1; DEC-025) | All list screens | — | — | — | Patients (1,000 records) | Volume check (`16-` §3A, §7A note; not run, skipped by Project Owner decision 2026-11-12) | WP-9.5 | M8 | — |
+| NFR-CMP-001 | Won't (Phase 1; DEC-025) | All screens | — | — | — | — | Browser matrix (Chrome, Edge; DEC-019) (`16-` §7A; not run, skipped by Project Owner decision 2026-11-12; Edge not verified) | WP-2.5, 9.3 | M1, M8 | 28, DEC-019 |
 
 ## 3. Success Criteria
 
 | Ref | Priority | Screens | Controller.Action | Service / component | Tables | Tests | WBS | Milestone | PDR |
 |---|---|---|---|---|---|---|---|---|---|
-| SC-001 | Must (verification) | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | Consultations, VitalSigns, Prescriptions | Timed rehearsal (`16-` §5; not measured, skipped by Project Owner decision 2026-11-12) | WP-9.2 | M8 | — |
-| SC-002 | Must (verification) | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService, VisitService | Patients, Consultations | Timed search and history (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 30 |
+| SC-001 | Won't (Phase 1; DEC-025) | SCR-11 | Consultations.Edit (20, 21) | ConsultationService.SaveAsync | Consultations, VitalSigns, Prescriptions | Timed rehearsal (`16-` §5; not measured, skipped by Project Owner decision 2026-11-12) | WP-9.2 | M8 | — |
+| SC-002 | Won't (Phase 1; DEC-025) | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService, VisitService | Patients, Consultations | Timed search and history (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 30 |
 | SC-004 | Must (verification) | SCR-12 | Prescriptions.Print (23, 24) | PrescriptionService.MarkPrintedAsync | Prescriptions | Browser checks 7 to 11 passed (Chrome 157.0.8103.51, A4 print and Save as PDF), review package §4; approved M5 | WP-6.4 | M5 | 16 |
 | SC-005 | Must (verification) | SCR-13 | Export.PatientCsv (26); Export.PatientPrint (27) | ExportService | — | Implemented and approved (M7); file open, print and Save as PDF checked in Chrome 157.0.8103.51 (review package `15-` §4) | WP-8.2, 8.3 | M7 | 17, 18 |
 
@@ -98,3 +99,36 @@ These are needed to implement a requirement. Each is traced to the requirement i
 | Blocked status | Most rows "Blocked" | Not used. Open items are listed as PDR in `17-` | Open questions are answered; all planning decisions are closed (2026-11-10) |
 | FR-SRC-001 | Must | Must | Unchanged |
 | Downstream columns | "Added in later modules" | Added here | Module 2 scope |
+
+## 8. Phase 1 Acceptance (M9)
+
+Manual pass on 2026-11-12, Chrome 157.0.8103.79, 15 of 15 checks passed. Automated evidence: unit 382 and integration 304 passed (`04-Implementation/19-Module-9-Acceptance-Record.md` §1 and §2). The Project Owner approved the acceptance on 2026-11-12. All 26 IDs are Accepted (M9).
+
+| Req ID | Manual step (`19-` §3) | Result |
+|---|---|---|
+| FR-PAT-001 | M2 | Pass |
+| FR-PAT-002 | M3 | Pass |
+| FR-PAT-003 | M3 | Pass |
+| FR-PAT-004 | M3 | Pass |
+| FR-APT-001 | M5 | Pass |
+| FR-APT-002 | M7 | Pass |
+| FR-APT-003 | M7 | Pass |
+| FR-APT-004 | M6 | Pass |
+| FR-VIT-001 | M8 | Pass |
+| FR-CMP-001 | M8, M10 | Pass |
+| FR-DIA-001 | M8, M10 | Pass |
+| FR-RX-001 | M8 | Pass |
+| FR-RX-002 | M11, M14 | Pass |
+| FR-HIS-001 | M8, M9 | Pass |
+| FR-HIS-002 | M10 | Pass |
+| FR-HIS-003 | M9 | Pass |
+| FR-SRC-001 | M3 | Pass |
+| FR-SRC-002 | M4 | Pass |
+| FR-SRC-003 | M9 | Pass |
+| FR-EXP-001 | M12 | Pass |
+| FR-EXP-002 | M13 | Pass |
+| NFR-SEC-001 | M1 | Pass |
+| NFR-SEC-002 | Automated hash tests; transport reviewed as configuration (known limit L3) | Pass |
+| NFR-PRF-001 | M8 timing record (`16-Module-8-Review-Package.md`) | Pass |
+| SC-004 | M11 | Pass |
+| SC-005 | M12, M13 | Pass |
