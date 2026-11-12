@@ -107,7 +107,7 @@ Ten page types. Use the seed patient from §2 for the profile page.
 | 5 | Visit history (SCR-07) | 0.190 | 0.061 | 0.120 | 0.130 | 0.108 | 0.120 | Yes |
 | 6 | Daily appointments list | 0.179 | 0.100 | 0.089 | 0.124 | 0.075 | 0.100 | Yes (mapping to confirm) |
 | 7 | New appointment | 0.135 | 0.084 | 0.088 | 0.101 | 0.099 | 0.099 | Yes (mapping to confirm) |
-| 8 | Consultation (SCR-11) | | | | | | | |
+| 8 | Consultation (SCR-11) | 0.071 | 0.065 | 0.135 | 0.100 | 0.106 | 0.100 | Yes |
 | 9 | Prescription print view | | | | | | | |
 | 10 | Export form (SCR-13) | 0.105 | 0.100 | 0.062 | 0.095 | 0.114 | 0.100 | Yes |
 
@@ -117,7 +117,6 @@ Additional pages timed, not in the 10-page list (seconds; five runs; median):
 - Show slots (part of scheduling): 0.138, 0.144, 0.069, 0.070, 0.085; median 0.085.
 
 Not yet complete:
-- Row 8, consultation: only four runs were sent (0.071, 0.065, 0.135, 0.100). A fifth run is needed. "Start consultation" is taken as row 8.
 - Row 6 and row 7 are mapped from "appointments" and "appointment schedule". The Project Owner should confirm the mapping.
 - Row 1, sign-in, and row 9, prescription print view, have not been timed.
 
