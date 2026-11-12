@@ -16,7 +16,7 @@
 | FR-APT-001 | Must Have | FR > Appointment Management | Schedule appointments | BO-004 | — | 10 §1 | OQ-004, OQ-005 | Traced; Accepted (M9, 2026-11-12) |
 | FR-APT-002 | Must Have | FR > Appointment Management | View daily list | BO-004 | — | 10 §1 | OQ-004 | Traced; Accepted (M9, 2026-11-12) |
 | FR-APT-003 | Must Have | FR > Appointment Management | Lifecycle: Scheduled, Checked-In, In Consultation, Completed, Cancelled, No-show (no reversal; Completed only after In Consultation) | BO-004 | — | 10 §1 | OQ-006, OQ-024 | Traced; Accepted (M9, 2026-11-12) |
-| FR-APT-004 | Should Have | FR > Appointment Management | Reschedule a scheduled appointment to another free slot (added 2026-11-12, DEC-027) | BO-004 | — | 10 §1 | — | Implemented (M-extra, DEC-027); awaiting owner approval; Accepted (M9, 2026-11-12) |
+| FR-APT-004 | Should Have | FR > Appointment Management | Reschedule a scheduled appointment to another free slot (added 2026-11-12, DEC-027) | BO-004 | — | 10 §1 | — | Accepted (M9, 2026-11-12); implemented DEC-027 |
 | FR-VIT-001 | Must Have | FR > Consultation > Vitals (Mandatory) | Record temp, BP, pulse for every consultation | BO-002 | SC-001 | 10 §1 | OQ-007, OQ-028 | Traced; Accepted (M9, 2026-11-12) |
 | FR-CMP-001 | Must Have | FR > Consultation > Complaints | Enter symptoms (free text) | BO-002 | SC-001 | 10 §1 | OQ-006, OQ-008 | Traced; Accepted (M9, 2026-11-12) |
 | FR-DIA-001 | Must Have | FR > Consultation > Diagnosis | Record diagnosis notes | BO-002 | SC-001 | 10 §1 | OQ-008 | Traced; Accepted (M9, 2026-11-12) |

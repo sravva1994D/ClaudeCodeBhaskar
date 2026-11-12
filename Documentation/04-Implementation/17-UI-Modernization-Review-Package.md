@@ -1,6 +1,6 @@
 # UI Modernization Review Package
 
-**Status:** Implemented, not yet committed. Waiting for the Project Owner's review and browser check before commit.
+**Status:** Implemented and committed (cb4f917, 11f5fe4). Browser checks and the Module 9 acceptance passed (M15).
 **Decision:** DEC-026 (2026-11-12, `01-Brainstorming/14-` and BRD decision log).
 **Requirements:** no requirement wording changed. The screens below carry the existing requirement IDs (FR-PAT, FR-APT, FR-HIS, FR-EXP, FR-RX, FR-VIT, FR-CMP, FR-DIA, NFR-SEC).
 
