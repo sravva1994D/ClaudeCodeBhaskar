@@ -1,6 +1,6 @@
 # Module 8 Review Package: Non-Functional Verification
 
-**Status:** Page-load timings recorded (Chrome 157.0.8103.52). Search and history timing and the consultation rehearsal were skipped by Project Owner decision (2026-11-12). The walkthrough (§6) and browser matrix (§7A) were skipped by Project Owner decision (2026-11-12). The volume check is pending. Approval is pending (§8).
+**Status:** Page-load timings recorded (Chrome 157.0.8103.52). Search and history timing and the consultation rehearsal were skipped by Project Owner decision (2026-11-12). The walkthrough (§6) and browser matrix (§7A) were skipped by Project Owner decision (2026-11-12). The volume check was skipped by Project Owner decision (2026-11-12). Approval is pending (§8).
 **Plan:** `16-Module-8-Plan.md` (decisions D-M8-1 to D-M8-8, approved 2026-11-12).
 **Requirements:** NFR-PRF-001, NFR-PRF-002, SC-001, SC-002, NFR-SCL-001, NFR-CMP-001, NFR-SEC-002, NFR-USB-001.
 
@@ -247,7 +247,7 @@ Notes on the run:
 | Rehearsal in §5 (SC-001) | Not measured (owner decision, 2026-11-12) |
 | Walkthrough in §6 (NFR-USB-001) | Not run (owner decision, 2026-11-12) |
 | Browser matrix in §7A (NFR-CMP-001, Chrome and Edge) | Not run (owner decision, 2026-11-12). Edge not verified |
-| Volume on list screens (NFR-SCL-001) | Not yet |
+| Volume on list screens (NFR-SCL-001) | Not run (owner decision, 2026-11-12) |
 | Remove seed data (`05-remove-performance-data.sql`) | Not run. Waits for the volume check and the owner's confirmation |
 | Project Owner approval | Pending |
 

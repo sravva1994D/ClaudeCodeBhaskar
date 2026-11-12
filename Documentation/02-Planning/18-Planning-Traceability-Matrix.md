@@ -41,7 +41,7 @@ Route numbers (#) refer to `09-Controller-Design.md` §2. Test IDs follow `14-Te
 | NFR-PRF-002 | Must | SCR-04, SCR-07 | Patients.Search (7); Visits.Index (13) | PatientService.SearchAsync; VisitService.ListAsync | Index strategy (07 §4) | Patients, Consultations | Timed search, 10 terms (`16-` §4.2; not measured, skipped by Project Owner decision 2026-11-12) | WP-3.6, 9.1 | M2, M8 | 23, 30 |
 | NFR-SEC-001 | Must | SCR-01, SCR-02 | Account.* (2 to 6); global Authorize | AuthService.SignInAsync, ResetPasswordAsync | IUserRepository | Users | TC-NFR-SEC-001-1, -2 | WP-2.3, 2.4, 9.4 | M1, M8 | 02, 03, 04, 05, 20 |
 | NFR-SEC-002 | Must | All (transport) | — | Password hash; HTTPS config | None at rest (DEC-017) | Users (hash) | Hash check (TC-NFR-SEC-002-1, automated, M8 step 3); transport configuration review (`16-` §3A) | WP-9.4 | M1, M8 | 21, DEC-017 |
-| NFR-SCL-001 | Must | All list screens | — | — | — | Patients (1,000 records) | Volume check (`16-` §3A, §7A note; run pending) | WP-9.5 | M8 | — |
+| NFR-SCL-001 | Must | All list screens | — | — | — | Patients (1,000 records) | Volume check (`16-` §3A, §7A note; not run, skipped by Project Owner decision 2026-11-12) | WP-9.5 | M8 | — |
 | NFR-CMP-001 | Must | All screens | — | — | — | — | Browser matrix (Chrome, Edge; DEC-019) (`16-` §7A; not run, skipped by Project Owner decision 2026-11-12; Edge not verified) | WP-2.5, 9.3 | M1, M8 | 28, DEC-019 |
 
 ## 3. Success Criteria
