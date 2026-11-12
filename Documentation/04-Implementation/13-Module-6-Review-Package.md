@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M6 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/12-Module-6-Plan.md` (plan approved in chat 2026-11-12; decisions D-M6-1 to D-M6-7 accepted as recommended)
-**Status:** Browser checks reported passed by the Project Owner (§4). Browser version and per-check notes not yet recorded. Approval pending: confirm D-M6-8.
+**Status:** **Approved by the Project Owner on 2026-11-12.** Browser checks passed (§4, Chrome 157.0.8103.51).
 
 ---
 
@@ -59,9 +59,9 @@ Stop the app if it is running, then start it again. Module 6 adds no migration. 
 | 11 | Click a name in Recent patients | Opens that patient's profile | |
 | 12 | Home page with no visits in the database (or a new database) | "No recent patients yet." | |
 
-Owner report: all checks in this table passed (reported in chat). Per-check results and the browser version were not supplied.
+Owner report: all checks in this table passed, in Chrome 157.0.8103.51 (reported in chat). Per-check results were not supplied separately.
 
-Browser used: ______________ (version ______________). Project Owner: ______________ Date: ______________
+Browser used: Chrome 157.0.8103.51. Result: passed. Date of approval: 2026-11-12.
 
 ## 5. Decisions Made
 
@@ -69,7 +69,7 @@ The plan (`12-`) recorded D-M6-1 to D-M6-7 with recommendations. They were accep
 
 | # | Point | Decision |
 |---|---|---|
-| D-M6-8 | A To date with no From date | Refused with "Enter a From date to filter by a range." It is not ignored, so the user is told what is missing. Owner to confirm at approval |
+| D-M6-8 | A To date with no From date | Refused with "Enter a From date to filter by a range." It is not ignored, so the user is told what is missing. Accepted with the Project Owner's approval on 2026-11-12 |
 
 ## 6. Known Limits and Open Items
 
@@ -84,4 +84,4 @@ The plan (`12-`) recorded D-M6-1 to D-M6-7 with recommendations. They were accep
 
 ## 7. Approval
 
-Pending. The Project Owner approves this module after the checks in §4 pass and D-M6-8 is confirmed.
+**Approved by the Project Owner on 2026-11-12.** Browser checks passed in Chrome 157.0.8103.51 (§4). D-M6-8 was accepted with the approval. Module 6 is complete, pending the final `development` → `main` PR after Modules 7 and 8.
