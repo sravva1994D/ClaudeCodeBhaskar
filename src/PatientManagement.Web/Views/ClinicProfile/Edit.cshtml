@@ -1,12 +1,15 @@
 @model PatientManagement.Web.ViewModels.ClinicProfile.ClinicProfileFormViewModel
 @{
     ViewData["Title"] = "Clinic details";
+    ViewData["Breadcrumbs"] = new List<(string Text, string? Url)> { ("Clinic details", null) };
 }
 
-<h1 class="h3 mb-1">Clinic details</h1>
-<p class="text-muted mb-4">
-    These details print at the top of each prescription. All five fields are required.
-</p>
+<div class="page-header">
+    <div>
+        <h1 class="h3 mb-1">Clinic details</h1>
+        <p class="text-muted mb-0">These details print at the top of each prescription. All five fields are required.</p>
+    </div>
+</div>
 
 @if (TempData["Message"] is string message)
 {

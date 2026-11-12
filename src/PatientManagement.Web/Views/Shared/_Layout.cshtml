@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Patient Management</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/datatables/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PatientManagement.Web.styles.css" asp-append-version="true" />
 </head>
@@ -55,6 +56,30 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @{
+                // Each view sets ViewData["Breadcrumbs"] as (text, url) pairs. The last item is the current page and has no link.
+                var crumbs = ViewData["Breadcrumbs"] as IReadOnlyList<(string Text, string? Url)>;
+            }
+            @if (crumbs is not null && crumbs.Count > 0)
+            {
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-3">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                        @for (var i = 0; i < crumbs.Count; i++)
+                        {
+                            var crumb = crumbs[i];
+                            if (i == crumbs.Count - 1 || crumb.Url is null)
+                            {
+                                <li class="breadcrumb-item active" aria-current="page">@crumb.Text</li>
+                            }
+                            else
+                            {
+                                <li class="breadcrumb-item"><a href="@crumb.Url">@crumb.Text</a></li>
+                            }
+                        }
+                    </ol>
+                </nav>
+            }
             @RenderBody()
         </main>
     </div>
@@ -83,6 +108,8 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

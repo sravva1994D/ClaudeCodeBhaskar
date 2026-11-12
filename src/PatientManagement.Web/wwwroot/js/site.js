@@ -106,6 +106,20 @@
         markBusy(form, event.submitter);
     });
 
+    // Lists marked data-table get paging, search and column sorting (approved 2026-11-12).
+    // Default 10 rows; page sizes 10, 25, 50 and 100. The server's order is kept until a column is sorted.
+    // Columns marked no-sort (for example Actions) cannot be sorted.
+    if (window.jQuery && jQuery.fn.dataTable) {
+        jQuery('table.data-table').each(function () {
+            jQuery(this).DataTable({
+                pageLength: 10,
+                lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+                order: [],
+                columnDefs: [{ orderable: false, targets: 'no-sort' }]
+            });
+        });
+    }
+
     // Going back to a page can restore it with its buttons still disabled. Put them back.
     window.addEventListener('pageshow', function () {
         Array.prototype.forEach.call(document.querySelectorAll('form[data-submitting]'), function (form) {

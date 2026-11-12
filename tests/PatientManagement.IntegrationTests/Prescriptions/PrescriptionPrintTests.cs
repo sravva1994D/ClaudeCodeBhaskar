@@ -54,7 +54,7 @@ public class PrescriptionPrintTests(TestDatabaseFixture database, TestWebApplica
         Assert.Equal(HttpStatusCode.OK, reply.Status);
         Assert.Contains("Test Clinic", reply.Body);
         Assert.Contains("Test Anna Example", reply.Body);
-        Assert.Contains("1990-05-01", reply.Body);
+        Assert.Contains("01-May-1990", reply.Body);
         Assert.Contains("120/80", reply.Body);
         Assert.Contains("Test diagnosis", reply.Body);
         Assert.Contains("Test Medicine", reply.Body);

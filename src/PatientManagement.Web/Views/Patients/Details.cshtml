@@ -1,14 +1,33 @@
 @model PatientManagement.Business.DTOs.PatientDto
 @{
     ViewData["Title"] = "Patient profile";
+    ViewData["Breadcrumbs"] = new List<(string Text, string? Url)>
+    {
+        ("Patient search", Url.Action("Search", "Patients")),
+        (Model.FullName, null)
+    };
 }
 
-<h1 class="h3 mb-1">@Model.FullName</h1>
-<p class="text-muted mb-4">@Model.PatientCode</p>
+<div class="page-header">
+    <div>
+        <h1 class="h3 mb-1">@Model.FullName</h1>
+        <p class="text-muted mb-0">@Model.PatientCode</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-outline-primary" asp-controller="Patients" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <a class="btn btn-outline-primary" asp-controller="Appointments" asp-action="Create" asp-route-patientId="@Model.Id">Schedule appointment</a>
+        <a class="btn btn-outline-primary" asp-controller="Visits" asp-action="Index" asp-route-patientId="@Model.Id">Visit history</a>
+        <a class="btn btn-outline-primary" asp-controller="Export" asp-action="Patient" asp-route-patientId="@Model.Id">Export</a>
+        <form method="post" asp-controller="Consultations" asp-action="Start" class="d-inline">
+            <input type="hidden" name="patientId" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary">Start consultation</button>
+        </form>
+    </div>
+</div>
 
 <dl class="row mb-4">
     <dt class="col-sm-3">Date of birth</dt>
-    <dd class="col-sm-9">@Model.DateOfBirth.ToString("yyyy-MM-dd")</dd>
+    <dd class="col-sm-9">@Model.DateOfBirth.ToString("dd-MMM-yyyy")</dd>
 
     <dt class="col-sm-3">Age</dt>
     <dd class="col-sm-9">@Model.Age</dd>
@@ -26,7 +45,7 @@
     <dd class="col-sm-9">@Model.Address</dd>
 
     <dt class="col-sm-3">Last visit</dt>
-    <dd class="col-sm-9">@(Model.LastVisit is null ? "No visits yet" : Model.LastVisit.Value.ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture))</dd>
+    <dd class="col-sm-9">@(Model.LastVisit is null ? "No visits yet" : Model.LastVisit.Value.ToString("dd-MMM-yyyy HH:mm", System.Globalization.CultureInfo.InvariantCulture))</dd>
 </dl>
 
 @if (TempData["Message"] is string message)
@@ -38,14 +57,4 @@
     <div class="alert alert-danger" role="alert">@error</div>
 }
 
-<div class="d-flex flex-wrap gap-3 align-items-center">
-    <a class="btn btn-outline-primary" asp-controller="Patients" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
-    <a class="btn btn-outline-primary" asp-controller="Appointments" asp-action="Create" asp-route-patientId="@Model.Id">Schedule appointment</a>
-    <a class="btn btn-outline-primary" asp-controller="Visits" asp-action="Index" asp-route-patientId="@Model.Id">Visit history</a>
-    <a class="btn btn-outline-primary" asp-controller="Export" asp-action="Patient" asp-route-patientId="@Model.Id">Export</a>
-    <form method="post" asp-controller="Consultations" asp-action="Start" class="d-inline">
-        <input type="hidden" name="patientId" value="@Model.Id" />
-        <button type="submit" class="btn btn-outline-primary">Start consultation</button>
-    </form>
-    <a asp-controller="Patients" asp-action="Search">Back to search</a>
-</div>
+<p><a asp-controller="Patients" asp-action="Search">Back to search</a></p>

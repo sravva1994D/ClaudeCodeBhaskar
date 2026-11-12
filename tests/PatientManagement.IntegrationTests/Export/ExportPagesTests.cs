@@ -222,7 +222,7 @@ public class ExportPagesTests(TestDatabaseFixture database, TestWebApplicationFa
 
         Assert.Contains("Test Anna Example", html);
         Assert.Contains(patientCode, html);
-        Assert.Contains("Visit on 2026-11-03 14:30", html);
+        Assert.Contains("Visit on 03-Nov-2026 14:30", html);
         Assert.Contains("Test cough", html);
         Assert.Contains("Test viral fever", html);
         Assert.Contains("Test Medicine", html);
@@ -252,7 +252,7 @@ public class ExportPagesTests(TestDatabaseFixture database, TestWebApplicationFa
 
         Assert.Contains("Test early visit", html);
         Assert.DoesNotContain("Test late visit", html);
-        Assert.Contains("From 2026-10-01 to 2026-10-02", html);
+        Assert.Contains("From 01-Oct-2026 to 02-Oct-2026", html);
     }
 
     [Fact]

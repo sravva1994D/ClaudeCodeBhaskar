@@ -135,7 +135,7 @@ public class VisitPagesTests(TestDatabaseFixture database, TestWebApplicationFac
 
         var html = await client.GetStringAsync($"/Patients/Details/{patientId}");
 
-        Assert.Contains("2026-11-03 14:30", html);
+        Assert.Contains("03-Nov-2026 14:30", html);
     }
 
     [Fact]
