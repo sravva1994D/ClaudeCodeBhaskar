@@ -404,7 +404,7 @@ public class ConsultationServiceTests
     [Fact]
     public async Task FR_HIS_001_visit_list_maps_each_visit_with_its_finished_state()
     {
-        consultations.ListByPatientAsync(7, Arg.Any<CancellationToken>()).Returns(new List<Consultation>
+        consultations.ListByPatientAsync(7, null, null, Arg.Any<CancellationToken>()).Returns(new List<Consultation>
         {
             new() { Id = 2, PatientId = 7, VisitDateTime = NowLocal.AddDays(1), FinishedAt = NowLocal.AddDays(1) },
             new() { Id = 1, PatientId = 7, VisitDateTime = NowLocal }

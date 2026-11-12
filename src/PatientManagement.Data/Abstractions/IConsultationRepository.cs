@@ -2,6 +2,9 @@ using PatientManagement.Data.Entities;
 
 namespace PatientManagement.Data.Abstractions;
 
+// One patient with the time of their latest visit (FR-SRC-002).
+public sealed record PatientLastVisit(int PatientId, DateTime LastVisit);
+
 // Thin access to visits (Documentation/02-Planning/11-Repository-Design.md §2.4).
 // Rules (start, finish, editing) live in the Business layer. Repositories save what they are given.
 public interface IConsultationRepository
@@ -11,11 +14,17 @@ public interface IConsultationRepository
     // The visit linked to an appointment, if one exists (PDR-26).
     Task<Consultation?> GetByAppointmentIdAsync(int appointmentId, CancellationToken cancellationToken = default);
 
-    // All visits for one patient, newest first (FR-HIS-001). The date filter comes in Module 6 (FR-HIS-003).
-    Task<IReadOnlyList<Consultation>> ListByPatientAsync(int patientId, CancellationToken cancellationToken = default);
+    // All visits for one patient, newest first (FR-HIS-001). from and to are local calendar days, both inclusive
+    // (FR-HIS-003): a visit on the to day is kept whatever its time. A single day is from = to. Null means no bound.
+    Task<IReadOnlyList<Consultation>> ListByPatientAsync(int patientId, DateOnly? from = null, DateOnly? to = null,
+        CancellationToken cancellationToken = default);
 
     // The time of the latest visit, from visits only (PDR-11). Null when the patient has no visit.
     Task<DateTime?> GetLatestVisitTimeAsync(int patientId, CancellationToken cancellationToken = default);
+
+    // The most recently visited patients, latest visit first, at most count (FR-SRC-002, PDR-11).
+    // Patients with no visit are not returned.
+    Task<IReadOnlyList<PatientLastVisit>> GetRecentPatientVisitsAsync(int count, CancellationToken cancellationToken = default);
 
     // Adds the visit. When linkedAppointment is given, its status change is saved in the same save,
     // so Start either changes both or neither (Module 4 plan §7).

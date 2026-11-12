@@ -171,6 +171,17 @@ public class PatientRepositoryTests(TestDatabaseFixture fixture) : IAsyncLifetim
         Assert.Equal(originalCode, saved.PatientCode);
     }
 
+    [Fact]
+    public async Task FR_SRC_002_get_by_ids_returns_only_the_requested_patients()
+    {
+        var ids = await SeedAsync(("Test Anna Example", "5550101"), ("Test Ben Example", "5550102"), ("Test Cara Example", "5550103"));
+
+        await using var context = fixture.CreateContext();
+        var found = await new PatientRepository(context).GetByIdsAsync([ids[0], ids[2], 999999]);
+
+        Assert.Equal(["Test Anna Example", "Test Cara Example"], found.Select(p => p.FullName).OrderBy(name => name));
+    }
+
     private async Task<List<int>> SeedAsync(params (string FullName, string Phone)[] patients)
     {
         var ids = new List<int>();

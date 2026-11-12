@@ -215,7 +215,7 @@ public sealed class ConsultationService(
 
     public async Task<IReadOnlyList<VisitSummaryDto>> ListVisitsAsync(int patientId, CancellationToken cancellationToken = default)
     {
-        var visits = await consultations.ListByPatientAsync(patientId, cancellationToken);
+        var visits = await consultations.ListByPatientAsync(patientId, cancellationToken: cancellationToken);
 
         return visits.Select(ConsultationMapper.ToSummary).ToList();
     }

@@ -43,6 +43,66 @@ public class ConsultationRepositoryTests(TestDatabaseFixture fixture) : IAsyncLi
     }
 
     [Fact]
+    public async Task FR_HIS_003_single_day_filter_returns_only_visits_on_that_day()
+    {
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        await SeedVisitAsync(anna, Morning.AddDays(-1));
+        await SeedVisitAsync(anna, Morning);
+        await SeedVisitAsync(anna, Morning.AddDays(1));
+
+        var day = DateOnly.FromDateTime(Morning);
+        var visits = await ListFilteredAsync(anna, day, day);
+
+        Assert.Equal([Morning], visits.Select(v => v.VisitDateTime));
+    }
+
+    [Fact]
+    public async Task FR_HIS_003_range_includes_both_end_days_whole_and_excludes_the_day_after()
+    {
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        await SeedVisitAsync(anna, new DateTime(2026, 11, 30, 23, 59, 59));
+        await SeedVisitAsync(anna, new DateTime(2026, 12, 1, 0, 0, 0));
+        await SeedVisitAsync(anna, new DateTime(2026, 12, 3, 23, 59, 0));
+        await SeedVisitAsync(anna, new DateTime(2026, 12, 4, 0, 0, 0));
+
+        var visits = await ListFilteredAsync(anna, new DateOnly(2026, 12, 1), new DateOnly(2026, 12, 3));
+
+        Assert.Equal([new DateTime(2026, 12, 3, 23, 59, 0), new DateTime(2026, 12, 1, 0, 0, 0)],
+            visits.Select(v => v.VisitDateTime));
+    }
+
+    [Fact]
+    public async Task FR_SRC_002_recent_patients_are_the_five_latest_by_last_visit()
+    {
+        var patients = new List<int>();
+        for (var index = 1; index <= 6; index++)
+        {
+            patients.Add(await AddPatientAsync($"Test Patient {index}", $"55501{index:D2}"));
+            await SeedVisitAsync(patients[^1], Morning.AddDays(index));
+        }
+        // An older visit for the first patient must not move them up the list.
+        await SeedVisitAsync(patients[0], Morning.AddDays(-4));
+
+        var recent = await RecentAsync(5);
+
+        Assert.Equal([patients[5], patients[4], patients[3], patients[2], patients[1]], recent.Select(r => r.PatientId));
+        Assert.Equal(Morning.AddDays(6), recent[0].LastVisit);
+    }
+
+    [Fact]
+    public async Task FR_SRC_002_patient_with_no_visit_is_not_in_the_recent_list()
+    {
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        var ben = await AddPatientAsync("Test Ben Example", "5550102");
+        await SeedVisitAsync(ben, Morning);
+
+        var recent = await RecentAsync(5);
+
+        Assert.Equal([ben], recent.Select(r => r.PatientId));
+        Assert.DoesNotContain(anna, recent.Select(r => r.PatientId));
+    }
+
+    [Fact]
     public async Task FR_HIS_001_patient_with_no_visit_has_no_latest_visit()
     {
         var anna = await AddPatientAsync("Test Anna Example", "5550101");
@@ -314,6 +374,18 @@ public class ConsultationRepositoryTests(TestDatabaseFixture fixture) : IAsyncLi
     {
         await using var context = fixture.CreateContext();
         return await new ConsultationRepository(context).ListByPatientAsync(patientId);
+    }
+
+    private async Task<IReadOnlyList<Consultation>> ListFilteredAsync(int patientId, DateOnly from, DateOnly to)
+    {
+        await using var context = fixture.CreateContext();
+        return await new ConsultationRepository(context).ListByPatientAsync(patientId, from, to);
+    }
+
+    private async Task<IReadOnlyList<PatientLastVisit>> RecentAsync(int count)
+    {
+        await using var context = fixture.CreateContext();
+        return await new ConsultationRepository(context).GetRecentPatientVisitsAsync(count);
     }
 
     private async Task<DateTime?> LatestVisitAsync(int patientId)

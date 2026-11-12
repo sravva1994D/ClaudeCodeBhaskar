@@ -12,6 +12,12 @@ public sealed class PatientRepository(PatientManagementDbContext db) : IPatientR
     public Task<Patient?> GetByIdAsync(int id, CancellationToken cancellationToken = default) =>
         db.Patients.SingleOrDefaultAsync(patient => patient.Id == id, cancellationToken);
 
+    public async Task<IReadOnlyList<Patient>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken = default) =>
+        await db.Patients
+            .AsNoTracking()
+            .Where(patient => ids.Contains(patient.Id))
+            .ToListAsync(cancellationToken);
+
     public async Task<IReadOnlyList<Patient>> SearchAsync(string term, CancellationToken cancellationToken = default)
     {
         var pattern = "%" + EscapeLike(term) + "%";

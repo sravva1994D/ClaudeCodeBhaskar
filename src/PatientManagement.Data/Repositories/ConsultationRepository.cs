@@ -21,19 +21,40 @@ public sealed class ConsultationRepository(PatientManagementDbContext db) : ICon
     public Task<Consultation?> GetByAppointmentIdAsync(int appointmentId, CancellationToken cancellationToken = default) =>
         db.Consultations.SingleOrDefaultAsync(consultation => consultation.AppointmentId == appointmentId, cancellationToken);
 
-    public async Task<IReadOnlyList<Consultation>> ListByPatientAsync(int patientId, CancellationToken cancellationToken = default) =>
-        await db.Consultations
+    public async Task<IReadOnlyList<Consultation>> ListByPatientAsync(
+        int patientId, DateOnly? from = null, DateOnly? to = null, CancellationToken cancellationToken = default)
+    {
+        // The upper bound is the start of the day after to, so the whole to day is included (FR-HIS-003 AC-2).
+        var start = from?.ToDateTime(TimeOnly.MinValue);
+        var endExclusive = to?.AddDays(1).ToDateTime(TimeOnly.MinValue);
+
+        return await db.Consultations
             .AsNoTracking()
             .Where(consultation => consultation.PatientId == patientId)
+            .Where(consultation => start == null || consultation.VisitDateTime >= start)
+            .Where(consultation => endExclusive == null || consultation.VisitDateTime < endExclusive)
             .OrderByDescending(consultation => consultation.VisitDateTime)
             .ThenByDescending(consultation => consultation.Id)
             .ToListAsync(cancellationToken);
+    }
 
     public Task<DateTime?> GetLatestVisitTimeAsync(int patientId, CancellationToken cancellationToken = default) =>
         db.Consultations
             .Where(consultation => consultation.PatientId == patientId)
             .Select(consultation => (DateTime?)consultation.VisitDateTime)
             .MaxAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<PatientLastVisit>> GetRecentPatientVisitsAsync(int count, CancellationToken cancellationToken = default) =>
+        (await db.Consultations
+            .GroupBy(consultation => consultation.PatientId)
+            .Select(group => new { PatientId = group.Key, LastVisit = group.Max(consultation => consultation.VisitDateTime) })
+            .OrderByDescending(row => row.LastVisit)
+            .ThenBy(row => row.PatientId)
+            .Take(count)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken))
+            .Select(row => new PatientLastVisit(row.PatientId, row.LastVisit))
+            .ToList();
 
     public async Task AddAsync(Consultation consultation, Appointment? linkedAppointment = null, CancellationToken cancellationToken = default)
     {

@@ -8,6 +8,9 @@ public interface IPatientRepository
 {
     Task<Patient?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
+    // The patients with the given ids, in no particular order. Ids that match no patient are skipped (FR-SRC-002).
+    Task<IReadOnlyList<Patient>> GetByIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancellationToken = default);
+
     // Contains match on name or phone, case-insensitive. The term is taken literally (PDR-23).
     Task<IReadOnlyList<Patient>> SearchAsync(string term, CancellationToken cancellationToken = default);
 
