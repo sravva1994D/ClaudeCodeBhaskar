@@ -118,6 +118,11 @@ The following will NOT be included in Phase 1:
   - No other moves. An appointment cannot be marked Completed from Scheduled or Checked-In; it reaches Completed only after In Consultation. No status is changed back to an earlier status in Phase 1
   - "Completed" means the business process for the appointment is finished. The consultation's Finish action sets it (DEC-022)
 - Appointments are archived (hidden but kept), not hard-deleted. Archiving is a manual action. Archived appointments are hidden everywhere in the application
+- Reschedule a scheduled appointment (added 2026-11-12, DEC-027)
+  - Only a Scheduled appointment can be rescheduled. Checked-In and later statuses cannot
+  - The new slot follows the slot rules above and must not overlap another appointment that holds its slot. The old slot is released when the move is saved
+  - The patient and the status stay the same. The move does not keep a history of the old time (audit trail is out of Phase 1, OOS-013)
+  - Cancelling and booking a new appointment remains available
 
 ---
 
@@ -240,6 +245,7 @@ Status: **Approved by the Project Owner, 2026-11-10** (sole approver); amended 2
 | FR-APT-001 | Schedule appointments | Must Have | Appointment scheduling in scope |
 | FR-APT-002 | Daily appointment list | Must Have | Named functional requirement |
 | FR-APT-003 | Update appointment status | Must Have | "Tracking" in scope |
+| FR-APT-004 | Reschedule a scheduled appointment | Should Have | Added 2026-11-12 (DEC-027). Only Scheduled appointments; no overlap |
 | FR-VIT-001 | Mandatory vitals | Must Have | Stated as mandatory |
 | FR-CMP-001 | Record complaints | Must Have | Consultation workflow in scope |
 | FR-DIA-001 | Record diagnosis | Must Have | Diagnosis documentation in scope |
@@ -309,6 +315,7 @@ Decisions recorded from stakeholder answers. Full detail: `Documentation/01-Brai
 | DEC-021: header logo is a placeholder image in Phase 1; no logo upload (PDR-15 amended) | Project Owner decision, 2026-11-10 |
 | DEC-022: the Archive action (hides an appointment, keeps it) and the Finish action (sets Completed after In Consultation) are both in Phase 1 | Project Owner decision, 2026-11-10 |
 | DEC-025: NFR-USB-001, NFR-PRF-002, NFR-SCL-001, NFR-CMP-001, SC-001 and SC-002 are removed from Phase 1 scope (priority changed to Won't Have (Phase 1); requirement wording unchanged). Phase 1 in-scope IDs: 31 to 25. NFR-PRF-001 (page load) remains Must Have and was measured in Module 8 | Project Owner decision, 2026-11-12 (BRD amendment, CLAUDE.md §3) |
+| DEC-027: FR-APT-004 Reschedule added to the BRD (Should Have). Only Scheduled appointments can be moved; the new slot follows the slot rules and must be free; no history kept. Owner choices: Scheduled only; Should Have | Project Owner decision, 2026-11-12 (BRD amendment, CLAUDE.md §3) |
 
 ## Still Open
 

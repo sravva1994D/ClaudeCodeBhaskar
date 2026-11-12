@@ -16,6 +16,7 @@
 | FR-APT-001 | Must Have | FR > Appointment Management | Schedule appointments | BO-004 | — | 10 §1 | OQ-004, OQ-005 | Traced |
 | FR-APT-002 | Must Have | FR > Appointment Management | View daily list | BO-004 | — | 10 §1 | OQ-004 | Traced |
 | FR-APT-003 | Must Have | FR > Appointment Management | Lifecycle: Scheduled, Checked-In, In Consultation, Completed, Cancelled, No-show (no reversal; Completed only after In Consultation) | BO-004 | — | 10 §1 | OQ-006, OQ-024 | Traced |
+| FR-APT-004 | Should Have | FR > Appointment Management | Reschedule a scheduled appointment to another free slot (added 2026-11-12, DEC-027) | BO-004 | — | 10 §1 | — | Implemented (M-extra, DEC-027); awaiting owner approval |
 | FR-VIT-001 | Must Have | FR > Consultation > Vitals (Mandatory) | Record temp, BP, pulse for every consultation | BO-002 | SC-001 | 10 §1 | OQ-007, OQ-028 | Traced |
 | FR-CMP-001 | Must Have | FR > Consultation > Complaints | Enter symptoms (free text) | BO-002 | SC-001 | 10 §1 | OQ-006, OQ-008 | Traced |
 | FR-DIA-001 | Must Have | FR > Consultation > Diagnosis | Record diagnosis notes | BO-002 | SC-001 | 10 §1 | OQ-008 | Traced |
@@ -65,7 +66,7 @@
 | Priority | Functional | Non-Functional | Success Criteria | Out of Scope |
 |---|---|---|---|---|
 | Must Have | 17 | 3 (NFR-PRF-001, NFR-SEC-001, NFR-SEC-002) | 2 (SC-004, SC-005) | — |
-| Should Have | 3 (FR-HIS-003, FR-SRC-002, FR-SRC-003) | — | — | — |
+| Should Have | 4 (FR-HIS-003, FR-SRC-002, FR-SRC-003, FR-APT-004) | — | — | — |
 | Could Have | 0 | 0 | — | — |
 | Won't Have (Phase 1) | — | 6 (NFR-REL-001, NFR-REL-002; by DEC-025: NFR-USB-001, NFR-PRF-002, NFR-SCL-001, NFR-CMP-001) | 4 (SC-003, SC-006; by DEC-025: SC-001, SC-002) | 15 (OOS-001 to OOS-015) |
 
@@ -79,10 +80,10 @@
 | Every out-of-scope item has an OOS ID and a Won't Have priority | Yes (OOS-001 to OOS-015) |
 | Every business objective is served by at least one requirement | Yes (BO-001 to BO-007) |
 | Every requirement has a priority | Yes (proposed; pending approval) |
-| In-scope requirements with status `Traced` or implemented (no open question) | 25 of 25 in scope after DEC-025 (31 before; 6 removed) |
+| In-scope requirements with status `Traced` or implemented (no open question) | 26 of 26 in scope after DEC-025 and DEC-027 (31 before DEC-025; 6 removed; FR-APT-004 added) |
 
 ## Result
 
-The 25 in-scope requirement IDs left after DEC-025 are traced. Their linked open questions are answered. The four deferred IDs (NFR-REL-001, NFR-REL-002, SC-003, SC-006) are recorded as deferred. Six IDs (NFR-USB-001, NFR-PRF-002, NFR-SCL-001, NFR-CMP-001, SC-001, SC-002) were removed from Phase 1 scope by Project Owner decision DEC-025 on 2026-11-12.
+The 26 in-scope requirement IDs after DEC-025 and DEC-027 are traced (FR-APT-004 is implemented and awaits approval). Their linked open questions are answered. The four deferred IDs (NFR-REL-001, NFR-REL-002, SC-003, SC-006) are recorded as deferred. Six IDs (NFR-USB-001, NFR-PRF-002, NFR-SCL-001, NFR-CMP-001, SC-001, SC-002) were removed from Phase 1 scope by Project Owner decision DEC-025 on 2026-11-12.
 
 Priorities were approved by the Project Owner on 2026-11-10 (A-006). Changing any priority changes the Phase 1 scope boundary and needs Project Owner approval.

@@ -83,6 +83,10 @@ else
                                         <button type="submit" class="btn btn-sm btn-primary">Start consultation</button>
                                     </form>
                                 }
+                                @if (item.Status == PatientManagement.Business.Appointments.AppointmentStatus.Scheduled)
+                                {
+                                    <a class="btn btn-sm btn-outline-secondary" asp-controller="Appointments" asp-action="Reschedule" asp-route-id="@item.Id" asp-route-date="@dayText">Reschedule</a>
+                                }
                                 @if (item.CanArchive)
                                 {
                                     <form method="post" asp-controller="Appointments" asp-action="Archive" class="d-inline"

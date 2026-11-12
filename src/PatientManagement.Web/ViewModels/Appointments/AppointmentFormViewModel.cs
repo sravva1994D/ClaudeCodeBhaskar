@@ -15,6 +15,11 @@ public sealed class AppointmentFormViewModel
     public DateTime? StartTime { get; set; }
 
     public IReadOnlyList<SlotViewModel> Slots { get; set; } = [];
+
+    // Reschedule only (FR-APT-004): the appointment being moved and its current time, shown for reference.
+    public int? AppointmentId { get; set; }
+
+    public DateTime? CurrentStartTime { get; set; }
 }
 
 // One grid slot. A booked slot is shown but cannot be chosen (PDR-07).

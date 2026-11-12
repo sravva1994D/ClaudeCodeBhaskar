@@ -19,4 +19,10 @@ public interface IAppointmentService
 
     // Archives a finished or released appointment. It does not change the status (PDR-09).
     Task<Result<AppointmentDto>> ArchiveAsync(int id, CancellationToken cancellationToken = default);
+
+    // The appointment to reschedule, for the form. Only a Scheduled appointment can be rescheduled (FR-APT-004).
+    Task<Result<AppointmentDto>> GetForRescheduleAsync(int id, CancellationToken cancellationToken = default);
+
+    // Moves a Scheduled appointment to another free slot for the same patient (FR-APT-004, DEC-027).
+    Task<Result<AppointmentDto>> RescheduleAsync(int id, DateTime newStartTime, CancellationToken cancellationToken = default);
 }

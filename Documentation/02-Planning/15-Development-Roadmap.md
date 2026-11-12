@@ -43,7 +43,7 @@ Shared components (Module 12) are the M1 foundation. The home page (SCR-03) is c
 | M6 | History filter and recent patients | FR-HIS-003, FR-SRC-002 | M4 | Date filter and recent list pass TC |
 | M7 | Export | FR-EXP-001, FR-EXP-002, SC-005 | M4, M5 (prescription data) | CSV opens; printable export view prints and saves to PDF; content and range correct |
 | M8 | Non-functional verification | NFR-PRF-001, NFR-PRF-002, SC-001, SC-002, NFR-CMP-001, NFR-SEC-002, NFR-SCL-001 | M2 to M7 | Measurements recorded; Chrome and Edge matrix run; hashing and transport checks done (DEC-017, DEC-019) |
-| M9 | Phase 1 acceptance | All in-scope IDs (25 after DEC-025) | M8 | Acceptance script complete; Project Owner acceptance |
+| M9 | Phase 1 acceptance | All in-scope IDs (26 after DEC-025 and DEC-027) | M8 | Acceptance script complete; Project Owner acceptance |
 
 Notes:
 - M3 and M4 depend on M2 because appointments and consultations need a patient.
