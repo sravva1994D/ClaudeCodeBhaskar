@@ -108,8 +108,8 @@ Decisions made during the build, not in the plan:
 |---|---|---|---|
 | 1 | Save writes the complaints and diagnosis, then the vitals, in two saves | If the second write fails, the text is kept and the vitals are not. Unlikely on a single local machine; re-saving fixes it | Project Owner to decide whether to make Save atomic (needs a change to the vitals repository) |
 | 2 | Medicines and prescription | Not built | Module 5 |
-| 3 | Visit history has no date filter | All visits are listed | Module 6 (FR-HIS-003) |
-| 4 | Recent patients on the home page | Not shown | Module 6 (FR-SRC-002) |
+| 3 | Visit history has no date filter | All visits are listed | Closed in Module 6 (FR-HIS-003); see `13-Module-6-Review-Package.md` |
+| 4 | Recent patients on the home page | Not shown | Closed in Module 6 (FR-SRC-002); see `13-Module-6-Review-Package.md` |
 | 5 | Editing is not locked after Finish | A finished visit can still be edited until it is printed | Module 5 adds the printed-visit lock (PDR-14) |
 | 6 | Walk-ins: no limit on open walk-ins | A patient can have several open walk-in visits | BRD silent; D-M4-2 accepted |
 | 7 | HTTPS redirect warning in Development (from Module 1) | Log noise on plain HTTP | Project Owner decision still pending |

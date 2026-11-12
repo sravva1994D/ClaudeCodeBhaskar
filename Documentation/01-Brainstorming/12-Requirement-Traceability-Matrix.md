@@ -23,9 +23,9 @@
 | FR-RX-002 | Must Have | FR > Consultation > Medication | Printable A4 prescription with header, patient, vitals, diagnosis, medicines, footer | BO-001, BO-005 | SC-004 | 10 §1 | OQ-010, OQ-011 | Traced |
 | FR-HIS-001 | Must Have | FR > Patient History | View previous visits | BO-003 | SC-002 | 10 §1 | OQ-006 | Traced |
 | FR-HIS-002 | Must Have | FR > Patient History | Access vitals, complaints, diagnosis, prescriptions | BO-003 | — | 10 §1 | OQ-011 | Traced |
-| FR-HIS-003 | Should Have | FR > Patient History | Filter by single date or range | BO-003 | — | 10 §1 | OQ-012 | Traced |
+| FR-HIS-003 | Should Have | FR > Patient History | Filter by single date or range | BO-003 | — | 10 §1 | OQ-012 | Implemented (M6) |
 | FR-SRC-001 | Must Have | FR > Search & Navigation | Quick patient search | BO-003 | SC-002 | 10 §1 | OQ-003 | Traced |
-| FR-SRC-002 | Should Have | FR > Search & Navigation | View 5 recent patients by last visit | BO-003 | — | 10 §1 | OQ-013 | Traced |
+| FR-SRC-002 | Should Have | FR > Search & Navigation | View 5 recent patients by last visit | BO-003 | — | 10 §1 | OQ-013 | Implemented (M6) |
 | FR-SRC-003 | Should Have | FR > Search & Navigation | Navigate profile and visits | BO-002 | — | 10 §1 | OQ-006 | Traced |
 | FR-EXP-001 | Must Have | FR > Data Export | Export patient data with visits as CSV | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Traced |
 | FR-EXP-002 | Must Have | FR > Data Export | Export as PDF (printable view; browser Save as PDF) | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Traced |
