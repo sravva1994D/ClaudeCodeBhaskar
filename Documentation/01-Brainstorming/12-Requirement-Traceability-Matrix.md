@@ -27,8 +27,8 @@
 | FR-SRC-001 | Must Have | FR > Search & Navigation | Quick patient search | BO-003 | SC-002 | 10 §1 | OQ-003 | Traced |
 | FR-SRC-002 | Should Have | FR > Search & Navigation | View 5 recent patients by last visit | BO-003 | — | 10 §1 | OQ-013 | Implemented and approved (M6) |
 | FR-SRC-003 | Should Have | FR > Search & Navigation | Navigate profile and visits | BO-002 | — | 10 §1 | OQ-006 | Traced |
-| FR-EXP-001 | Must Have | FR > Data Export | Export patient data with visits as CSV | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Implemented (M7); browser checks pending |
-| FR-EXP-002 | Must Have | FR > Data Export | Export as PDF (printable view; browser Save as PDF) | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Implemented (M7); browser checks pending |
+| FR-EXP-001 | Must Have | FR > Data Export | Export patient data with visits as CSV | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Implemented and approved (M7) |
+| FR-EXP-002 | Must Have | FR > Data Export | Export as PDF (printable view; browser Save as PDF) | BO-001, BO-006 | SC-005 | 10 §1 | OQ-014 | Implemented and approved (M7) |
 | NFR-USB-001 | Must Have | NFR > Usability | Simple, minimal UI for fast entry | BO-002, BO-007 | — | 10 §2 | OQ-021 | Traced (qualitative) |
 | NFR-PRF-001 | Must Have | NFR > Performance | Page load approximately 2 s (localhost) | BO-003 | SC-002 | 10 §2 | OQ-020 | Traced |
 | NFR-PRF-002 | Must Have | NFR > Performance | Search results within 2–5 s (localhost) | BO-003 | SC-002 | 10 §2 | OQ-020 | Traced |

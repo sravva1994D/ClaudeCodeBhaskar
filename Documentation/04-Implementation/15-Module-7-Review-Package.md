@@ -3,7 +3,7 @@
 **Project:** Patient Management System, Phase 1 (localhost learning project)
 **Milestone:** M7 (roadmap `Documentation/02-Planning/15-Development-Roadmap.md`)
 **Plan:** `Documentation/04-Implementation/14-Module-7-Plan.md` (plan approved in chat 2026-11-12; decisions D-M7-1 to D-M7-8 as recommended)
-**Status:** **Awaiting Project Owner browser checks (§4) and approval (§7).** Automated checks pass.
+**Status:** **Approved by the Project Owner on 2026-11-12.** Browser checks passed (§4, Chrome 157.0.8103.51).
 
 ---
 
@@ -81,9 +81,9 @@ Stop the app if it is running, then start it again. Module 7 adds no migration. 
 | 22 | Open `/Export/Patient/999999` in the address bar | Not found page | |
 | 23 | Sign out, then open the export address of a patient | Login page | |
 
-Owner report: record here the browser and version, and the result of each check (PDR-28).
+Owner report: all checks in this table passed, in Chrome 157.0.8103.51 (reported in chat). Per-check results were not supplied separately.
 
-Browser used: ______. Version: ______. Result: ______.
+Browser used: Chrome 157.0.8103.51. Result: passed. Date of approval: 2026-11-12.
 
 ## 5. Decisions
 
@@ -114,6 +114,4 @@ The plan (`14-`) recorded D-M7-1 to D-M7-8 with recommendations. They were appro
 
 ## 7. Approval
 
-**Status: awaiting the Project Owner.** Automated checks pass (§3). Browser checks (§4) and the decision on open item 1 are needed before approval. After approval, the module is complete, pending the final `development` → `main` PR after Modules 7 and 8.
-
-Approved by the Project Owner on: ______ (browser and version: ______)
+**Approved by the Project Owner on 2026-11-12.** Browser checks passed in Chrome 157.0.8103.51 (§4). Module 7 is complete, pending the final `development` → `main` PR after Modules 7 and 8.
