@@ -75,7 +75,7 @@ No gap blocks the release PR on the evidence in this review. Items 1 and 3 need 
 |---|---|---|
 | NFR-PRF-001 (section 2.2) | Accept the M8 timing as final. No re-timing for this learning project | Recorded here. Nothing re-timed |
 | Documentation corrections (section 2.5) | Approved | Applied in this change: RTM lines 4, 8, 82 and 87; UI review package §6 and §7; README status and versions (also stale, not in 2.5); verification and acceptance evidence for forgot password (section 2.3) |
-| Day guard, DEC-028, clinic details screen, unbuilt DEC-026 lists (section 2.4) | Not answered | Open. The BRD decision log is not changed until the owner decides |
+| Day guard, DEC-028, clinic details screen, unbuilt DEC-026 lists (section 2.4) | Keep and document. Do not remove | Done. BRD decision log: DEC-028, DEC-029 (day guard), DEC-030 (clinic details) added. DEC-026 row updated to the implementation. Same rows in `14-` |
 | M12 spreadsheet tool name (section 2.3) | Not answered | Open. Needs the owner's report of the tool and version |
 | L7 culture test (section 2.3) | Not answered | Open. Optional |
 
