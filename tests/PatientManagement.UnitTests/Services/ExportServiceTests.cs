@@ -47,6 +47,13 @@ public class ExportServiceTests
         params ExportMedicine[] medicines) =>
         new(1, visitTime, complaints, diagnosis, temperature, systolic, diastolic, pulse, medicines);
 
+    private void GivenPhone(string phone)
+    {
+        var patient = Patient();
+        patient.Phone = phone;
+        patients.GetByIdAsync(7, Arg.Any<CancellationToken>()).Returns(patient);
+    }
+
     private void GivenVisits(params ExportVisitRow[] rows) =>
         consultations.ListForExportAsync(Arg.Any<int>(), Arg.Any<DateOnly?>(), Arg.Any<DateOnly?>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<IReadOnlyList<ExportVisitRow>>(rows));
@@ -140,6 +147,32 @@ public class ExportServiceTests
         var text = TextOf((await service.BuildCsvAsync(7)).Value!.Content);
 
         Assert.Contains(",'=1+1,'-Test sign,", text);
+    }
+
+    [Theory]
+    [InlineData("+91 98765 43210")]
+    [InlineData("+1 (555) 010-1234")]
+    public async Task FR_EXP_001_phone_number_with_a_leading_plus_is_not_changed(string phone)
+    {
+        GivenPhone(phone);
+        GivenVisits(Visit(Morning));
+
+        var text = TextOf((await service.BuildCsvAsync(7)).Value!.Content);
+
+        Assert.Contains($",{phone},anna@example.test,", text);
+    }
+
+    [Theory]
+    [InlineData("+1+1")]
+    [InlineData("+cmd")]
+    public async Task FR_EXP_001_plus_text_that_is_not_a_phone_number_is_still_guarded(string value)
+    {
+        GivenPhone(value);
+        GivenVisits(Visit(Morning));
+
+        var text = TextOf((await service.BuildCsvAsync(7)).Value!.Content);
+
+        Assert.Contains($",'{value},anna@example.test,", text);
     }
 
     [Fact]

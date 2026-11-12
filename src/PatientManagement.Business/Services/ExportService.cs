@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using PatientManagement.Business.Common;
 using PatientManagement.Business.DTOs;
 using PatientManagement.Business.Interfaces;
@@ -158,6 +159,10 @@ public sealed class ExportService(
             new[] { medicine.Name, medicine.Dosage, medicine.Frequency, medicine.Duration, medicine.Instructions }
                 .Where(part => !string.IsNullOrWhiteSpace(part)))));
 
+    // A phone number may start with "+" (PDR-22). Only that shape is exempt: "+", then digits, spaces, brackets and hyphens.
+    // Any other text that starts with "+" is still a possible formula (D-M7-3, decided 2026-11-12, option b).
+    private static readonly Regex PhoneShape = new(@"^\+[0-9][0-9 ()\-]*$", RegexOptions.CultureInvariant);
+
     // Free text in a spreadsheet: a cell that starts with a formula character gets a leading quote, so the spreadsheet
     // shows it as text and does not run it (D-M7-3). Blank text is an empty cell.
     private static string Text(string? value)
@@ -165,6 +170,11 @@ public sealed class ExportService(
         if (string.IsNullOrEmpty(value))
         {
             return "";
+        }
+
+        if (value[0] == '+' && PhoneShape.IsMatch(value))
+        {
+            return value;
         }
 
         return value[0] is '=' or '+' or '-' or '@' or '\t' or '\r' ? "'" + value : value;

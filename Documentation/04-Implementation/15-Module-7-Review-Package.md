@@ -11,6 +11,9 @@
 
 | Plan step | Work | Commit |
 |---|---|---|
+| Review fix | Phone number with a leading `+` exported unchanged; other text starting with `+` still guarded (D-M7-3, option b) | this commit |
+| Plan step | Work | Commit |
+|---|---|---|
 | Plan | Module 7 plan (`14-`) | `37a809f` |
 | 1 | Data: visit export query (visits oldest first, vitals, medicines in order); day filter shared with the visit list | `b2c97e5` |
 | 2 | Business: CSV writer (16 columns, quoting, byte-order mark, CRLF), export service (CSV, print model, form options), visit range rule shared in `VisitDateRange`, formula guard | `75b3432` |
@@ -29,7 +32,7 @@ Out of scope for Module 7, as planned: search timing and browser matrix (M8). No
 
 | Requirement | Result | Tests (named in the test code) |
 |---|---|---|
-| FR-EXP-001 Export patient data with visits as CSV | Implemented. Browser checks pending (§4) | **TC-FR-EXP-001-1** (opens with expected columns, one row per visit): unit `ExportServiceTests.FR_EXP_001_csv_has_the_sixteen_columns_in_order`, `FR_EXP_001_csv_starts_with_a_byte_order_mark_and_uses_crlf_line_ends`, `FR_EXP_001_csv_row_repeats_the_patient_and_uses_iso_dates`, `FR_EXP_001_csv_lists_visits_oldest_first`; web `ExportPagesTests.FR_EXP_001_csv_downloads_as_utf8_csv_named_with_the_patient_code`, `FR_EXP_001_csv_has_the_header_and_one_row_per_visit`. **TC-FR-EXP-001-2** (date range applied): unit `FR_EXP_001_csv_a_from_date_after_the_to_date_is_refused_by_the_visit_range_rule`, `FR_EXP_001_csv_a_to_date_without_a_from_date_is_refused_by_the_visit_range_rule`; data `ConsultationRepositoryTests.FR_EXP_001_export_range_uses_the_visit_day_rule_and_only_this_patient`; web `FR_EXP_001_csv_range_includes_both_ends_and_leaves_out_other_days`, `FR_EXP_001_a_range_with_no_visits_shows_the_message_on_the_form_and_downloads_nothing`, `FR_EXP_001_a_from_date_after_the_to_date_shows_the_error_and_downloads_nothing`, `FR_EXP_001_a_to_date_without_a_from_date_shows_the_error`, `FR_EXP_001_a_malformed_date_is_refused_and_not_silently_dropped`. **TC-FR-EXP-001-3** (ISO dates; one row for a patient with no visits): unit `FR_EXP_001_patient_with_no_visit_gives_one_row_with_blank_visit_columns`, `FR_EXP_001_csv_leaves_vitals_blank_when_not_recorded`, `FR_EXP_001_numbers_are_not_changed_by_the_formula_guard`; web `FR_EXP_001_csv_for_a_patient_with_no_visits_has_one_row`; data `FR_EXP_001_export_visit_without_vitals_or_prescription_has_blank_parts`, `FR_EXP_001_patient_with_no_visits_exports_no_rows`. Other: medicine cell `FR_EXP_001_csv_medicines_form_one_cell_with_blank_parts_omitted`; quoting `FR_EXP_001_csv_quotes_commas_quotes_and_line_breaks`; formula guard `FR_EXP_001_csv_text_that_starts_with_a_formula_character_is_shown_as_text`; file name `FR_EXP_001_csv_file_name_carries_the_patient_code_only`; sign-in and not-found `FR_EXP_001_export_pages_need_sign_in`, `FR_EXP_001_unknown_patient_is_not_found_for_the_form_and_the_csv`; profile link `FR_EXP_001_the_patient_profile_links_to_the_export` |
+| FR-EXP-001 Export patient data with visits as CSV | Implemented. Browser checks pending (§4) | **TC-FR-EXP-001-1** (opens with expected columns, one row per visit): unit `ExportServiceTests.FR_EXP_001_csv_has_the_sixteen_columns_in_order`, `FR_EXP_001_csv_starts_with_a_byte_order_mark_and_uses_crlf_line_ends`, `FR_EXP_001_csv_row_repeats_the_patient_and_uses_iso_dates`, `FR_EXP_001_csv_lists_visits_oldest_first`; web `ExportPagesTests.FR_EXP_001_csv_downloads_as_utf8_csv_named_with_the_patient_code`, `FR_EXP_001_csv_has_the_header_and_one_row_per_visit`. **TC-FR-EXP-001-2** (date range applied): unit `FR_EXP_001_csv_a_from_date_after_the_to_date_is_refused_by_the_visit_range_rule`, `FR_EXP_001_csv_a_to_date_without_a_from_date_is_refused_by_the_visit_range_rule`; data `ConsultationRepositoryTests.FR_EXP_001_export_range_uses_the_visit_day_rule_and_only_this_patient`; web `FR_EXP_001_csv_range_includes_both_ends_and_leaves_out_other_days`, `FR_EXP_001_a_range_with_no_visits_shows_the_message_on_the_form_and_downloads_nothing`, `FR_EXP_001_a_from_date_after_the_to_date_shows_the_error_and_downloads_nothing`, `FR_EXP_001_a_to_date_without_a_from_date_shows_the_error`, `FR_EXP_001_a_malformed_date_is_refused_and_not_silently_dropped`. **TC-FR-EXP-001-3** (ISO dates; one row for a patient with no visits): unit `FR_EXP_001_patient_with_no_visit_gives_one_row_with_blank_visit_columns`, `FR_EXP_001_csv_leaves_vitals_blank_when_not_recorded`, `FR_EXP_001_numbers_are_not_changed_by_the_formula_guard`; web `FR_EXP_001_csv_for_a_patient_with_no_visits_has_one_row`; data `FR_EXP_001_export_visit_without_vitals_or_prescription_has_blank_parts`, `FR_EXP_001_patient_with_no_visits_exports_no_rows`. Other: medicine cell `FR_EXP_001_csv_medicines_form_one_cell_with_blank_parts_omitted`; quoting `FR_EXP_001_csv_quotes_commas_quotes_and_line_breaks`; formula guard `FR_EXP_001_csv_text_that_starts_with_a_formula_character_is_shown_as_text`; phone rule `FR_EXP_001_phone_number_with_a_leading_plus_is_not_changed`, `FR_EXP_001_plus_text_that_is_not_a_phone_number_is_still_guarded`; file name `FR_EXP_001_csv_file_name_carries_the_patient_code_only`; sign-in and not-found `FR_EXP_001_export_pages_need_sign_in`, `FR_EXP_001_unknown_patient_is_not_found_for_the_form_and_the_csv`; profile link `FR_EXP_001_the_patient_profile_links_to_the_export` |
 | FR-EXP-002 Export as PDF (printable view; browser Save as PDF) | Implemented. Browser checks pending (§4) | **TC-FR-EXP-002-1** (printable view shows the data; Print and Save as PDF): web `ExportPagesTests.FR_EXP_002_printable_view_shows_the_patient_visit_vitals_and_medicines`, `FR_EXP_002_printable_view_has_a_print_button_and_the_save_as_pdf_hint`, `FR_EXP_002_printing_the_view_does_not_mark_the_prescription_printed`; unit `ExportServiceTests.FR_EXP_002_print_view_lists_the_newest_visit_first`. **TC-FR-EXP-002-2** (date range applied): web `FR_EXP_002_printable_view_range_shows_only_visits_inside_it`, `FR_EXP_002_printable_view_with_no_visits_in_a_range_shows_the_message_on_the_form`; unit `FR_EXP_002_print_view_with_a_single_day_shows_that_day_as_the_range`, `FR_EXP_002_print_view_with_no_visits_in_a_range_is_refused`; web `FR_EXP_002_printable_view_lists_the_newest_visit_first`, `FR_EXP_002_printable_view_needs_sign_in_and_unknown_patient_is_not_found` |
 | SC-005 CSV and PDF export succeeds | Automated checks cover the content and the refusals. Opening the CSV in a spreadsheet and printing or saving the PDF are checked in §4 | §4 checks 3 to 9 and 13 to 15 |
 
@@ -37,12 +40,12 @@ FR-HIS-001, FR-HIS-003, FR-SRC-002 and the visit pages keep their behaviour. The
 
 ## 3. Test Results
 
-Run on the last commit of this module's code (`ad06f12`). No code changed after that run; this commit changes documentation only.
+Run after the phone-rule review fix, on the code of this commit.
 
 | Check | Result |
 |---|---|
 | Build (`dotnet build PatientManagement.sln --no-incremental`) | 0 errors, 0 warnings |
-| Unit tests | 364 passed, 0 failed (Module 6 end: 345; Module 7 added 19) |
+| Unit tests | 368 passed, 0 failed (Module 6 end: 345; Module 7 added 23, including 4 for the phone rule) |
 | Integration tests | 297 passed, 0 failed (Module 6 end: 274; Module 7 added 23: 4 data, 12 CSV and form, 7 printable view) |
 
 ## 4. Browser Checks (for the Project Owner)
@@ -89,7 +92,7 @@ The plan (`14-`) recorded D-M7-1 to D-M7-8 with recommendations. They were appro
 |---|---|---|
 | D-M7-1 | Date range rule | Same as the visit filter (From alone is one day; both ends inclusive; To alone and From after To refused). Shared in `VisitDateRange` |
 | D-M7-2 | Malformed dates | Refused with a message, never dropped |
-| D-M7-3 | CSV formula guard | A text cell starting with `=`, `+`, `-`, `@`, tab or carriage return gets a leading `'`. See open item 1 |
+| D-M7-3 | CSV formula guard | A text cell starting with `=`, `+`, `-`, `@`, tab or carriage return gets a leading `'`. Decided 2026-11-12 (Project Owner, option b): a value that starts with `+` followed only by digits, spaces, brackets and hyphens is a phone number and is not guarded. Other `+` text stays guarded (for example `+1+1`) |
 | D-M7-4 | File name | Patient code only |
 | D-M7-5 | Printable view layout | Clinic header, patient block, one section per visit, newest first; printing marks nothing as printed |
 | D-M7-6 | Empty result | A range with no visits is refused on the form. A patient with no visits gives one CSV row |
@@ -100,7 +103,7 @@ The plan (`14-`) recorded D-M7-1 to D-M7-8 with recommendations. They were appro
 
 | # | Item | Effect | Proposed handling |
 |---|---|---|---|
-| 1 | Formula guard applies to every text cell | A phone number or email that starts with `+` or `-` is shown in the CSV with a leading `'` (visible in some tools) | Project Owner decision: keep the guard for all text, or exempt Phone and Email. Not changed without the decision |
+| 1 | Phone rule (closed 2026-11-12) | A phone number with a leading `+` is exported unchanged. Other text starting with `+`, `-`, `=`, `@` is still guarded. A value with a leading `-` that is a negative number is also guarded; no such value exists in the patient data | Closed by the decision in §5 (D-M7-3, option b) |
 | 2 | Date inputs look different in each browser | The date picker and its display are set by the browser. The page always sends yyyy-MM-dd | Check in Chrome (§4); Edge in M8 |
 | 3 | Print output depends on the printer and its margins | The A4 preview in Chrome is checked; a physical printer may differ | Owner checks a printed copy if a printer is available; M8 browser matrix |
 | 4 | Long histories span several printed pages | Each visit section is kept whole where possible; a page header or page numbers are not repeated | Accepted for Phase 1 |
