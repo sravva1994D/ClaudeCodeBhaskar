@@ -108,7 +108,7 @@ Ten page types. Use the seed patient from §2 for the profile page.
 | 6 | Daily appointments list | 0.179 | 0.100 | 0.089 | 0.124 | 0.075 | 0.100 | Yes (mapping to confirm) |
 | 7 | New appointment | 0.135 | 0.084 | 0.088 | 0.101 | 0.099 | 0.099 | Yes (mapping to confirm) |
 | 8 | Consultation (SCR-11) | 0.071 | 0.065 | 0.135 | 0.100 | 0.106 | 0.100 | Yes |
-| 9 | Prescription print view | | | | | | | |
+| 9 | Prescription print view | 0.069 | 0.092 | 0.039 | 0.040 | 0.045 | 0.045 | Yes |
 | 10 | Export form (SCR-13) | 0.105 | 0.100 | 0.062 | 0.095 | 0.114 | 0.100 | Yes |
 
 Additional pages timed, not in the 10-page list (seconds; five runs; median):
