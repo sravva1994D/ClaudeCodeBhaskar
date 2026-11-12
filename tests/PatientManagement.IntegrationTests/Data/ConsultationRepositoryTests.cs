@@ -72,6 +72,18 @@ public class ConsultationRepositoryTests(TestDatabaseFixture fixture) : IAsyncLi
     }
 
     [Fact]
+    public async Task FR_HIS_003_a_range_ending_on_the_last_day_the_type_holds_does_not_fail()
+    {
+        // Code review (Module 6): adding a day to DateOnly.MaxValue overflowed. The last day has no upper bound.
+        var anna = await AddPatientAsync("Test Anna Example", "5550101");
+        await SeedVisitAsync(anna, new DateTime(2026, 12, 1, 9, 0, 0));
+
+        var visits = await ListFilteredAsync(anna, new DateOnly(2026, 12, 1), DateOnly.MaxValue);
+
+        Assert.Equal([new DateTime(2026, 12, 1, 9, 0, 0)], visits.Select(v => v.VisitDateTime));
+    }
+
+    [Fact]
     public async Task FR_SRC_002_recent_patients_are_the_five_latest_by_last_visit()
     {
         var patients = new List<int>();

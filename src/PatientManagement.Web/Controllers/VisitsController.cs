@@ -25,6 +25,19 @@ public class VisitsController(
             return NotFound();
         }
 
+        // A date that is not a real date (for example 2026-02-30) is refused, not dropped. Dropping it would show an
+        // unfiltered list as if the filter had been applied.
+        if (HasMalformedDate())
+        {
+            return View(new VisitHistoryViewModel
+            {
+                PatientId = patient.Value!.Id,
+                PatientName = patient.Value.FullName,
+                PatientCode = patient.Value.PatientCode,
+                ErrorMessage = "Enter each date as a real date, for example 2026-11-03."
+            });
+        }
+
         var visits = await consultations.ListVisitsAsync(patientId, fromDate, toDate, cancellationToken);
 
         return View(new VisitHistoryViewModel
@@ -38,6 +51,10 @@ public class VisitsController(
             Visits = visits.Value ?? []
         });
     }
+
+    // Model binding records an error for a non-empty value that is not a date. The two keys are the query names and the parameter names.
+    private bool HasMalformedDate() =>
+        ModelState.Any(entry => (entry.Key is "from" or "to" or "fromDate" or "toDate") && entry.Value?.Errors.Count > 0);
 
     [HttpGet]
     public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)

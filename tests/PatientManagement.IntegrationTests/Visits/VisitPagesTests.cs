@@ -222,6 +222,31 @@ public class VisitPagesTests(TestDatabaseFixture database, TestWebApplicationFac
     }
 
     [Fact]
+    public async Task FR_HIS_003_a_malformed_date_is_refused_and_not_silently_dropped()
+    {
+        var older = await SeedVisitAsync(patientId, Earlier);
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync($"/Patients/{patientId}/Visits?from=2026-02-30");
+
+        Assert.Contains("Enter each date as a real date", html);
+        Assert.DoesNotContain($"/Visits/Details/{older}", html);
+    }
+
+    [Fact]
+    public async Task FR_HIS_003_a_to_date_of_the_last_possible_day_shows_the_visits_instead_of_failing()
+    {
+        var newer = await SeedVisitAsync(patientId, Later);
+        using var client = await SignedInClientAsync();
+
+        var response = await client.GetAsync($"/Patients/{patientId}/Visits?from=2026-01-01&to=9999-12-31");
+        var html = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains($"/Visits/Details/{newer}", html);
+    }
+
+    [Fact]
     public async Task FR_HIS_003_a_range_with_no_visits_says_so_and_offers_to_clear_it()
     {
         await SeedVisitAsync(patientId, Earlier);

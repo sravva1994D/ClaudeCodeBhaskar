@@ -16,7 +16,8 @@
 | 2 | Services: range rules for the visit list (single day, refusals); recent patients service | `248a9c9` |
 | 3 | Visit history screen: From and To inputs, Show visits, Clear filter, error and empty messages | `8d57fd3` |
 | 4 | Home page: Recent patients section (five latest, linked to the profile) | `668135d` |
-| 5 | Close-out: this review package; traceability matrices `18-` and `12-`; Module 4 review §6 items 3 and 4 | this commit |
+| 5 | Close-out: this review package; traceability matrices `18-` and `12-`; Module 4 review §6 items 3 and 4 | `c287f1b` |
+| Review fixes | Code review (Module 6 scope): a range ending on the last day the type holds no longer fails; a malformed date is refused, not dropped | this commit |
 
 Out of scope for Module 6, as planned: export (FR-EXP-001/002, M7); search timing and browser matrix (M8). No schema change and no migration in this module.
 
@@ -31,13 +32,13 @@ FR-HIS-001, FR-HIS-002, FR-SRC-003 and FR-APT-002 were not changed in behaviour.
 
 ## 3. Test Results
 
-Run after step 4 (`668135d`). No code changed after that run; this commit changes documentation only.
+Run after the review fixes (this commit). Before those fixes, the same suites passed at step 4 (`668135d`): 345 unit and 271 integration.
 
 | Check | Result |
 |---|---|
 | Build (`dotnet build PatientManagement.sln --no-incremental`) | 0 errors, 0 warnings |
 | Unit tests | 345 passed, 0 failed (Module 5 end: 338; Module 6 added 7) |
-| Integration tests | 271 passed, 0 failed (Module 5 end: 258; Module 6 added 13) |
+| Integration tests | 274 passed, 0 failed (Module 5 end: 258; Module 6 added 16, including 3 regression tests for the review fixes) |
 
 ## 4. Browser Checks (for the Project Owner)
 

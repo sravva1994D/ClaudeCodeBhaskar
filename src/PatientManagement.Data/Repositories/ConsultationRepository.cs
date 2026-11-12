@@ -25,8 +25,11 @@ public sealed class ConsultationRepository(PatientManagementDbContext db) : ICon
         int patientId, DateOnly? from = null, DateOnly? to = null, CancellationToken cancellationToken = default)
     {
         // The upper bound is the start of the day after to, so the whole to day is included (FR-HIS-003 AC-2).
+        // The last day the type can hold has no day after it, so it needs no upper bound (and AddDays would overflow).
         var start = from?.ToDateTime(TimeOnly.MinValue);
-        var endExclusive = to?.AddDays(1).ToDateTime(TimeOnly.MinValue);
+        var endExclusive = to is { } last && last < DateOnly.MaxValue
+            ? last.AddDays(1).ToDateTime(TimeOnly.MinValue)
+            : (DateTime?)null;
 
         return await db.Consultations
             .AsNoTracking()
