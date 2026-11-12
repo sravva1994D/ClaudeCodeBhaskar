@@ -49,7 +49,7 @@
                     <tr>
                         <td>@row.PatientCode</td>
                         <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@row.Id">@row.FullName</a></td>
-                        <td data-order="@row.DateOfBirth.ToString("yyyy-MM-dd")">@row.DateOfBirth.ToString("dd-MMM-yyyy")</td>
+                        <td data-order="@row.DateOfBirth.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)">@row.DateOfBirth.ToString("dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture)</td>
                         <td>@row.Phone</td>
                         <td><a asp-controller="Appointments" asp-action="Create" asp-route-patientId="@row.Id">Schedule<span class="visually-hidden"> for @row.FullName</span></a></td>
                     </tr>
