@@ -7,16 +7,20 @@ using PatientManagement.Web.ViewModels.Home;
 
 namespace PatientManagement.Web.Controllers;
 
-// The home page (SCR-03; FR-APT-002, FR-SRC-001): today's appointments, New patient, and the top-bar quick search.
-// Recent patients join this page in Module 6 (FR-SRC-002).
-public class HomeController(IAppointmentService appointments, TimeProvider timeProvider) : Controller
+// The home page (SCR-03; FR-APT-002, FR-SRC-001, FR-SRC-002): today's appointments, recent patients,
+// New patient, and the top-bar quick search.
+public class HomeController(
+    IAppointmentService appointments,
+    IPatientService patients,
+    TimeProvider timeProvider) : Controller
 {
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         var today = DateOnly.FromDateTime(timeProvider.GetLocalNow().DateTime);
         var items = await appointments.GetDailyAsync(today, cancellationToken);
+        var recent = await patients.GetRecentAsync(5, cancellationToken);
 
-        return View(new HomeViewModel { Today = today, Appointments = items });
+        return View(new HomeViewModel { Today = today, Appointments = items, RecentPatients = recent });
     }
 
     // The error page must render for signed-out users too (AllowAnonymous overrides the global policy).

@@ -103,6 +103,68 @@ public class HomeDailyListTests(TestDatabaseFixture database, TestWebApplication
         Assert.DoesNotContain("href=\"/Appointments/Daily\"", html);
     }
 
+    [Fact]
+    public async Task FR_SRC_002_home_lists_the_five_latest_visited_patients_in_visit_order()
+    {
+        for (var index = 1; index <= 6; index++)
+        {
+            var patient = await AddPatientAsync($"Test Recent {index}", $"55502{index:D2}");
+            await AddVisitAsync(patient, DateTime.Today.AddDays(index - 10).AddHours(9));
+        }
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains("Test Recent 6", html);
+        Assert.Contains("Test Recent 2", html);
+        Assert.DoesNotContain("Test Recent 1<", html);
+        Assert.True(html.IndexOf("Test Recent 6", StringComparison.Ordinal) < html.IndexOf("Test Recent 2", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task FR_SRC_002_home_leaves_out_patients_with_no_visit()
+    {
+        await AddPatientAsync("Test Never Visited", "5550301");
+        var visited = await AddPatientAsync("Test Visited Once", "5550302");
+        await AddVisitAsync(visited, DateTime.Today.AddHours(9));
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains("Test Visited Once", html);
+        Assert.DoesNotContain("Test Never Visited", html);
+    }
+
+    [Fact]
+    public async Task FR_SRC_002_home_says_so_when_no_patient_has_a_visit()
+    {
+        await AddPatientAsync("Test Never Visited", "5550301");
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains("No recent patients yet.", html);
+    }
+
+    [Fact]
+    public async Task FR_SRC_002_recent_patient_name_links_to_the_profile()
+    {
+        var visited = await AddPatientAsync("Test Visited Once", "5550302");
+        await AddVisitAsync(visited, DateTime.Today.AddHours(9));
+        using var client = await SignedInClientAsync();
+
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains($"href=\"/Patients/Details/{visited}\"", html);
+    }
+
+    private async Task AddVisitAsync(int patientId, DateTime visitTime)
+    {
+        await using var context = database.CreateContext();
+        context.Consultations.Add(new Consultation { PatientId = patientId, VisitDateTime = visitTime });
+        await context.SaveChangesAsync();
+    }
+
     private async Task<int> AddPatientAsync(string fullName, string phone)
     {
         await using var context = database.CreateContext();

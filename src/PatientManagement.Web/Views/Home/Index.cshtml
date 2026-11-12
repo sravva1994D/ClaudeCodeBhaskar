@@ -45,3 +45,33 @@ else
         </table>
     </div>
 }
+
+<h2 class="h5 mt-5 mb-3">Recent patients</h2>
+@if (Model.RecentPatients.Count == 0)
+{
+    <p>No recent patients yet.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Patient</th>
+                    <th scope="col">Code</th>
+                    <th scope="col">Last visit</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var patient in Model.RecentPatients)
+                {
+                    <tr>
+                        <td><a asp-controller="Patients" asp-action="Details" asp-route-id="@patient.Id">@patient.FullName</a></td>
+                        <td>@patient.PatientCode</td>
+                        <td>@patient.LastVisit.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
